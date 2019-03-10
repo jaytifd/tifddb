@@ -1,3 +1,5 @@
+
+
 +------------------------+
 | Tables_in_tifd         |
 +------------------------+
@@ -60,3 +62,69 @@
                                                                               |   Registered              |
                                                                               |   CheckedIn               |
                                                                               +---------------------------+
+                                                                              
++------------------------+
+| Tables_in_tifd         |
++------------------------+
+| tblAgeCategories       |  <--+ constants (short list of age ranges)
+| tblCamper              |  <--| camp related info Linked via PersID (also RegID)
+| tblConstantsCamp       |  <--| constants (room prices, shirt prices etc(
+| tblConstantsMembership |  <--| only thing in here is CurMemYr=2018
+| tblDepositOperations   |  <--| one entry from 2005
+| tblEmailRegistered     |  <--|  ????   LastName,FirstName,Expr1  Is this a pivot table?  It doesn't show up in Access
+| tblHelp                |  <--| empty
+| tblHousingChoices      |  <--| constants (list of GFC room types + Couples dorm, Family dorm, mixed, none, Private Cabin, Womens dorm, etc)
+| tblHousingRooms        |  <--| a list of GFC cabins?
+| tblHousingType         |  <--| constants (dorm=D, Private Cabin = PC, Private Room = PR)
+| tblMemUnit             |  <--| Membership unit aka a household.  Mailing name, address, homephone.   MemID is the PrimaryKey
+| tblMembershipType      |  <--| Constants + a list of membership type abbreviations I have no idea what they mean
+| tblPayments            |  <--| Camp fees, deposits, etc are recorded here
+| tblPerson              |  <--| records for each person (keyed to MemUnit by MemID)  gender, email, dob, etc
+| tblRegForm             |  <--| all the stuff from the registration form that's not stored in tblPerson (housing pref, DVDs, shirt fees, regform postmark, etc
+| tblScholarReason       |  <--| constants (list of scholarship types)
+| tblT+shirts            |  <--+ a list of who ordered shirts in 2009
++------------------------+
+
+
+
+
+
+   +----+memunit+------+                                                                                      +-----------+regform+---------+
+   |                   |                                                   +---------------------------------->    id                       |
+   |   id              +<--------------+---------------------------------------------------------------------->    memunit_id               |
+   |   MailingName     |               |                                   |                                  |    Year                     |
+   |   Address1        |               |                                   |                                  |    Postmark                 |
+   |   Address2        |               |                                   |                                  |    SecondPage               |
+   |   City            |               |                                   |                                  |    ExpLateFee               |
+   |   State           |               |        +----------+person+-+      |                                  |    Received                 |
+   |   Country         |               |        |                   |      |                                  |    RegNum                   |
+   |   Zip             |               |        |   id              +<--+  |                                  |    ConfirmSent              |
+   |   HomePhone       |               +--------+   memunit_id      |   |  |  +----------+camper+---------+   |    MobilityAssistanceDevice |
+   |   MemberType      |                        |   Primary         |   |  |  |   id                      |   |    HousingPref              |
+   |   MemberYear      |                        |   FirstName       |   |  |  |   CamperNum               |   |    HousingPref2             |
+   |   FirstMemberYear |                        |   LastName        |   |  +--+   regform_id              |   |    HousingNotes             |
+   |   HardCopy        |                        |   AgeCategory     |   +-----+   person_id               |   |    QualifyAsFamily          |
+   |   FreeNewsletter  |                        |   Age             |         |   CampYear                |   |    HousingFee               |
+   |   Notes           |                        |   DateOfBirth     |         |   FtPt                    |   |    NumSingers               |
+   |   Flags           |                        |   Gender          |         |   ScholarType             |   |    NumSyllabi               |
+   |   LastCampYr      |                        |   eMail1          |         |   ScholarReason           |   |    ExpCampFees              |
+   |   Current         |                        |   PubMail1        |         |   StaffPosition           |   |    ExpShirtFees             |
+   |                   |                        |   eMail2          |         |   HousingAssigned         |   |    MembershipRebate         |
+   |                   |                        |   PubMail2        |         |   Band                    |   |    MembershipFee            |
+   |                   |                        |   WorkCellPhone   |         |   Instruments             |   |    NumVHS                   |
+   |                   |                        |   Flags           |         |   InFamilyProgram         |   |    NumDVD                   |
+   |                   |                        |   Groups          |         |   Flags                   |   |    Adjustment               |
+   +-------------------+                        |   Notes           |         |   ShirtCut                |   |    RefundRequested          |
+                                                |   Current         |         |   ShirtSize               |   |    PaymentRequeste          |
+                                                |                   |         |   FreeShirt               |   |    MemYearAtStart           |
+                                                |                   |         |   Vegan                   |   |    Notes                    |
+                                                |                   |         |   Vegetarian              |   |                             |
+                                                |                   |         |   DietaryComments         |   +-----------------------------+
+                                                |                   |         |   AlcoholPolicyInitialed  |
+                                                +-------------------+         |   Notes                   |
+                                                                              |   Registered              |
+                                                                              |   CheckedIn               |
+                                                                              +---------------------------+
+
+person.Flags:  F - First response, K - Kitchen schol, A, H, D - need ride (Austin Houston Dallas?)
+person.Groups - freeform field?  which dance groups they are from       
