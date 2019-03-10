@@ -1,4 +1,65 @@
 
+MariaDB [tifd]> select * from tblHousingType;
++-------------------+-----------------------------+----------------+
+| TIFDHousingTypeID | TIFDHousingType             | GFCHousingType |
++-------------------+-----------------------------+----------------+
+| D                 | Dorm                        | Cabin          |
+| PC                | Private cabin (shared bath) | Lodge          |
+| PR                | Private room (private bath) | Lodge          |
++-------------------+-----------------------------+----------------+
+3 rows in set (0.00 sec)
+
+MariaDB [tifd]> select * from tblHousingChoices;
++-----------------------+
+| Choices               |
++-----------------------+
+| Couples Dorm          |
+| Family Dorm           |
+| Mens Dorm             |
+| Mixed                 |
+| None                  |
+| Private Cabin         |
+| Private Room - Double |
+| Private Room - Single |
+| Womens Dorm           |
++-----------------------+
+9 rows in set (0.00 sec)
+
+MariaDB [tifd]> select * from tblHousingRooms limit 10
+    -> ;
++-----------------+-------------------+
+| HousingAssigned | TIFDHousingTypeID |
++-----------------+-------------------+
+| A1              | D                 |
+| A2              | D                 |
+| B1              | D                 |
+| B2              | D                 |
+| C1              | D                 |
+| C2              | D                 |
+| D1              | D                 |
+| D2              | D                 |
+| E1              | D                 |
+| E2              | D                 |
++-----------------+-------------------+
+10 rows in set (0.00 sec)
+
+MariaDB [tifd]> select * from tblMembershipType;
++-----------+
+| MemType   |
++-----------+
+| REG       |
+| FAM       |
+| LIFE      |
+| LIFE2     |
+| STU       |
+| GROUP-MEM |
+| GROUP-NON |
+| ORG       |
+| OTH       |
+| NONE      |
+| INACTIVE  |
++-----------+
+
 
 +------------------------+
 | Tables_in_tifd         |
