@@ -1,3 +1,7 @@
+
+-- The original schema slightly modified:  some "?" characters were removed from table names
+-- and some "NOT NULL" constraints were removed so the table data loaded properly
+
 -- ----------------------------------------------------------
 -- MDB Tools - A library for reading MS Access database files
 -- Copyright (C) 2000-2011 Brian Bruns and others.
