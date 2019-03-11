@@ -1,4 +1,5 @@
 dbname="tifd"
+mdbfile="TIFD_DB_2019-03-01.mdb"
 
 #an edited schema of the tifd db - remove some "?" from table names, remove some table contraints, etc.
 schema="newschema.edited"
@@ -8,12 +9,12 @@ mysql -e "create database tifd"
 #mdb-schema --drop-table TIFD_DB.mdb mysql | grep -v COMMENT | mysql $dbname
 cat $schema | mysql $dbname
 
-tables=`mdb-schema --drop-table TIFD_DB.mdb mysql | grep -v COMMENT | grep -v tblHelp | grep CREATE | cut -f2 -d\\\``
+tables=`mdb-schema --drop-table $mdbfile mysql | grep -v COMMENT | grep -v tblHelp | grep CREATE | cut -f2 -d\\\``
 
 for table in $tables
 	do
 	echo -n importing $table.. 
-	mdb-export -D '%Y-%m-%d' -I mysql TIFD_DB.mdb $table| mysql -f $dbname	
+	mdb-export -D '%Y-%m-%d' -I mysql $mdbfile $table| mysql -f $dbname	
 	echo return code: $?
 	done
 
@@ -68,3 +69,4 @@ echo $l | mysql $dbname
 done
 
 #" | mysql $dbname
+
