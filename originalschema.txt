@@ -1,0 +1,273 @@
+tblAgeCategories:
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| AgeCat | varchar(50) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+
+tblCamper:
++------------------------+--------------+------+-----+---------+-------+
+| Field                  | Type         | Null | Key | Default | Extra |
++------------------------+--------------+------+-----+---------+-------+
+| CamperID               | int(11)      | YES  |     | NULL    |       |
+| CamperNum              | varchar(100) | YES  |     | NULL    |       |
+| RegID                  | int(11)      | YES  |     | NULL    |       |
+| PersID                 | int(11)      | NO   | MUL | NULL    |       |
+| CampYear               | int(11)      | NO   |     | NULL    |       |
+| FtPt                   | varchar(4)   | NO   |     | NULL    |       |
+| ScholarType            | varchar(20)  | NO   |     | NULL    |       |
+| ScholarReason          | varchar(40)  | YES  |     | NULL    |       |
+| StaffPosition          | varchar(100) | YES  |     | NULL    |       |
+| HousingAssigned        | varchar(20)  | YES  |     | NULL    |       |
+| Band                   | char(1)      | NO   |     | NULL    |       |
+| Instruments            | varchar(100) | YES  |     | NULL    |       |
+| InFamilyProgram        | char(1)      | NO   |     | NULL    |       |
+| Flags                  | varchar(20)  | YES  |     | NULL    |       |
+| ShirtCut               | varchar(2)   | YES  |     | NULL    |       |
+| ShirtSize              | varchar(6)   | YES  |     | NULL    |       |
+| FreeShirt              | char(1)      | NO   |     | NULL    |       |
+| Vegan                  | char(1)      | NO   |     | NULL    |       |
+| Vegetarian             | char(1)      | NO   |     | NULL    |       |
+| DietaryComments        | varchar(510) | YES  |     | NULL    |       |
+| AlcoholPolicyInitialed | char(1)      | NO   |     | NULL    |       |
+| Notes                  | varchar(510) | YES  |     | NULL    |       |
+| Registered             | char(1)      | NO   |     | NULL    |       |
+| CheckedIn              | char(1)      | NO   |     | NULL    |       |
++------------------------+--------------+------+-----+---------+-------+
+
+tblConstantsCamp:
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| row               | int(11)      | YES  |     | NULL    |       |
+| ThisYear          | int(11)      | YES  |     | NULL    |       |
+| PrRoomFeeDbl      | float        | YES  |     | NULL    |       |
+| PrRoomFeeSngl     | float        | YES  |     | NULL    |       |
+| PrCabinFee        | float        | YES  |     | NULL    |       |
+| GFCLodgeAdultRate | float        | YES  |     | NULL    |       |
+| GFCCabinAdultRate | float        | YES  |     | NULL    |       |
+| GFCChildRate      | float        | YES  |     | NULL    |       |
+| SchFull           | float        | YES  |     | NULL    |       |
+| SchHalf           | float        | YES  |     | NULL    |       |
+| SchQuart          | float        | YES  |     | NULL    |       |
+| AFTFee            | float        | YES  |     | NULL    |       |
+| APTFee            | float        | YES  |     | NULL    |       |
+| ANDFee            | float        | YES  |     | NULL    |       |
+| CFTFee            | float        | YES  |     | NULL    |       |
+| CPTFee            | float        | YES  |     | NULL    |       |
+| MemReg            | float        | YES  |     | NULL    |       |
+| MemFam            | float        | YES  |     | NULL    |       |
+| LateFee           | float        | YES  |     | NULL    |       |
+| LateCutoff        | datetime     | YES  |     | NULL    |       |
+| ShirtFee          | float        | YES  |     | NULL    |       |
+| VideoCost         | float        | YES  |     | NULL    |       |
+| RegistrarName     | varchar(100) | YES  |     | NULL    |       |
+| AdultString       | varchar(100) | YES  |     | NULL    |       |
+| ChildString       | varchar(100) | YES  |     | NULL    |       |
+| FreeHousingString | varchar(100) | YES  |     | NULL    |       |
+| WhoHasPossession  | varchar(100) | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+
+tblConstantsMembership:
++-----------+----------+------+-----+---------+-------+
+| Field     | Type     | Null | Key | Default | Extra |
++-----------+----------+------+-----+---------+-------+
+| row       | int(11)  | YES  |     | NULL    |       |
+| CurMemYr  | int(11)  | YES  |     | NULL    |       |
+| StartDate | datetime | YES  |     | NULL    |       |
+| EndDate   | datetime | YES  |     | NULL    |       |
++-----------+----------+------+-----+---------+-------+
+
+tblDepositOperations:
++---------------------+-------------+------+-----+---------+-------+
+| Field               | Type        | Null | Key | Default | Extra |
++---------------------+-------------+------+-----+---------+-------+
+| SavedDepositSlipPDF | char(1)     | NO   |     | NULL    |       |
+| CurrentDepositDate  | date        | YES  |     | NULL    |       |
+| Initials            | varchar(10) | YES  |     | NULL    |       |
++---------------------+-------------+------+-----+---------+-------+
+
+tblEmailRegistered:
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| LastName  | varchar(60)  | YES  |     | NULL    |       |
+| FirstName | varchar(100) | YES  |     | NULL    |       |
+| Expr1     | varchar(510) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+
+tblHelp:
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| HelpTopic | varchar(200) | YES  |     | NULL    |       |
+| HelpText  | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+
+tblHousingChoices:
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| Choices | varchar(60) | NO   |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+
+tblHousingRooms:
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| HousingAssigned   | varchar(20)  | YES  |     | NULL    |       |
+| TIFDHousingTypeID | varchar(100) | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+
+tblHousingType:
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| TIFDHousingTypeID | varchar(100) | YES  |     | NULL    |       |
+| TIFDHousingType   | varchar(100) | YES  |     | NULL    |       |
+| GFCHousingType    | varchar(100) | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+
+tblMemUnit:
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| MemID           | int(11)      | YES  |     | NULL    |       |
+| MailingName     | varchar(200) | YES  |     | NULL    |       |
+| Address1        | varchar(100) | YES  |     | NULL    |       |
+| Address2        | varchar(100) | YES  |     | NULL    |       |
+| City            | varchar(60)  | YES  |     | NULL    |       |
+| State           | varchar(20)  | YES  |     | NULL    |       |
+| Country         | varchar(100) | YES  |     | NULL    |       |
+| Zip             | varchar(40)  | YES  |     | NULL    |       |
+| HomePhone       | varchar(100) | YES  |     | NULL    |       |
+| MemberType      | varchar(30)  | YES  |     | NULL    |       |
+| MemberYear      | int(11)      | YES  |     | NULL    |       |
+| FirstMemberYear | int(11)      | YES  |     | NULL    |       |
+| HardCopy?       | char(1)      | NO   |     | NULL    |       |
+| FreeNewsletter? | char(1)      | NO   |     | NULL    |       |
+| Notes           | varchar(510) | YES  |     | NULL    |       |
+| Flags           | varchar(20)  | YES  |     | NULL    |       |
+| LastCampYr      | int(11)      | YES  |     | NULL    |       |
+| Current         | char(1)      | NO   |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+
+tblMembershipType:
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| MemType | varchar(30) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+
+tblPayments:
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| PayID             | int(11)      | YES  |     | NULL    |       |
+| MemID             | int(11)      | NO   |     | NULL    |       |
+| RegID             | int(11)      | YES  |     | NULL    |       |
+| ForPerson         | int(11)      | YES  |     | NULL    |       |
+| FromPerson        | int(11)      | YES  |     | NULL    |       |
+| PayType           | varchar(12)  | NO   |     | NULL    |       |
+| DateRecd          | date         | NO   |     | NULL    |       |
+| Cash              | char(1)      | NO   |     | NULL    |       |
+| CheckNum          | varchar(20)  | YES  |     | NULL    |       |
+| TotalAmt          | float        | NO   |     | NULL    |       |
+| PayPalFees        | float        | YES  |     | NULL    |       |
+| WaitingForDeposit | char(1)      | NO   |     | NULL    |       |
+| WhoHasPossession  | varchar(6)   | YES  |     | NULL    |       |
+| DepositDate       | date         | YES  |     | NULL    |       |
+| MemberFee         | float        | YES  |     | NULL    |       |
+| NumberYearsPaid   | int(11)      | YES  |     | NULL    |       |
+| BobbiFund         | float        | YES  |     | NULL    |       |
+| FloorFund         | float        | YES  |     | NULL    |       |
+| MusicFund         | float        | YES  |     | NULL    |       |
+| CampFund          | float        | YES  |     | NULL    |       |
+| GeneralFund       | float        | YES  |     | NULL    |       |
+| CampFee           | float        | YES  |     | NULL    |       |
+| Shirts            | float        | YES  |     | NULL    |       |
+| Videos            | float        | YES  |     | NULL    |       |
+| LateFee           | float        | YES  |     | NULL    |       |
+| HousingFee        | float        | YES  |     | NULL    |       |
+| TIFDSales         | float        | YES  |     | NULL    |       |
+| InsuranceFee      | float        | YES  |     | NULL    |       |
+| Other             | float        | YES  |     | NULL    |       |
+| ConfirmSent       | char(1)      | NO   |     | NULL    |       |
+| Notes             | varchar(510) | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+
+tblPerson:
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| PersID        | int(11)      | YES  | MUL | NULL    |       |
+| MemID         | int(11)      | YES  |     | NULL    |       |
+| Primary?      | char(1)      | NO   |     | NULL    |       |
+| FirstName     | varchar(100) | YES  |     | NULL    |       |
+| LastName      | varchar(60)  | YES  |     | NULL    |       |
+| AgeCategory   | varchar(50)  | NO   |     | NULL    |       |
+| Age           | int(11)      | YES  |     | NULL    |       |
+| DateOfBirth   | date         | YES  |     | NULL    |       |
+| Gender        | varchar(20)  | YES  |     | NULL    |       |
+| eMail1        | varchar(140) | YES  |     | NULL    |       |
+| PubMail1?     | char(1)      | NO   |     | NULL    |       |
+| eMail2        | varchar(100) | YES  |     | NULL    |       |
+| PubMail2?     | char(1)      | NO   |     | NULL    |       |
+| WorkCellPhone | varchar(100) | YES  |     | NULL    |       |
+| Flags         | varchar(100) | YES  |     | NULL    |       |
+| Groups        | varchar(200) | YES  |     | NULL    |       |
+| Notes         | varchar(510) | YES  |     | NULL    |       |
+| Current       | char(1)      | NO   |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+
+tblRegForm:
++--------------------------+--------------+------+-----+---------+-------+
+| Field                    | Type         | Null | Key | Default | Extra |
++--------------------------+--------------+------+-----+---------+-------+
+| RegID                    | int(11)      | YES  |     | NULL    |       |
+| MemID                    | int(11)      | NO   |     | NULL    |       |
+| Year                     | int(11)      | NO   |     | NULL    |       |
+| Postmark                 | date         | YES  |     | NULL    |       |
+| SecondPage               | char(1)      | NO   |     | NULL    |       |
+| ExpLateFee               | float        | YES  |     | NULL    |       |
+| Received                 | date         | YES  |     | NULL    |       |
+| RegNum                   | int(11)      | YES  |     | NULL    |       |
+| ConfirmSent              | char(1)      | NO   |     | NULL    |       |
+| MobilityAssistanceDevice | varchar(100) | YES  |     | NULL    |       |
+| HousingPref              | varchar(60)  | YES  |     | NULL    |       |
+| HousingPref2             | varchar(60)  | YES  |     | NULL    |       |
+| HousingNotes             | varchar(510) | YES  |     | NULL    |       |
+| QualifyAsFamily          | char(1)      | NO   |     | NULL    |       |
+| HousingFee               | float        | YES  |     | NULL    |       |
+| NumSingers               | float        | YES  |     | NULL    |       |
+| NumSyllabi               | int(11)      | YES  |     | NULL    |       |
+| ExpCampFees              | float        | YES  |     | NULL    |       |
+| ExpShirtFees             | float        | YES  |     | NULL    |       |
+| MembershipRebate         | float        | YES  |     | NULL    |       |
+| MembershipFee            | float        | YES  |     | NULL    |       |
+| NumVHS                   | int(11)      | YES  |     | NULL    |       |
+| NumDVD                   | int(11)      | YES  |     | NULL    |       |
+| Adjustment               | float        | NO   |     | NULL    |       |
+| RefundRequested          | char(1)      | NO   |     | NULL    |       |
+| PaymentRequested         | char(1)      | NO   |     | NULL    |       |
+| MemYearAtStart           | int(11)      | YES  |     | NULL    |       |
+| Notes                    | varchar(510) | YES  |     | NULL    |       |
++--------------------------+--------------+------+-----+---------+-------+
+
+tblScholarReason:
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| Reason | varchar(50) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+
+tblT-shirts:
++------------+------------+------+-----+---------+-------+
+| Field      | Type       | Null | Key | Default | Extra |
++------------+------------+------+-----+---------+-------+
+| ShirtSize  | varchar(6) | YES  |     | NULL    |       |
+| NoOfShirts | int(11)    | YES  |     | NULL    |       |
+| RegID      | int(11)    | YES  |     | NULL    |       |
+| CampYear   | int(11)    | YES  |     | NULL    |       |
++------------+------------+------+-----+---------+-------+
+
