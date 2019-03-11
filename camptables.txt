@@ -1,5 +1,5 @@
 
-Some example datasets taken after I changes some of the column names
+Some example datasets taken after I changed some of the column names
 
 mysql> select * from person order by id desc limit 3
     -> ;
