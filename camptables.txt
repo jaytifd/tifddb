@@ -159,6 +159,31 @@ MariaDB [tifd]> select * from tblMembershipType;
 +------------------------+--------------+------+-----+---------+-------+
 
 
+mysql> describe memunit;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| id              | int(11)      | YES  |     | NULL    |       |
+| MailingName     | varchar(200) | YES  |     | NULL    |       | "Family" name (more than one member can live at an address)
+| Address1        | varchar(100) | YES  |     | NULL    |       | 
+| Address2        | varchar(100) | YES  |     | NULL    |       |
+| City            | varchar(60)  | YES  |     | NULL    |       |
+| State           | varchar(20)  | YES  |     | NULL    |       |
+| Country         | varchar(100) | YES  |     | NULL    |       |
+| Zip             | varchar(40)  | YES  |     | NULL    |       |
+| HomePhone       | varchar(100) | YES  |     | NULL    |       |
+| MemberType      | varchar(30)  | YES  |     | NULL    |       |
+| MemberYear      | int(11)      | YES  |     | NULL    |       |
+| FirstMemberYear | int(11)      | YES  |     | NULL    |       |
+| HardCopy?       | char(1)      | NO   |     | NULL    |       |
+| FreeNewsletter? | char(1)      | NO   |     | NULL    |       |
+| Notes           | varchar(510) | YES  |     | NULL    |       |
+| Flags           | varchar(20)  | YES  |     | NULL    |       |
+| LastCampYr      | int(11)      | YES  |     | NULL    |       |
+| Current         | char(1)      | NO   |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+18 rows in set (0.00 sec)
+
 
 
    +----+memunit+------+                                                                                      +-----------+regform+---------+
