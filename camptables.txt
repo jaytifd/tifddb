@@ -129,6 +129,35 @@ MariaDB [tifd]> select * from tblMembershipType;
 +------------------------+
 
 
++------------------------+--------------+------+-----+---------+-------+
+| Field                  | Type         | Null | Key | Default | Extra |
++------------------------+--------------+------+-----+---------+-------+
+| id                     | int(11)      | YES  |     | NULL    |       |
+| CamperNum              | varchar(100) | YES  |     | NULL    |       |  <---- not used
+| regform_id             | int(11)      | YES  |     | NULL    |       |
+| person_id              | int(11)      | YES  | MUL | NULL    |       |
+| CampYear               | int(11)      | NO   |     | NULL    |       |
+| FtPt                   | varchar(4)   | NO   |     | NULL    |       |  <---- not typed well
+| ScholarType            | varchar(20)  | NO   |     | NULL    |       |  <---- (Half/Full/Quarter) should be int pointing at scholartype table
+| ScholarReason          | varchar(40)  | YES  |     | NULL    |       |  <---- Volunteer, Childcare, Headlined (should be int point at scholarreson table
+| StaffPosition          | varchar(100) | YES  |     | NULL    |       |  <---- Menu Coordinator, Silent Auction Coord, etc.  Currently freeform?  Should point to a table of options?
+| HousingAssigned        | varchar(20)  | YES  |     | NULL    |       |  <--- cabin numbers? J4, H2, K1, etc
+| Band                   | char(1)      | NO   |     | NULL    |       |  0/1
+| Instruments            | varchar(100) | YES  |     | NULL    |       |  <---- freeform change to varchar255?
+| InFamilyProgram        | char(1)      | NO   |     | NULL    |       |  0/1
+| Flags                  | varchar(20)  | YES  |     | NULL    |       |  [F,K,D,C,PS] F - First response, K - Kitchen schol, A, H, D - need ride (Austin Houston Dallas?)
+| ShirtCut               | varchar(2)   | YES  |     | NULL    |       |  W/M
+| ShirtSize              | varchar(6)   | YES  |     | NULL    |       |  L,M,XL, etc.  Perhaps another subtable here of shirt sizes would be appropriate
+| FreeShirt              | char(1)      | NO   |     | NULL    |       | 0/1
+| Vegan                  | char(1)      | NO   |     | NULL    |       | 0/1
+| Vegetarian             | char(1)      | NO   |     | NULL    |       | 0/1
+| DietaryComments        | varchar(510) | YES  |     | NULL    |       | Freeform
+| AlcoholPolicyInitialed | char(1)      | NO   |     | NULL    |       | 0/1  -- redundant?  
+| Notes                  | varchar(510) | YES  |     | NULL    |       | Freeform
+| Registered             | char(1)      | NO   |     | NULL    |       | 0/1  Not sure what this means how can a camper not be registered
+| CheckedIn              | char(1)      | NO   |     | NULL    |       | 0/1 Is this filled out at camp?
++------------------------+--------------+------+-----+---------+-------+
+
 
 
 
