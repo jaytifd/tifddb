@@ -128,7 +128,7 @@ MariaDB [tifd]> select * from tblMembershipType;
 | tblT+shirts            |  <--+ a list of who ordered shirts in 2009
 +------------------------+
 
-
+mysql> describe camper
 +------------------------+--------------+------+-----+---------+-------+
 | Field                  | Type         | Null | Key | Default | Extra |
 +------------------------+--------------+------+-----+---------+-------+
@@ -172,17 +172,75 @@ mysql> describe memunit;
 | Country         | varchar(100) | YES  |     | NULL    |       |
 | Zip             | varchar(40)  | YES  |     | NULL    |       |
 | HomePhone       | varchar(100) | YES  |     | NULL    |       |
-| MemberType      | varchar(30)  | YES  |     | NULL    |       |
+| MemberType      | varchar(30)  | YES  |     | NULL    |       | REG/FAM/Group/etc (Some of these are probably deprecated) should be linked to a membertype table
 | MemberYear      | int(11)      | YES  |     | NULL    |       |
 | FirstMemberYear | int(11)      | YES  |     | NULL    |       |
 | HardCopy?       | char(1)      | NO   |     | NULL    |       |
 | FreeNewsletter? | char(1)      | NO   |     | NULL    |       |
 | Notes           | varchar(510) | YES  |     | NULL    |       |
-| Flags           | varchar(20)  | YES  |     | NULL    |       |
+| Flags           | varchar(20)  | YES  |     | NULL    |       | ????? "registrar should not have to modify this"
 | LastCampYr      | int(11)      | YES  |     | NULL    |       |
-| Current         | char(1)      | NO   |     | NULL    |       |
+| Current         | char(1)      | NO   |     | NULL    |       | not sure how this is calculated or if it's used
 +-----------------+--------------+------+-----+---------+-------+
 18 rows in set (0.00 sec)
+
+mysql> describe regform
++--------------------------+--------------+------+-----+---------+-------+
+| Field                    | Type         | Null | Key | Default | Extra |
++--------------------------+--------------+------+-----+---------+-------+
+| id                       | int(11)      | YES  |     | NULL    |       |
+| memunit_id               | int(11)      | YES  |     | NULL    |       |
+| Year                     | int(11)      | NO   |     | NULL    |       |
+| Postmark                 | date         | YES  |     | NULL    |       |
+| SecondPage               | char(1)      | NO   |     | NULL    |       |  ????????
+| ExpLateFee               | float        | YES  |     | NULL    |       |
+| Received                 | date         | YES  |     | NULL    |       | why do we care when a reg was received and it's postmark?
+| RegNum                   | int(11)      | YES  |     | NULL    |       |  this is always zero, likely not used
+| ConfirmSent              | char(1)      | NO   |     | NULL    |       |
+| MobilityAssistanceDevice | varchar(100) | YES  |     | NULL    |       |
+| HousingPref              | varchar(60)  | YES  |     | NULL    |       | should probably link to a table of housing types
+| HousingPref2             | varchar(60)  | YES  |     | NULL    |       | sould probably link to a table of housing types
+| HousingNotes             | varchar(510) | YES  |     | NULL    |       |
+| QualifyAsFamily          | char(1)      | NO   |     | NULL    |       |
+| HousingFee               | float        | YES  |     | NULL    |       |
+| NumSingers               | float        | YES  |     | NULL    |       | for number of songbooks?  Unused in modern camps?
+| NumSyllabi               | int(11)      | YES  |     | NULL    |       | unused in modern camps?
+| ExpCampFees              | float        | YES  |     | NULL    |       | "Exp = Expected?"
+| ExpShirtFees             | float        | YES  |     | NULL    |       | There is a table for shirt fees but not dvd? I would change this to NumShirts and then multiply my the shirt fee
+| MembershipRebate         | float        | YES  |     | NULL    |       | IIRC we aren't doing the rebates any more
+| MembershipFee            | float        | YES  |     | NULL    |       | TIFD membership is flat rate now?  need to confirm
+| NumVHS                   | int(11)      | YES  |     | NULL    |       |
+| NumDVD                   | int(11)      | YES  |     | NULL    |       |
+| Adjustment               | float        | NO   |     | NULL    |       | Adjustment to camp fees... why would this be done?
+| RefundRequested          | char(1)      | NO   |     | NULL    |       |
+| PaymentRequested         | char(1)      | NO   |     | NULL    |       |
+| MemYearAtStart           | int(11)      | YES  |     | NULL    |       | greyed out in access - automatically calculated?
+| Notes                    | varchar(510) | YES  |     | NULL    |       | Notes for the payment screen
++--------------------------+--------------+------+-----+---------+-------+
+
+mysql> describe person;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| id            | int(11)      | YES  | MUL | NULL    |       |
+| memunit_id    | int(11)      | YES  |     | NULL    |       |
+| Primary?      | char(1)      | NO   |     | NULL    |       |  <--- needs "?" removed
+| FirstName     | varchar(100) | YES  |     | NULL    |       |
+| LastName      | varchar(60)  | YES  |     | NULL    |       |
+| AgeCategory   | varchar(50)  | NO   |     | NULL    |       |  should link to category table
+| Age           | int(11)      | YES  |     | NULL    |       |
+| DateOfBirth   | date         | YES  |     | NULL    |       |
+| Gender        | varchar(20)  | YES  |     | NULL    |       |
+| eMail1        | varchar(140) | YES  |     | NULL    |       |
+| PubMail1?     | char(1)      | NO   |     | NULL    |       | <--- needs "?" removed
+| eMail2        | varchar(100) | YES  |     | NULL    |       |  lol email2 is varchar100 email1 is varchar140
+| PubMail2?     | char(1)      | NO   |     | NULL    |       | <--- needs "?" removed
+| WorkCellPhone | varchar(100) | YES  |     | NULL    |       |
+| Flags         | varchar(100) | YES  |     | NULL    |       |  ??? not empty, no help in Access
+| Groups        | varchar(200) | YES  |     | NULL    |       | which folk dance group they are from.. lots of NULLs
+| Notes         | varchar(510) | YES  |     | NULL    |       |
+| Current       | char(1)      | NO   |     | NULL    |       | This is always 0
++---------------+--------------+------+-----+---------+-------+
 
 
 
