@@ -224,7 +224,7 @@ mysql> describe person;
 +---------------+--------------+------+-----+---------+-------+
 | id            | int(11)      | YES  | MUL | NULL    |       |
 | memunit_id    | int(11)      | YES  |     | NULL    |       |
-| Primary?      | char(1)      | NO   |     | NULL    |       |  <--- needs "?" removed
+| Primary?      | char(1)      | NO   |     | NULL    |       |  <--- needs "?" removed  `primary` is a reservedword, change to IsPrimary
 | FirstName     | varchar(100) | YES  |     | NULL    |       |
 | LastName      | varchar(60)  | YES  |     | NULL    |       |
 | AgeCategory   | varchar(50)  | NO   |     | NULL    |       |  should link to category table
