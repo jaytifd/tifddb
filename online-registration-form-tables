@@ -1,0 +1,60 @@
+----membership_unit----
++-------------------------+--------------+------+-----+---------------------+----------------+
+| Field                   | Type         | Null | Key | Default             | Extra          |
++-------------------------+--------------+------+-----+---------------------+----------------+
+| membership_unit_id      | int(11)      | NO   | PRI | NULL                | auto_increment |
+| transaction_id          | varchar(255) | YES  |     | NULL                |                |
+| timestamp               | timestamp    | NO   |     | current_timestamp() |                |
+| street                  | varchar(255) | YES  |     | NULL                |                |
+| city                    | varchar(255) | YES  |     | NULL                |                |
+| state                   | varchar(255) | YES  |     | NULL                |                |
+| zip                     | varchar(255) | YES  |     | NULL                |                |
+| country                 | varchar(255) | YES  |     | NULL                |                |
+| donation_bobbi_gillotti | int(11)      | YES  |     | NULL                |                |
+| donation_floor_fund     | int(11)      | YES  |     | NULL                |                |
+| donation_live_music     | int(11)      | YES  |     | NULL                |                |
+| donation_tifd           | int(11)      | YES  |     | NULL                |                |
+| rebate                  | int(11)      | YES  |     | NULL                |                |
+| payment                 | int(11)      | YES  |     | NULL                |                |
+| notes                   | text         | YES  |     | NULL                |                |
+| auction_items           | text         | YES  |     | NULL                |                |
+| session                 | text         | YES  |     | NULL                |                |
+| payment_type            | varchar(255) | YES  |     | NULL                |                |
+| agreecheckbox           | varchar(255) | YES  |     | NULL                |                |
+| status                  | varchar(255) | YES  |     | NULL                |                |
+| registrar_note          | text         | YES  |     | NULL                |                |
++-------------------------+--------------+------+-----+---------------------+----------------+
+21 rows in set (0.002 sec)
+
+----registration----
++--------------------+--------------+------+-----+---------------------+----------------+
+| Field              | Type         | Null | Key | Default             | Extra          |
++--------------------+--------------+------+-----+---------------------+----------------+
+| registration_id    | int(11)      | NO   | PRI | NULL                | auto_increment |
+| transaction_id     | varchar(255) | YES  |     | NULL                |                |
+| timestamp          | timestamp    | NO   |     | current_timestamp() |                |
+| adult_or_child     | varchar(255) | YES  |     | NULL                |                |
+| full_name          | varchar(255) | YES  |     | NULL                |                |
+| email              | varchar(255) | YES  |     | NULL                |                |
+| phone              | varchar(255) | YES  |     | NULL                |                |
+| phone2             | varchar(255) | YES  |     | NULL                |                |
+| gender             | varchar(255) | YES  |     | NULL                |                |
+| diet               | varchar(255) | YES  |     | NULL                |                |
+| band               | varchar(255) | YES  |     | NULL                |                |
+| instruments        | varchar(255) | YES  |     | NULL                |                |
+| share_housing      | varchar(255) | YES  |     | NULL                |                |
+| mobility_details   | varchar(255) | YES  |     | NULL                |                |
+| cpr_aed            | varchar(255) | YES  |     | NULL                |                |
+| certification      | varchar(255) | YES  |     | NULL                |                |
+| t_shirt            | varchar(255) | YES  |     | NULL                |                |
+| dvd                | varchar(255) | YES  |     | NULL                |                |
+| housing            | varchar(255) | YES  |     | NULL                |                |
+| registration_type  | varchar(255) | YES  |     | NULL                |                |
+| publish            | varchar(255) | YES  |     | NULL                |                |
+| family_program     | varchar(255) | YES  |     | NULL                |                |
+| birthdate          | varchar(255) | YES  |     | NULL                |                |
+| membership_unit_id | int(11)      | YES  |     | NULL                |                |
+| first_name         | varchar(255) | YES  |     | NULL                |                |
+| last_name          | varchar(255) | YES  |     | NULL                |                |
++--------------------+--------------+------+-----+---------------------+----------------+
+
