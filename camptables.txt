@@ -105,6 +105,45 @@ MariaDB [tifd]> select * from tblMembershipType;
 | INACTIVE  |
 +-----------+
 
+MariaDB [tifddb1]> describe tblPayments;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| PayID             | int(11)      | YES  |     | NULL    |       |
+| MemID             | int(11)      | NO   |     | NULL    |       |
+| RegID             | int(11)      | YES  |     | NULL    |       |
+| ForPerson         | int(11)      | YES  |     | NULL    |       |
+| FromPerson        | int(11)      | YES  |     | NULL    |       |
+| PayType           | varchar(12)  | NO   |     | NULL    |       |
+| DateRecd          | date         | NO   |     | NULL    |       |
+| Cash              | char(1)      | NO   |     | NULL    |       |
+| CheckNum          | varchar(20)  | YES  |     | NULL    |       |
+| TotalAmt          | float        | NO   |     | NULL    |       |
+| PayPalFees        | float        | YES  |     | NULL    |       |
+| WaitingForDeposit | char(1)      | NO   |     | NULL    |       |
+| WhoHasPossession  | varchar(6)   | YES  |     | NULL    |       |
+| DepositDate       | date         | YES  |     | NULL    |       |
+| MemberFee         | float        | YES  |     | NULL    |       |
+| NumberYearsPaid   | int(11)      | YES  |     | NULL    |       |
+| BobbiFund         | float        | YES  |     | NULL    |       |
+| FloorFund         | float        | YES  |     | NULL    |       |
+| MusicFund         | float        | YES  |     | NULL    |       |
+| CampFund          | float        | YES  |     | NULL    |       |
+| GeneralFund       | float        | YES  |     | NULL    |       |
+| CampFee           | float        | YES  |     | NULL    |       |
+| Shirts            | float        | YES  |     | NULL    |       |
+| Videos            | float        | YES  |     | NULL    |       |
+| LateFee           | float        | YES  |     | NULL    |       |
+| HousingFee        | float        | YES  |     | NULL    |       |
+| TIFDSales         | float        | YES  |     | NULL    |       |
+| InsuranceFee      | float        | YES  |     | NULL    |       |
+| Other             | float        | YES  |     | NULL    |       |
+| ConfirmSent       | char(1)      | NO   |     | NULL    |       |
+| Notes             | varchar(510) | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+31 rows in set (0.001 sec)
+
+
 
 +------------------------+
 | Tables_in_tifd         |
