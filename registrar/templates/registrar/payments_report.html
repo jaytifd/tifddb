@@ -1,0 +1,144 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+{% load mathfilters %}
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+        border-bottom: 1px solid #ddd;
+        padding-top: 3px;
+	font-size:12px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container">
+
+	<div class="row">
+		<div class="col-sm-10">
+			<form action="" method=GET>
+			<label for="start">Start:</label>
+			<input type="date" id="start" name="start_date" value="{{start_date}}" >
+			<label for="end">End:</label>
+			<input type=hidden name=year value={{thisyear}}>
+			<input type="date" id="end" name="end_date" value="{{end_date}}" >
+			<button class="btn btn-primary my-sm-0 ml-1" type="submit">Apply</button>
+			<!--
+        		<a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0 ml-2" type="submit">CSV</button></a>
+			-->
+        		<button class="btn btn-success my-sm-0 ml-2" type="submit" name=csv value=1>CSV</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col sm-6 m-2 p-2">
+			<caption>Payments Totals</caption>
+			<table class="table table-hover table-responsive-md table-triped bordered table-sm">
+				<tr><td><a href="{% url "registrar:payments" %}">Payments waiting for deposit</a><td align=right>${{payments_wfd}}</tr>
+				<tr><td>Payments already deposited<td align=right>${{payments_notwfd}}</tr>
+				<tr><td>Payments total (gross)<td align=right>${{payments_total}}</tr>
+				<tr><td>PayPal Fees<td align=right>$-{{payments_paypalfee}}</tr>
+				<tr><td>Total Refunds<td align=right>${{refunds_total}}</tr>
+				<tr><td>Net Received<td align=right>${{payments_net}}</tr>
+			</table>
+
+			<div id="donations" class="bg-light border mt-2">
+				<u>Direct donations received via <a href="https://tifd.org/donate/">PayPal</a> or check</u>
+			<table class="table table-hover table-responsive-md table-triped bordered table-sm">
+					{%for key,val in donation_itemizations.items%}
+						{% if val > 0 %}
+							<tr><td>{{key|capfirst}}<td align=right>${{val|stringformat:".02F"}}</tr>
+						{% endif %}
+					{%endfor%}
+					<tr class="bg-light"><td><b>Donations total<td align=right><b>${{donation_itemizations_total}}</tr>       
+					<tr class="bg-light"><td><b>Donations + registrations - refunds<td align=right><b>${{itemizations_total|add:donation_itemizations_total|add:refunds_total|stringformat:".02F"}}</tr>
+			</table>
+			</div>
+
+            See also: <a href="/registrar/reports/donations_report">(Donations Report)</a>
+
+
+			<div id="totals" class="d-none border mt-2 h-100">
+			<table class="table table-hover table-responsive-md table-triped bordered table-sm">
+				<!-- <tr class="bg-light"><td>Registrations total<td align=right>${{itemizations_total}}</tr> -->
+
+
+			</table>
+			</div>
+		</div>
+		<div class="col sm-6 m-2 p-2 bg-light border h-100">
+			<caption>Payments received via membership and camp registration forms</caption>
+			<table class="table table-hover table-responsive-md table-triped table-sm">
+				<!-- <tr class="bg-light"><td>Cart total<td align=right>${{registrations_cart_total}}</tr> -->
+				
+				{%for key,val in itemizations.items%}
+						{% if val > 0 %}
+						<tr><td>{{key|capfirst}}<td align=right>${{val|stringformat:".02F"}}</tr>
+						{% endif %}
+				{%endfor%}
+				<tr class="bg-light"><td><b>Itemizations total</b><td align=right><b>${{itemizations_total}}</b></tr>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+
+		<div class="col-sm-12 table-responsive">
+
+            <caption>List of all payments</caption>
+		<table class="table table-hover table-responsive-md table-striped bordered tablesorter table-sm" id=reporttable>
+			<thead><tr>
+					<th>From</th>
+					<th>Date Recd</th>
+					<th>Date Dep</th>
+					<th>Gross</th>
+					<th>Net</th>
+					<th>Mem fee</th>
+					<th>PP fee</th>
+					<th>PP txn</th>
+					<th>WfD</th>
+					<th>who</th>
+					<th>check#</th>
+					<th>refundable</th>
+						
+				</tr>
+			</thead>
+				<tbody>
+					{% for p in payments %}
+					<tr>
+					<td><a href="{% url "registrar:payments_add_edit" p.id %}">{{p}}</a></td>
+					<td>{{p.date_recd|date:"SHORT_DATE_FORMAT"}}</td>
+					<td>{{p.deposit_date|date:"SHORT_DATE_FORMAT"}}</td>
+					<td>{{p.gross_amt}}</td>
+					<td>{{p.net_amt}}</td>
+					<td>{{p.membership_fee}}</td>
+					<td>{{p.paypal_fee}}</td>
+					<td><a href="https://www.paypal.com/activity/payment/{{p.pp_ipn_txn_id}}">{{p.pp_ipn_txn_id}}</a></td>
+					<td>{{p.waiting_for_deposit}}</td>
+					<td>{{p.who_has_possession}}</td>
+					<td>{{p.check_num}}</td>
+					<td>{{ p.gross_amt|sub:p.membership_fee }}
+					</tr>
+					{% endfor %}
+				</tbody>
+		</table>
+		</div>
+		<div class="col-sm-6 table-responsive">
+			
+		</div>
+
+
+
+			{% include "registrar/tablesort.html" %}
+		{% endblock %}
+
+	</div>
+</div>

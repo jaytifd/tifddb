@@ -1,0 +1,93 @@
+
+
+{%comment%}
+
+The shopping cart is designed to be included in:
+
+	- the camp registration form
+		* check payment page
+		* final confiramtion page
+
+	- the registrar's payment adding interface
+
+	- email templates
+
+{%endcomment%}
+
+<p class="h5 text-black p-2 ">Shopping cart&nbsp;{%if not email_view%}
+				
+				<a class="h6 text-black print-hide" href="
+					  {% if registration.registration_source == 1 %}
+					  {% url 'membership:create' %}{{registration.id}}
+					  {% else %}
+					  {% url 'camp:create' %}{{registration.id}}
+					  {%endif%}
+					  ">{% if read_only is None %}(edit){%endif%}</a>{%endif%}</p>
+
+
+
+                        <table class="table border bg-light checkview_table table-sm" width=100%>
+                                {% for person,mycart in cart.items %}
+                                <tr class="table-primary font-weight-bold checkview_cart_person"><td colspan=2 class="p-2 checkview_person" >{{person}} {% if email_view %}<br><br>{%endif%}
+                                        {% for description,price in mycart.items %}
+                                        <tr><td>{{description}}
+                                                                <td class=" text-right">{{price|stringformat:".02F"}} {% if email_view %}<br><br>{%endif%}
+
+                                        {% endfor %}
+                                {% endfor %}
+				{% for discount in discount_list %}
+					<tr class="table-danger font-weight-bold checkview_discount"><td class="p-2" colspan=2 >Discount - {{discount.cart_description}}
+							<tr><td><td class="text-right" nowrap>{%if discount.price > 0 %}+{%endif%}
+									{{discount.price|stringformat:".02F"}} 
+									{% if email_view %}<br><br>{%endif%}
+
+				{%endfor%}
+
+                                <tr class="bg-warning checkview_cart_total"><td class="m-8 p-8"><b>Cart total</b><td class=text-right><b>{{cart_total}}</b>
+                        </table>
+
+
+		{% comment %}
+			PREVIOUS_PAYMENTS SHOULD ONLY BE PROVIDED IN THE REGISTRAR VIEW
+			...And in the paypal return view
+		{% endcomment %}
+                {% if previous_payments %}
+                <div id="previous_payment" class="mb-0">
+                <table class="table-sm table border bg-light checkview_table" width=100%>
+                        <tr class="table-success checkview_payment">
+                                <td colspan=3>
+                                        Payments
+                                </td>
+                        </tr>
+                        <!-- <p class="h5"><b><u>Recent payments</u></b></p> -->
+                                {% for p in previous_payments %}
+                                        <tr class="">
+						<td>{% if new_payment_form %} 
+							<a href="{% url "registrar:payments_add_edit" p.id %}"><b>{{p.date_recd|date:'Y-m-d'}}</a></b>
+						    {%endif%}
+						</td>
+                                                <td nowrap>
+
+							{%comment%}
+							see also: registrar/templates/registrar/payments.html
+							{%endcomment%}
+
+                                                {% if p.paypal_fee > 0 %}
+                                                        PayPal
+                                                {%elif p.check_num %}
+						Check #{{p.check_num}}
+                                                {%elif p.cash %}
+                                                        Cash
+                                                {%endif%}
+                                                <td class="text-right" >-{{p.gross_amt}}</td>
+                                        </tr>
+
+                                {%endfor %}
+                                                <tr>
+                        <td class="able-success text-black checkview_balance" colspan=2>
+                                <u><b>Remaining balance:</b></u> <td class="able-success text-right"><b>{{remaining_balance}}</b>
+                        </td>
+                </table>
+                </div>
+                        {%endif%}
+

@@ -1,0 +1,60 @@
+{% include "camp/bootstrap-overrides.html" %}
+
+<style>
+
+@page {
+  size: A4;
+}
+@page :left {
+  margin-left: 0cm;
+}
+
+@page :right {
+  margin-left: 0cm;
+}
+
+@media print {
+    .printEl {
+        width: 8.5in;
+        height: 11in;
+    }
+body { 
+font-size:14px;
+}
+table tr td {
+font-size:14px;
+}
+}
+
+body { 
+font-size:18px;
+}
+
+.main { 
+	margin: auto;
+	width: 8.5in; 
+	
+}
+
+.column {
+  float: left;
+  padding: 10px;
+}
+
+.left, .right {
+  width: 45%;
+  margin: 1%;
+  border: solid 1px;
+}
+
+</style>
+
+{% load get_verbose %}
+
+        <div class="main bg-white pt-3">
+		<div class=row>
+			<div class="col">
+				<p>You have already paid via paypal.  If this is an error, please contact the camp registration coordinator at payments@tifd.org
+				</pre>
+			</div>
+		</div>

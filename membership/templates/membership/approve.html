@@ -1,0 +1,95 @@
+{% extends 'membership/bootstrap_header.html' %}
+
+{% block content %}
+
+{% if not pdf_view %}
+
+<div class="d-flex" id="wrapper">
+   {% include "membership/navbar.html" %}
+{% endif %}
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+          border-bottom: 1px solid #ddd;
+        padding: 5px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container-fluid">
+	<div class=row>
+	<div class=col-sm-12>
+		<form method=POST>
+			{%csrf_token%}
+			{{approve_registration_form.media}}
+			<div class="row">
+				<div class="col-sm-2 form-group pb-3 mb-3">
+					<label>
+			{{approve_registration_form.registration_status.label}}
+					</label>
+			{{approve_registration_form.registration_status}}
+				</div>
+			</div>
+			<div class=row>
+				<div class="col-sm-4 form-group">
+					<label>
+			{{approve_registration_form.registrar_approval_note.label}}
+					</label>
+				</div>
+			</div>
+			<div class=row>
+				<div class="col-sm-12 form-group">
+					<label>
+					</label>
+			{{approve_registration_form.registrar_approval_note}}
+				</div>
+			</div>
+			                        <div class="col-sm-4 form-group">
+                         <button type="submit" class="btn btn-primary" value="Save" id=save>Save</button>
+                         </div>
+		</form>
+	</div>
+	<div class="row">
+	<div class="col-sm-12 border bg-light p-3 m-4 ">
+	{{html_body|safe}}
+	</div></div>
+
+
+	<script>
+$("#save").click(function(){
+  $("#save").addClass("btn-success");
+  $("#save").removeClass("btn-primary");
+  $("#save").html("");
+  $("#save").html("Sending Email..");
+});
+
+	</script>
+
+	<script>
+CKEDITOR.on('instanceCreated', function (e) {
+    e.editor.on('contentDom', function () {
+        e.editor.document.on('keyup', function (event) {
+            var str = CKEDITOR.instances['id_registrar_approval_note'].getData();
+            document.getElementById("mirror1").innerHTML = str;
+        }
+      );
+    });
+ });
+
+$(document).ready(function(){
+            var str = CKEDITOR.instances['id_registrar_approval_note'].getData();
+            document.getElementById("mirror1").innerHTML = str;
+	});
+
+</script>
+	<script>
+		$("#id_registration_status").val('5');
+	</script>
+{%endblock%}

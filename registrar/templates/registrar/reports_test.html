@@ -1,0 +1,89 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+        border-bottom: 1px solid #ddd;
+        padding-top: 3px;
+	font-size:12px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container">
+<div class="row">
+<div class="col-sm-12">
+        <div class="table-responsive">
+		{% if request.GET.q %}
+		<!-- FILTER applied: "{{request.GET.q}}" -->
+	{% endif %}
+	{% if not pdf_view %}
+		Results: {{ result_list|length }}
+          <a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">PDF</button></a> 
+          <a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">CSV</button></a>
+	  {% endif %}
+
+{% if request.GET.q and pdf_view %}
+<p class="h3 bg-warning">Filter applied: "{{ request.GET.q }}"</p>
+{%endif%}
+
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
+        <thead><tr>
+			{% for th in result_dict.0.keys %}
+				{% if th not in hidden_fields %}
+				<th align= "left">{{th|capfirst}}</th>
+				{%endif%}
+			{% endfor %}
+		</tr>
+	</thead>
+
+        <tbody>
+			{% load get_verbose %}
+
+{% for result in result_dict %}
+
+<tr>
+	{% for key,value in result.items %}
+
+		{% if key not in hidden_fields %} 
+			{% if value and forloop.counter > 1 %}
+				<td>
+					{% if forloop.counter == 2 %}
+					<a href="{{link_to}}/{{result.id}}"{{value}}</a>
+					{%endif%}
+						{% if value is True %}Yes{% elif value is False %}No{% else %}
+						{% if "postmark" in key %}{% elif "date" in key %}
+							{{value|date:'Y-m-d'}}
+							{% elif key == "address" %}
+							{{value|safe}}
+							{% else %}
+							{{value}}
+						{%endif%}
+						{%endif%}
+					{% if forloop.counter == 2 or forloop.counter == 3 %}</a>{%endif%}
+				</td>
+			{% else %} <td>&nbsp;</td>
+			{% endif %}
+		</a>
+		{% endif %}
+	 {% endfor %}
+</tr>
+{% endfor %}
+
+		</tbody></table>
+	</div>
+
+	{% include "registrar/tablesort.html" %}
+{% endblock %}
+
+
+</div></div>

@@ -1,0 +1,105 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+{% if not pdf_view %}
+
+<div class="d-flex" id="wrapper">
+{% endif %}
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+          border-bottom: 1px solid #ddd;
+        padding: 5px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container">
+<div class="row">
+	<div class="col-sm-2">
+		Deposit date
+	</div>
+	<div class="col-sm-2">
+	<form method=POST action="{% url "registrar:deposit" %}">
+		<input id=deposit_date type=date name=deposit_date value="{% now "Y-m-d" %}" class="form-control">
+	</div>
+	<div class="col">
+	<a href="{% url "registrar:payments" %}"><button type=submit class="btn btn-primary" value=Return>Save</button></a>
+	</div>
+<div class="col-sm-12">
+
+	{% csrf_token %}
+
+
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
+        <thead><tr>
+			<th>ID
+			<th>Registration
+			<th>Date Recv
+			<th>Who has
+			<th>Type
+			<th>Waiting for deposit
+			<th>Notes
+			<th>Total
+
+               </tr>
+	</thead>
+        <tbody>
+
+
+
+{% for payment in payments %}
+<input type=hidden name=payments id=payments value="{{payment.id}}">
+
+<tr>
+	<td><a href="{% url "registrar:payments_add_edit" payment.id %}?return=payments">{{payment.id}}</a></td>
+	<td>
+		{%if payment.registration %}{{payment.registration|default_if_none:""}}
+		{%elif payment.membership_person %}{{payment.membership_person}}
+		{%else%}No person / No Registration
+		{%endif%}
+	</td>
+	<td>{{payment.date_recd|date:"SHORT_DATE_FORMAT"}}</td>
+	<td>{{payment.who_has_possession}}</td>
+
+	{%comment%}
+	see also: camp/templates/camp/shopping_cart_table.html
+	{%endcomment%}
+	<td>
+		{% if payment.paypal_fee > 0 %}
+			PayPal
+		{%elif payment.check_num %}
+		Check #{{payment.check_num}}
+		{%elif payment.cash %}
+			Cash
+		{%endif%}
+
+	</td>
+
+	<td>{% if payment.waiting_for_deposit %}Yes
+		{% else %}No
+		{%endif%}
+	</td>
+	<td class="small">{{payment.notes|default_if_none:""}}</td>
+	<td>{{payment.gross_amt}}</td>
+</tr>
+{% endfor %}
+
+	</tbody></table>
+	</div>
+	<input type="hidden" name=save value=save>
+	{% csrf_token %}
+	<a href="{% url "registrar:payments" %}"><button type=submit class="btn btn-primary" value=Return>Save</button></a>
+</form>
+
+{% endblock %}
+
+</div></div>

@@ -1,0 +1,9 @@
+
+<h1>{{ membershipmemunit.mailingname }}</h1>
+
+<table>
+{% for name, value in membershipmemunit.get_fields %}
+  {% if value %}
+  <tr><td>{{ name }} <td> {{ value }}
+  {% endif %}
+{% endfor %}

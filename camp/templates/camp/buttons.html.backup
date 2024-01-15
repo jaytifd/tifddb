@@ -1,0 +1,45 @@
+                                <div class="row">
+					<div class="col text-left">
+						<div class="btn-group list-group-horizontal">
+						<button type="button" class="m-2 btn btn-secondary" value="Add More" id="add_adult" onclick="AddAdult()">Add Adult</button>
+						</div>
+						<div class="btn-group list-group-horizontal">
+						<button type="button" class="m-2 btn btn-secondary" value="Add More" id="add_child" onclick="AddChild()">Add Child</button>
+						</div>
+					</div>
+
+
+                                 <div class="col text-right">
+                                   <div class="btn-group list-group-horizontal text-right "> <button type="submit" title="Save registration form" data-toggle="delete-tooltip" class="m-2 btn btn-primary" value="Save">Save</button> </div>
+                                {% if forloop.counter0 >= 0 %}
+                                        {% if form.instance.pk %}
+                                                <!-- ADULT -->
+                                                <!-- if the camper is in the DB already, javascript will not remove the entry so use this custom form 
+							<form method="POST" name=delete id=delete_{{type}} action="{% url "camp:deletecamper" registration.id %}">
+                                                <input type=hidden name=camper_id value={{form.instance.pk}}>
+                                                -->
+						<a href="{% url "camp:deletecamper" registration.id %}?delete_{{type}}={{ form.instance.pk }}">
+                                                <button type="button" title="Delete this camper" class="btn btn-warning p-2 m-2" value="Delete-{{forloop.counter0}}" id="delete_{{type}}-{{forloop.counter0}}">Delete</button>
+                                                </a>
+                                        {%else%}
+					<button type="button" data-toggle="delete-tooltip" title="Delete this camper" class="btn btn-warning p-2 m-2" value="Delete-{{forloop.counter0}}" id="delete_{{type}}-{{forloop.counter0}}">
+                                     Delete</button>
+                                 </div>
+                                        {%endif%}
+                                </div>
+
+                                        <script>
+						$( "#delete_{{type}}-{{forloop.counter0}}" ).click(function() {
+                                                        var c=confirm("Are you sure you want to delete this camper?");
+                                                        if ( c == true ) {
+								$( "#regform_{{type}}-{{forloop.counter0}}" ).hide();
+								$('#regform_{{type}}-{{forloop.counter0}}').find('input').val('');
+								//$('#regform_{{type}}-{{forloop.counter0}}').find('select').val('');
+								$('#regform_{{type}}-{{forloop.counter0}}').find('checkbox').val('');
+                                                        }
+
+                                                });
+                                        </script>
+                                        {% else %} </div> {%endif%}
+                        </div>
+

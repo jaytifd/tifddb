@@ -1,0 +1,128 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+<div class="container">
+	 <div id="accordion">
+
+		 <p class="h2">Docs for the new database</p>
+		 <!--   -->
+		  <div class="card mt-3">
+		    <div class="card-header">
+		      <a class="card-link" data-toggle="collapse" href="#collapseZero">
+			      How do I mark payments that have been deposited?
+		      </a>
+		    </div>
+		    <div id="collapseZero" class="collapse show" data-arent="#accordion">
+		      <div class="card-body">
+			      Head to <a href="{% url "registrar:payments" %}">the payments page</a>. You will be presented with a list of deposits that have not yet been deposited.  Next to each one is a checkbox ( <input type="checkbox" id="payments" name="payments" value="10225"> ).  Click the checkbox next to every payment that has been deposited.  Then click the <a class="bg-primary text-light btn-sm rounded-left text-nowrap" href="#"><b>Deposit</b></a> button.
+		      </div>
+		    </div>
+
+		  </div>
+
+		  <div class="card mt-3">
+		    <div class="card-header">
+		      <a class="card-link" data-toggle="collapse" href="#collapseOne">
+			What do the various registration statuses mean?
+		      </a>
+		    </div>
+		    <div id="collapseOne" class="collapse show" data-arent="#accordion">
+		      <div class="card-body">
+                  <ul>
+                      {% for r in registration_status_options  %}
+                      <li><b>{{r}}</b>: {{r.description}}
+                      {%endfor%}
+
+
+		      </div>
+		    </div>
+		  </div>
+		 <!--   -->
+
+		  <div class="card mt-3">
+		    <div class="card-header">
+		      <a class="card-link" data-toggle="collapse" href="#collapseOne">
+			How do I add a new camp registration or new TIFD membership?
+		      </a>
+		    </div>
+		    <div id="collapseOne" class="collapse show" data-arent="#accordion">
+		      <div class="card-body">
+			      The only way to enter a camp registration or membership renewal is to use the public facing online form. <br><br> If you have a paper form, it has to be manually entered.  If certain things like <b>E-mail</b> or <b>phone</b> are missing, use either your email or registrar@tifd.org.  Keep in mind the registration form will try and email them a reciept so be careful if you decide to enter a random email address.<br><br>
+				      <a href="{% url "camp:create"%}">Click here to add a new camp registration</a><br>
+				      <a href="{% url "membership:create"%}">Click here to add a new TIFD membership</a><br>
+		      </div>
+		    </div>
+		  </div>
+		 <!--   -->
+		  <div class="card mt-3">
+		    <div class="card-header">
+		      <a class="card-link" data-toggle="collapse" href="#collapseTwo">
+			How do I process a payment?
+		      </a>
+		    </div>
+		    <div id="collapseTwo" class="collapse show" data-arent="#accordion">
+		      <div class="card-body">
+			      PayPal registrations are <u>fully automated</u>.  The only time you should need to process a payment is with a non-PayPal payment.<br><br>
+			      The registrar's <a href="{% url "registrar:homepage"%}">HomePage</a> will have a list of registrations that need attention. Pick the registration that you have a payment for and hit the 
+				      <a class="bg-primary text-light btn-sm rounded-left text-nowrap" href="#"><b>Add Payment</b></a> button.  The <b>Add Payment</b> button calculates the proper amount owed based on the shopping
+				      cart and makes a lot of assumptions about what is going on in order to make things easier.  Simply entering the amount and check number should be sufficient for most cases.<br><br>
+
+				      If you need to so some custom itemizations, click the dropdown button ( <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button> ) and pick the <b>add itemized payment</b> button.<br><br>
+				      
+							      <b>Once the payment has been entered, the registration will still have to be approved.</b>
+		      </div>
+		    </div>
+		  </div>
+		 <!--   -->
+		  <div class="card mt-3">
+		    <div class="card-header">
+		      <a class="card-link" data-toggle="collapse" href="#collapseThree">
+			How do I approve a registration and what does that mean?
+		      </a>
+		    </div>
+		    <div id="collapseThree" class="collapse show" data-arent="#accordion">
+		      <div class="card-body">
+			      	Once a registration is fully paid it will have a button called <a class="bg-primary text-light btn-sm rounded-left text-nowrap" href="#"><b>Approve Registration</b></a> Click that button and you will be taken to a page that displays the registration conifirmation email.  You can edit the email if you like and add a custom note. Then hit <a class="bg-primary text-light btn-sm rounded-left text-nowrap" href="#"><b>Save</b></a> and the registration is complete!  The member's TIFD membership dates will be displayed and their expiration date will be included in the confirmation email.
+		      </div>
+		    </div>
+		  </div>
+		 <!--   -->
+		  <div class="card mt-3">
+		    <div class="card-header">
+		      <a class="card-link" data-toggle="collapse" href="#collapseFour">
+			How do I edit or change a camp registration or membership renewal?
+		      </a>
+		    </div>
+		    <div id="collapseFour" class="collapse show" data-arent="#accordion">
+		      <div class="card-body">
+			      Head on over to the master list of <a href="{% url "registrar:registrar"%}">registrations</a>.  Make sure you have the right <b>year</b> selected in the upper right corner.<br>
+			      <ul>
+				      <li>Membership registrations will be prefaced with "MEMBERSHIP".
+				      <li>Camp registrations will be prefaced with "CAMP".
+			      </ul>
+			      To the left of the registration you want to change, click the dropdown button ( <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button> ) and select <b>Edit registration</b>.  You will see the same interface the registrant saw when they registered and you can change anything needed.  
+
+
+
+		      </div>
+		    </div>
+		  </div>
+		 <!--   -->
+		  <div class="card mt-3">
+		    <div class="card-header">
+		      <a class="card-link" data-toggle="collapse" href="#collapseFour">
+			How do I look up a member or search the database?
+		      </a>
+		    </div>
+		    <div id="collapseFour" class="collapse show" data-arent="#accordion">
+		      <div class="card-body">
+			      Head on over to the <a href="/registrar/reports/members_in_good_standing">list of members in good standing</a>. By default it will show all current members.  You can use the search box to search for members by first or last name.
+		      </div>
+		    </div>
+		  </div>
+
+	 </div>
+
+</div>
+
+{%endblock%}

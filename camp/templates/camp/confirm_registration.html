@@ -1,0 +1,218 @@
+{% include "camp/header.html" %}
+{% include "camp/bootstrap-overrides.html" %}
+
+<style>
+.change-message {
+    display: none;
+}
+.asteriskField { display: none; }
+
+</style>
+
+<div class="container-fluid" style="background-color:#e6e6e6">
+	<div class="container bg-white border border-secondary">
+		{% if registration.registration_source == 1 %}
+			{% include "membership/tifdheader.html" %}
+		{% else %}
+			{% include "camp/tifdheader.html" %}
+		{%endif%}
+         {% if registration.id %}
+                {% if "confirmed" in registration.status.status %}
+                        {% include "camp/alreadypaid.html" %}
+                {%endif%}
+         {%endif%}
+
+		{% include "camp/breadcrumbs.html" %}
+
+	<!--------------shopping cart start ------>
+
+	<div class="row">
+    <!--
+		<div class="col-sm-5">
+			{% include "camp/shopping_cart_table.html" %}
+		</div>
+    -->
+
+	<!----------------------end shopping cart -->
+
+    <!-- <div class="col-sm-6"> -->
+    <div class="col">
+		<!-- <p class="h5 text-black p-2">Registration Status: <b>{{registration.status.status}}</b> </p> -->
+		<!--even out the columns -->
+		<form id="donationform" action={% url 'camp:donaterebate' registration.id %} method=POST>
+		<div class="row">
+			<div class="donationform w-100 border m-3">
+                <p class="table-primary"><b>TIFD donation form</b></p>
+
+                <p class="m-3"> <!-- DONATION TEXT -->
+                Good news! Donating to support TIFD has been streamlined into one easy step! As always, TIFD uses your donations to help us present Texas Camp, offer Bobbi Gillotti camp scholarships, present live
+folk music, maintain our portable dance floor, and much more. Please give generously, and THANK YOU FOR YOUR SUPPORT! 
+                <br><br>
+Remember: TIFD is a 501(c)(3) educational organization, and all donations to TIFD are tax deductible!
+                </p>
+					<table class="table-sm">
+					{%csrf_token%}
+                    <!--
+					<tr>
+					    <td>{{ donationform.donation_chuck.label }} <a href="{% url 'camp:help' %}chuck" title="{% include "camp/help-chuck.html" %}">(?)</a>
+						<td>{{ donationform.donation_chuck }}
+					</tr>
+					<tr>
+					    <td>{{ donationform.donation_bobbi_gillotti.label }} <a href="{% url 'camp:help' %}bg" title="{% include "camp/help-bg.html" %}">(?)</a>
+						<td>{{ donationform.donation_bobbi_gillotti }}
+					</tr>
+					<tr><td colspan=2> 
+					<tr>
+						<td>{{ donationform.donation_floor_fund.label }} <a href="{% url 'camp:help' %}ff" title="{% include "camp/help-ff.html" %}">(?)</a>
+						<td>{{ donationform.donation_floor_fund }}
+					</tr>
+					<tr>
+						<td>{{ donationform.donation_live_music.label }} <a href="{% url 'camp:help' %}lm" title="{% include "camp/help-lm.html" %}">(?)</a>
+						<td>{{ donationform.donation_live_music }}
+					</tr>
+                    -->
+					<tr>
+						<td>{{ donationform.donation_tifd.label }} <a class="d-none" href="{% url 'camp:help' %}tifd" title="{% include "camp/help-tifd.html" %}">(?)</a>
+						<td>{{ donationform.donation_tifd }}
+					</tr>
+					</table>
+			</div>
+		
+        </div>
+
+		{% if registration.registration_source == 0 %}
+		<!-- SHOW THE FOLLOWING DIVS ONLY FOR CAMP REGISTRATIONS -->
+
+		<div class=row>
+			<div class="safetyform w-100 m-3 border">
+				<p class="bg-warning text-black font-weight-bold " ><b>Safety agreement</b></p>
+                    <div class="p-1">
+				        {{safety_agreement|safe}}
+						{{safetypolicyform.management_form}}
+						{%csrf_token%}
+						<b> <div id="agree_container"> {{safetypolicyform}} </div> </b>
+                    </div>
+			</div>
+		</div>
+		<div class=row>
+			<div class="rebateform w-100 m-3 border">
+				<p class="bg-info text-black font-weight-bold "><b>Optional TIFD membership dues rebate</b></p>
+				<p>All adult camper registrations include a mandatory $15 fee for membership to TIFD.<br><br>
+                If you are a lifetime TIFD member or have already pre-paid your dues for {{ nextyear }}, then use the following form to discount your membership fee.
+                <a href="{% url 'camp:check_membership' %}">Click here</a> to check your membership status.  Memberships expire on Thanksgiving day unless renewed.
+                
+				<div id="rebatebox" class="rebatebox" style="display:one;">
+
+						{%csrf_token%}
+						{{rebateform.management_form }}
+						{{rebateform}}
+						<!--
+						<div align=right>
+					<button align=left type="submit" id="donatebutton" class="text-white rounded button bg-primary p-1 m-1">Save Rebate</button>
+						</div>
+						-->
+				</div>
+			</div>
+		</div>
+		<div class=row>
+			<div class="rebateform w-100 m-3 border">
+				<p class="bg-warning text-black font-weight-bold "><b>Favorite dance request form</b></p>
+                Use the following link to vote on your favorite dances to be played during the parties!<br>
+                <a href="https://dancevotes.online/texas-camp-survey-2023/">https://dancevotes.online/texas-camp-survey-2023/</a>
+            </div>
+        </div>
+		<div class=row>
+			<div class="campernotesform w-100 m-3">
+				<div id="rebatebox" class="rebatebox" style="display:one;">
+
+						{%csrf_token%}
+						{{campernotesform.management_form }}
+						{{campernotesform}}
+				</div>
+			</div>
+		</div>
+
+		{%endif%}
+		<!-- SHOW THE ABOVE DIVS ONLY FOR CAMP REGISTRATIONS -->
+
+		<div class=row>
+			<div class="finalreview w-100 m-3">
+				Almost done...
+				Continue on to <button type="submit" onclick="agree_checkbox()" id="finalreview" value="yes" name="finalreview" class="text-white rounded button bg-primary p-1 m-1">Final review and payment</button>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+	        {%include "camp/tifdfooter.html" %}
+</div>
+</div>
+	</form>
+
+	<script>
+
+	$('#id_rebate').on('change', function() {
+		//$('#donationform').submit();
+        });
+
+	var $form = $('#donationform'),
+    	origForm = $form.serialize();
+
+
+	//If the donation form is changed, alter the color of the button and 
+	// provide a warning when user submits the paypal form
+
+	$('form :input').on('change input', function() {
+            $('.change-message').toggle($form.serialize() !== origForm);
+        });
+
+
+
+	//if ($form.serialize() !== origForm){
+	//    $("#donatebutton").addClass("bg-primary text-white");
+	//    $("#donatebutton").removeClass("bg-white");
+//
+//	}
+//		else { 
+//			$("#donatebutton").removeClass("bg-primary text-white"); 
+//	    		$("#donatebutton").addClass("bg-white");
+//		}
+//	});
+	function agree_checkbox() {
+		if ( document.getElementById('id_agreecheckbox').checked == false ) {
+			 document.getElementById('agree_container').style.color="red";
+			 document.getElementById('id_agreecheckbox').scrollIntoView();
+		}
+	}
+
+	$("#paypalform").submit(function (e) {
+		if ($form.serialize() !== origForm){
+			confirm("You have unsaved changes on the donation form! Are you sure you want to continue to paypal?");
+		}
+	});
+
+	$("#rebatebutton").click(function(){
+	  $("#rebatebox").toggle();
+	});
+
+	</script>
+
+	<script>
+
+	$(document).ready(function(){
+        {% if "confirmed" in registration.status.status %}
+        $('#donationform').find('*').prop('disabled',true);
+        {% endif %}
+	});
+	</script>
+
+	<script>
+		$(document).ready(function(){
+        {% if "confirmed" in registration.status.status %}
+        $('#donationform').find('*').prop('disabled',true);
+        {% endif %}
+});
+	</script>
+
+
+	</body>

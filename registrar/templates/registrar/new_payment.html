@@ -1,0 +1,669 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+
+<!--
+<div class="d-flex" id="wrapper">
+-->
+<div class="container-fluid">
+	<div class=row>
+	<div class="col-sm-3 mr-3 ">
+			<ul class=list-group>
+				<li class="list-group-item active">Payment instructions</li>
+				<li class=list-group-item>Itemize the payment fields until the <b>remaining balance</b> field is zero.  The itemization fields are be automatically populted and hopefully do not need changes</li> 
+				<li class=list-group-item>Registrar price adjustments should be done <b>before</b> saving the payment.</li>
+				<li class=list-group-item>All the itemized "fee" fields are pre filled-in based on the shopping cart contents.  They are dynamically added up to the <b>gross</b> amount and deducted from the remaining balance.</li>
+				<li class=list-group-item>If camper has overpaid, add the overage to the <b>refund</b> box.</li>
+				<li class=list-group-item><b>Refunds:</b><br>
+					To do a refund, add the refund amount to the refund box.  Then fix up the camp/membership to reflect the changes.  For example, if a camper cancels a t-shirt, add 18 to the refund box.  Leave 18 in the t-shirt box, and then edit the registration and remove the t-shirt from the order.
+				</li>
+
+
+	</div>
+	<div class="col border">
+		{% if registration.id and not new_payment_form.instance.pk %}
+		<p class="h4">Adding payment for registration #{{new_payment_form.registration.initial}}</p>
+		{% else %}
+		<p class="h4">Editing payment for registration #{{new_payment_form.registration.initial}}</p>
+		{%endif %}
+
+	<form method=POST autocomplete=off >
+		{% if registration.year and registration.year != now.year  %}
+		<h3>Prior year - Editing disabled</h3>
+		<!-- <fieldset disabled="disabled"> --> 
+			{%endif%}
+	 {{ new_payment_form.management_form }}
+
+     <!-- preserve the paypal ipn fields when editing a payment !-->
+ 	 {{new_payment_form.pp_ipn_email.as_hidden}}
+ 	 {{new_payment_form.pp_ipn_name.as_hidden}}
+ 	 {{new_payment_form.pp_ipn_phone.as_hidden}}
+ 	 {{new_payment_form.pp_ipn_txn_id.as_hidden}}
+ 	 {{new_payment_form.pp_ipn_id.as_hidden}}
+
+	 {% csrf_token %}
+
+	 	<div class="row">
+			{% if not new_payment_form.instance.pk %}
+				{%comment%}
+				only show the remaining balance field when this is a new payment.  When editing a payment, remaining balance will be zero or something, and all the itemized fields will be 
+				deducted from it
+				{%endcomment%}
+				<div class="col-sm-3 form-group" style="isplay:none;">
+					<label>Remaining Balance</label>
+					<input type="text" name="remaining_balance" value="{{remaining_balance|stringformat:".02F"}}" class="form-control" readonly autocomplete="off" required id="id_remaining_balance">
+
+				</div>
+			{% endif %}
+			<div class="col-sm-3 form-group" style="display:none;">
+				<label>Prev. Payments</label>
+				<input type="text" name="payments_total" value="{{payments_total|stringformat:".02F"}}" class="form-control" readonly autocomplete="off" required id="id_payments_total">
+
+			</div>
+			<div class="col-sm-3 form-group" style="display:none;">
+				<label>Cart Total</label>
+				<input type="text" name="cart_total" value="{{registration.cart_total|stringformat:".02F"}}" class="form-control" readonly autocomplete="off" required id="id_cart_total">
+
+			</div>
+
+			<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.gross_amt.label}}</label>
+				{{new_payment_form.gross_amt}}
+			</div>
+			<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.net_amt.label}}</label>
+				{{new_payment_form.net_amt}}
+				{{new_payment_form.net_amt.errors}}
+				</div>
+			<div class="col-sm-3 form-group" style="display:none">
+				<label>Adjustment</label>
+				<input readonly type="text" name="adjustment" value="{{registration.adjustment|default_if_none:0}}" class="form-control" autocomplete="off" id="id_adjustment">
+
+				</div>
+		</div>
+		<div class=row>
+			<div class="col-sm-2 form-group">
+				<label>{{new_payment_form.check_num.label}}</label>
+				{{new_payment_form.check_num}}
+			</div>
+			<div class="col-sm-4 form-group">
+				<label>
+				{{new_payment_form.payment_type.label}}
+				</label>
+				{{new_payment_form.payment_type}}
+			</div>
+
+			<div class="col-sm-4 d-none form-group">
+				    <label for="status">Change registration status</label>
+				    <select class="form-control" id="status" name="status">
+					    {% for option in registration_status_options %}
+					    <option value="{{option.id}}" {% if option.id|slugify == registration.registration_status.id|slugify %} selected {%endif%} >{{option.status}}</option>
+					    {%endfor %}
+
+				    </select>
+				    <!-- <label for="paymentinput">Record new payment</label> -->
+				<!-- <input name=payment type="number" class="form-control" id="paymentinput" value={{campers.0.registration.payment}}> -->
+			</div>
+			<div class="col-sm-3 d-none">
+				<label for="id_waiting_for_deposit">{{new_payment_form.waiting_for_deposit.label}}</label>
+				{{new_payment_form.waiting_for_deposit}}
+			</div>
+		</div>
+
+	<!-- anything inside this div gets added up by javascript -->
+	<div id="fees" class="fees">
+		<div class="row">
+			<div class="col-sm-9 small rounded text-center">
+				<hr class="style2" >
+			</div>
+		</div>
+
+	 	<div class=row> <div class="col-sm-3 form-group">
+				<label>{{new_payment_form.camp_fee.label}}</label>
+				{{new_payment_form.camp_fee}}
+			</div>
+	 		<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.housing_fee.label}}</label>
+				{{new_payment_form.housing_fee}}
+			</div>
+			<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.membership_fee.label}}</label>
+				{{new_payment_form.membership_fee}}
+			</div>
+		</div>
+	 	<div class=row> 
+			<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.t_shirt_fee.label}}</label>
+				{{new_payment_form.t_shirt_fee}}
+			</div>
+	 		<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.dvd_fee.label}}</label>
+				{{new_payment_form.dvd_fee}}
+			</div>
+			<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.shipping_fee.label}}</label>
+				{{new_payment_form.shipping_fee}}
+			</div>
+		</div>
+	 	<div class=row> <div class="col-sm-3 form-group">
+				<label>{{new_payment_form.late_fee.label}}</label>
+				{{new_payment_form.late_fee}}
+			</div>
+	 		 <div class="col-sm-3 form-group">
+				<label>{{new_payment_form.paypal_fee.label}}</label>
+				{{new_payment_form.paypal_fee}}
+			</div>
+	 		 <div class="col-sm-3 form-group">
+				<label>{{new_payment_form.refund_amt.label}}</label>
+				{{new_payment_form.refund_amt}}
+			</div>
+		</div>
+	 	<div class=row> <div class="col-sm-3 form-group">
+				<label>{{new_payment_form.bobbi_fund.label}}</label>
+				{{new_payment_form.bobbi_fund}}
+			</div>
+	 		<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.floor_fund.label}}</label>
+				{{new_payment_form.floor_fund}}
+			</div>
+	 		<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.camp_fund.label}}</label>
+				{{new_payment_form.camp_fund}}
+			</div>
+		</div>
+	 	<div class=row> <div class="col-sm-3 form-group">
+				<label>{{new_payment_form.general_fund.label}}</label>
+				{{new_payment_form.general_fund}}
+			</div>
+	 		<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.music_fund.label}}</label>
+				{{new_payment_form.music_fund}}
+			</div>
+	 		<div class="col-sm-3 form-group">
+				<label>{{new_payment_form.chuck_fund.label}}</label>
+				{{new_payment_form.chuck_fund}}
+			</div>
+		</div>
+	 	<div class=row> <div class="col-sm-3 form-group">
+				<label>{{new_payment_form.gfc_linens.label}}</label>
+				{{new_payment_form.gfc_linens}}
+			</div>
+         </div>
+		<!-- camp fund not used?
+	 	<div class=row> <div class="col-sm-2 form-group">
+				<label>{{new_payment_form.camp_fund.label}}</label>
+				{{new_payment_form.camp_fund}}
+			</div>
+		</div>
+		-->
+	</div>
+			<!--
+		<div class="row">
+			<div class="col-sm-2" >
+				<label for="id_cash">{{new_payment_form.cash.label}}</label>
+				{{new_payment_form.cash}}
+			</div>
+		</div>
+			-->
+		<div class="row mt-3">
+			<div class="col-sm-3  form-group">
+				<label class="requiredField" style="white-space: nowrap;">{{new_payment_form.who_has_possession.label}}</label>
+				{{new_payment_form.who_has_possession}}
+			</div>
+			<div class=col-sm-3>
+				    <div class="form-group">
+					<label class="requiredField">{{new_payment_form.date_recd.label}}</label>
+					{{new_payment_form.date_recd}}
+					{{new_payment_form.date_recd.errors}}
+					    <!--
+					    <label for="id_date_recvd" class="requiredField">
+						Date Recd <a style="" href="#" onclick="date_recd_today()" id="date_recvd_today">(today)</a>
+					    </label>
+						{% if new_payment_form.date_recd.errors %} <span class="is-invalid"> {%endif%}
+						<div class="">
+							<input type="date" name="date_recd" class="dateinput form-control w-80" id="id_date_recd" value="{{new_payment_form.date_recd.value|date:"Y-m-d"}}">
+						</div>
+						{{new_payment_form_date_recd.errors}}
+						</span>
+					    -->
+				    </div>
+			</div>
+			<div class="col-sm-3 d-none">
+				    <div class="form-group">
+					<label class="requiredField">{{new_payment_form.deposit_date.label}}</label>
+					{{new_payment_form.deposit_date}}
+					{{new_payment_form.deposit_date.errors}}
+				    </div>
+			</div>
+
+		</div>
+
+
+
+
+		{% if new_payment_form.registration.initial %}
+		<!-- my custom registration field -->
+		<input type=hidden name=registration id=id_registration value="{{new_payment_form.registration.initial}}">
+		{%endif%}
+		{% comment %}
+		## We need this input, at least as a hidden field so django knows which registration_id to link it to
+		jaytest
+		registration_id_form: {{new_payment_form.registration.initial}}
+		{% if new_payment_form.registration.initial %}
+	 	<div class=row style="display:one;">
+			<div class="col-sm-6 form-group">
+				<label class=requiredField>{{new_payment_form.registration.label}}</label> <a href="{% url "camp:confirm" new_payment_form.registration.value %}">(View / edit registration)</a>
+				{{new_payment_form.registration}}
+			</div>
+		</div>
+		{% else %}
+		HIDDEN
+		{{new_payment_form.registration.as_hidden}}
+		{% endif %}
+		END
+		{% endcomment %}
+
+	 	<div class=row>
+			<div class="col-sm-8 form-group">
+				<label>{{new_payment_form.notes.label}}</label>
+				{{new_payment_form.notes}}
+			</div>
+		</div>
+	 	<div class=row>
+			<div class="col-sm-8 form-group">
+				<label>Note from camper</label>
+				<input type=text class="form-control" cols=40 rows=2 disabled value="{{registration.camper_note}}">
+				</label>
+			</div>
+		</div>
+
+	<div class="btn-group list-group-horizontal"> 
+		<button type="submit" class="m-2 btn btn-primary" id=save value="Save">Save</button> 
+		<button type="button" class="m-2 btn btn-warning" onclick="clear_fees()" title="Set all itemized fields to zero" value="Clear">Clear</button> 
+	</div>
+	{% if new_payment_form.instance.pk %}
+	<div class="btn-group list-group-horizontal"> 
+		<div id="payment_delete">
+		<a href="{% url "registrar:payments_delete" new_payment_form.instance.pk %}">
+			<button type="button" title="Delete this payment" class="m-2 btn btn-danger" value="Delete">Delete</button>
+		</a>
+		</div>
+	</div>
+	<script>
+	  $( "#payment_delete" ).click(function() {
+		var c=confirm("Are you sure you want to delete this payment?");
+		if ( c == true ) {
+			window.location.href = "{% url "registrar:payments_delete" new_payment_form.instance.pk %}"
+		}
+		 return false;
+	  });
+	</script>
+
+	{% endif %}
+	</fieldset>
+	</form>
+	</div>
+
+	<div class="col-sm-3 mr-3 ">
+{% if registration.id and registration.year%}
+	{% if registration.year != now.year  %}
+	<p class="h3">
+	WARNING - This registration is from {{registration.year}} - prior year shopping cart may not be accurate if fees have increased!
+	</p>
+	{%endif%}
+		<div class=border>
+			{% include "camp/shopping_cart_table.html" %}
+
+		</div>
+			<div class="border mt-3 p-3" id="adjustment_box">
+
+				{%comment %}
+			<div class=row>
+				<div class=col>
+				<div class="form-group">
+					    <label for="status">Change registration status</label>
+					    <select class="form-control" id="status" name="status">
+						    {% for option in registration_status_options %}
+						    <option value="{{option.id}}" {% if option.id|slugify == registration.registration_status.id|slugify %} selected {%endif%} >{{option.status}}</option>
+						    {%endfor %}
+
+					    </select>
+					    <!-- <label for="paymentinput">Record new payment</label> -->
+					<!-- <input name=payment type="number" class="form-control" id="paymentinput" value={{campers.0.registration.payment}}> -->
+				</div>
+				</div>
+			</div>
+			{%endcomment%}
+			<div class=row>
+				<form autocomplete=off method=POST action="{% url "registrar:adjustment_add"%}">
+					{% csrf_token%}
+				<div class="col-sm-12 form-group">
+					Registrar Price Adjustment. 
+				</div>
+
+			</div>
+			<div class=row>
+				<div class="col-sm-4"> 
+				<input type="text" name="adjustment" value="{{registration.adjustment|default_if_none:0}}" class="form-control" autocomplete="off" id="id_adjustment">
+				<input type="hidden" name="registration_id" value="{{registration.id}}" class="form-control" autocomplete="off" id="id_adjustment">
+				</div>
+				<div class="col-sm-4 form-group">
+				 <button type="submit" class="btn btn-primary" value="Save">Save</button> 
+				 </div>
+			</div>
+			<div class="row">
+				 <div class="col-sm-12">
+					 <small>Negative numbers <b>reduce</b> the cart. <br>
+						 Positive numbers <b>increase</b>.
+				 </div>
+			 </div>
+		</form>
+
+			</div>
+
+			<div class=row>
+				<div class="col">
+					Itemizations total: <span id="itemizations_total">x</span>
+				</div>
+			</div>
+			<div class=row>
+				<div class="col">
+					Cart total: {{registration.cart_total|stringformat:".02F"}}
+				</div>
+			</div>
+
+
+{% endif %}
+			{%if pp_ipn_info %}
+			<div class=row>
+				<div class="col">
+					<a class="" data-toggle="collapse" href="#ipncollapse" role="button" aria-expanded="false" aria-controls="ipncollapse">PayPal IPN info</a>
+					<div class="collapse" id="ipncollapse">
+					{% include "registrar/ipnview.html" %}
+					</div>
+
+				</div>
+			</div>
+			{%endif%}
+			</div>
+</div>
+
+  <script>
+  //$( function() {
+  //  $("#id_depositdate").datepicker();
+  //} );
+
+
+
+function date_recd_today() {
+	var now = new Date();
+	var day = ("0" + now.getDate()).slice(-2);
+	var month = ("0" + (now.getMonth() + 1)).slice(-2);
+	var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+	console.log(today);
+	$('#id_date_recd').val(today);
+    //$("#id_depositdate").datepicker("setDate", new Date());
+}
+function deposit_today() {
+	var now = new Date();
+	var day = ("0" + now.getDate()).slice(-2);
+	var month = ("0" + (now.getMonth() + 1)).slice(-2);
+	var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+	$('#id_deposit_date').val(today);
+	console.log(today);
+    //$("#id_depositdate").datepicker("setDate", new Date());
+}
+  </script>
+
+<script>
+
+	function update_gross_net() {
+		var inputs = document.getElementById('fees').getElementsByTagName('input');
+		var total=0;
+		for (var i = 0; i < inputs.length; i++) {
+			if ( ( inputs[i].id != "id_paypal_fee" ) && ( inputs[i].id != "id_refund_amt" ) ) {
+			num=parseFloat(inputs[i].value);
+			console.log(inputs[i].value);
+				if ( inputs[i].value <= 0.00 ) { 
+					$(inputs[i]).css("background-color","white");
+					//alert(inputs[i].name + "changed");
+				}
+				if ( inputs[i].value > 0.00 ) { 
+					$(inputs[i]).css("background-color","lightgreen");
+					//alert(inputs[i].name + "changed");
+				}
+			//num=num.toFixed(2);
+			if (num) {
+				total=total+num;
+				}
+			}
+		}
+		var shippingfee=0;
+		var paypalfee=0;
+		var refund_amt=0;
+		var paypalfee=parseFloat(document.getElementById("id_paypal_fee").value);
+		//var paypalfee=paypalfee.toFixed(2); // JAY is this necessary?  toFixed returns a string which is bad for math operations happening below
+		//var shippingfee=parseFloat(document.getElementById("id_shipping_fee").value);
+		var adjustment=parseFloat(document.getElementById("id_adjustment").value);
+		var refund=parseFloat(document.getElementById("id_refund_amt").value);
+		if (!adjustment) { 
+			adjustment = 0;
+		}
+		if (!refund) { 
+			adjustment = 0;
+		}
+		console.log("adjustment:",adjustment);
+		console.log("refund:",refund);
+
+
+		var remaining_balance=parseFloat({{remaining_balance|stringformat:".02F"}});
+
+		var gross=total.toFixed(2);
+		var net = gross;
+		if (paypalfee||shippingfee) {
+			console.log("total:",total, typeof(total));
+			console.log("paypalfee:",paypalfee, typeof(paypalfee));
+			console.log("adjustment:",adjustment, typeof(adjustment));
+			console.log("shippingfee:",shippingfee, typeof(shippingfee));
+			var net=(total-(paypalfee+adjustment+shippingfee)).toFixed(2);
+			console.log("net:",net, typeof(net));
+			//var net=(total-(paypalfee+adjustment-shippingfee)).toFixed(2);
+		}
+
+		if (refund) {
+			refund=refund.toFixed(2);
+			//var total=(total-(refund)).toFixed(2);
+			gross=gross-refund;
+			net=net-refund;
+			net=net.toFixed(2);
+			//var net=(total-(paypalfee+adjustment-shippingfee)).toFixed(2);
+		}
+		//alert(adjustment);
+
+		//toFixed() Convert a number into a string, rounding the number to keep only two decimals:
+
+		//parseFloat() is an inbuilt function in JavaScript which is used to accept the string and convert it into a floating point number. 
+		//If the string does not contain a numeral value or If the first character of the string is not a Number then it returns NaN
+
+		//total=total.toFixed(2);
+		console.log("total:",total)
+		$("#itemizations_total").html(gross);
+		$("#id_gross_amt").val(gross);
+		//$("#id_gross_amt").css("background-color","yellow");
+		console.log("setting net_amt to:",net),
+		$("#id_net_amt").val(net);
+		//$("#id_net_amt").css("background-color","yellow");
+		$("#id_cart_total").css("background-color","white");
+
+		new_remaining_balance=(remaining_balance-gross).toFixed(2)
+		console.log("rb:",remaining_balance,"gross:",gross);
+
+                {%if not new_payment_form.instance.pk %}
+		var edit=1;
+		//only do this when createing a _new_ payment
+		{% endif %}
+		$("#id_remaining_balance").val(new_remaining_balance);
+
+
+		//if gross is zero, disable form saving
+		if ( gross == 0.00 && refund ==0.00  ) { 
+			//don't disable the save button if there is a refund
+			$("#save").prop("disabled",true)
+			$("#save").attr("title","Disabled - gross amt is zero")
+		}
+		else {
+			$("#save").prop("disabled",false)
+		}
+		////////////////////////////////////////////
+
+		if ( $("#id_remaining_balance").val()=="0.00" ) {
+			$("#id_remaining_balance").css("background-color","lightgreen");
+		}
+		else {
+			$("#id_remaining_balance").css("background-color","yellow");
+		}
+
+
+		if ( gross == {{remaining_balance|stringformat:".02F"}} ) {
+			$("#id_cart_total").css("background-color","lightgreen");
+			$("#id_gross_amt").css("background-color","lightgreen");
+			//$("#id_net_amt").css("background-color","lightgreen");
+		}
+
+
+		else { 
+			$("#id_cart_total").css("background-color","pink");
+			//$("#id_gross_amt").css("background-color","pink");
+		}
+		return true
+	}
+
+	$( ".fees" ).change(function() { update_gross_net() });
+	$( "#id_adjustment" ).change(function() { update_gross_net() });
+	$( document ).ready(function() { update_gross_net() });
+	$( document ).ready(function() { payment_type_required_fields() });
+	
+
+</script>
+<script>
+	function clear_fees() {
+		var inputs = document.getElementById('fees').getElementsByTagName('input');
+		for (var i = 0; i < inputs.length; i++) {
+			inputs[i].value=0
+		}
+		update_gross_net();
+
+	}
+
+</script>
+
+<script>
+	function payment_type_required_fields() {
+
+/*
+    payment_types = (
+    (1, "Income - Check"),
+    (2, "Income - Cash"),
+    (3, "Income - PayPal"),
+    (10, "Refund"),
+  )
+
+
+*/
+	//set defaults
+	$("#id_check_num").prop("required",false);
+	$("#id_check_num").css("background-color","white");
+
+	$("#id_cash").prop("required",false);
+	$("#id_cash").css("background-color","white");
+
+	$("#id_paypal_fee").prop("required",false);
+	$("#id_paypal_fee").css("background-color","white");
+
+	$("#id_refund_amt").prop("required",false);
+	$("#id_refund_amt").css("background-color","white");
+
+
+
+	var pt = $("#id_payment_type").val();
+	switch ($("#id_payment_type").val()) {
+		case "1":
+			//check
+			$("#id_check_num").prop("required",true);
+			$("#id_refund_amt").prop("required",false);
+			$("#id_cash").prop("required",false);
+			$("#id_paypal_fee").prop("required",false);
+			$("#id_check_num").css("background-color","yellow");
+		break;
+		case "2":
+			//cash
+			$("#id_cash").prop("required",true);
+			$("#id_refund_amt").prop("required",false);
+			$("#id_check_num").prop("required",false);
+			$("#id_paypal_fee").prop("required",false);
+
+			$("#id_cash").css("background-color","yellow");
+		break;
+		case "3":
+			//paypal
+			$("#id_paypal_fee").prop("required",true);
+			$("#id_refund_amt").prop("required",false);
+			$("#id_check_num").prop("required",false);
+			$("#id_cash").prop("required",false);
+			$("#id_paypal_fee").css("background-color","yellow");
+		break;
+		case "10":
+			//refund -- not used
+			$("#id_refund_amt").prop("required",true);
+
+			$("#id_paypal_fee").prop("required",false);
+			$("#id_refund_amt").prop("required",false);
+			$("#id_check_num").prop("required",false);
+
+			$("#id_refund_amt").css("background-color","yellow");
+		break;
+			
+	}
+	}
+	$( "#id_payment_type" ).change(function() { payment_type_required_fields() });
+
+	</script>
+<!--
+<script>
+
+	$( ".fees" ).change(function() {
+		var inputs = document.getElementById('fees').getElementsByTagName('input');
+		var total=0;
+		for (var i = 0; i < inputs.length; i++) {
+			if ( inputs[i].id != "id_paypal_fee" ) {
+			num=parseFloat(inputs[i].value);
+			console.log(inputs[i].value);
+			//num=num.toFixed(2);
+			if (num) {
+				total=total+num;
+				}
+			}
+		}
+		var paypalfee=parseFloat(document.getElementById("id_paypal_fee").value);
+		var gross=total.toFixed(2);
+		var net = gross;
+		if (paypalfee) {
+			var net=(total-(paypalfee)).toFixed(2);
+		}
+
+		//total=total.toFixed(2);
+		console.log(total)
+		$("#id_gross_amt").val(gross);
+		$("#id_gross_amt").css("background-color","yellow");
+		$("#id_net_amt").val(net);
+		$("#id_net_amt").css("background-color","yellow");
+
+	});
+
+</script>
+-->
+
+{% endblock %}
+
+

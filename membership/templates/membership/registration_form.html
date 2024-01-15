@@ -1,0 +1,533 @@
+{% include "camp/header.html" %}
+{% include "camp/bootstrap-overrides.html" %}
+
+<style>
+.border-3 {
+    border-width:3px !important;
+}
+.border-4 {
+    border-width:4px !important;
+}
+.border-2 {
+    border-width:2px !important;
+}
+
+.asteriskField { display:none; }
+.requiredField { color:red; font-weight:bold;}
+
+
+</style>
+
+<form id=main method=POST action="">
+
+	  {% csrf_token %}
+	  {{ registrationform.management_form }}
+	  {{ regformform_person.management_form }}
+
+            {{ registrationform.0.donation_bobbi_gillotti.as_hidden }}
+            {{ registrationform.0.donation_floor_fund.as_hidden }}
+            {{ registrationform.0.donation_camp_fund.as_hidden }}
+            {{ registrationform.0.donation_live_music.as_hidden }}
+            {{ registrationform.0.donation_tifd.as_hidden }}
+            {{ registrationform.0.donation_chuck.as_hidden }}
+
+
+<div class="container-fluid" style="background-color:#e6e6e6" >
+<div class="container bg-white border border-secondary">
+	{%include "membership/tifdheader.html" %}
+
+	<div class=col>
+	      Benefits of TIFD membership include:
+                <div class="row">
+                        <div class="col">
+                        <ul class="list-group p-1 m-1">
+                                <li class="list-group-item">
+                                    A one-year subscription to TIFD News (4 issues plus monthly e-mail updates)
+                                    </li>
+                                <li class="list-group-item">
+    Discounts at TIFD-sponsored events
+                                    </li>
+                                <li class="list-group-item">
+    Participation in TIFD Board elections
+                                    </li>
+                                <li class="list-group-item">
+    Donations are also tax-deductible, since TIFD is a non-profit educational organization
+                                    </li>
+                        </ul>
+                	</div>
+                </div>
+	
+                <div class="row ">
+                        <div class="col-sm-12 p-2 m-2 ">
+                        TIFD offers two ways to join/renew your membership.  You can fill out the <a href="https://tifd.org/membership/individual-membership/">paper membership renewal form (PDF)</a> and mail it with your payment to join or renew your TIFD membership. Or you can use our secure PayPal online form below.  If you have any issues or questions with the membership form do not hesitate to contact registrar [at] tifd.org.
+                </div>
+                </div>
+		<div class="row">
+			<div class="col p-1 m-1">
+				Not sure about when your membership expires? <a href="{% url "camp:check_membership" %}">Check it here</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col p-1 m-1">
+                		<b><span class="text-danger">*</span> New TIFD memberships are valid from {{membership_valid_from}} to {{membership_valid_to}}</b>
+			</div>
+		</div>
+
+	</div>
+	 {% if current_registrations %}
+	 {%endif%}
+	<div class="addressbox bg-light col-sm-8 mt-1 mb-3 border">
+		<!--	{{ registrationform.0.errors }} -->
+		<!-- HIDDEN fields -->
+		{% for field in registrationform.0.hidden_fields %}{{ field }}{% endfor %}
+
+
+				<div class=row>
+					<div class="text-center col-sm-12 form-group">
+					Mailing Address
+					</div>
+
+				<div class="col-sm-12 form-group">
+					<label class="requiredField">{{ registrationform.0.address1.label }}</label>
+					{% if registrationform.0.address1.errors %} <span class="is-invalid"> {%endif%}
+					{{ registrationform.0.address1 }}
+					{{ registrationform.0.address1.errors }}
+					</span>
+				</div>
+				</div>
+				<div class=row>
+					{{registrationform.0.registration_source.as_hidden}}
+				<div class="col-sm-12 form-group">
+					<label>	{{ registrationform.0.address2.label }}</label>
+						{{ registrationform.0.address2 }}
+				</div>
+				</div>
+				<div class=row>
+					<div class="col-sm-3 form-group">
+						<label class="requiredField">{{ registrationform.0.city.label }}</label>
+						{% if registrationform.0.city.errors %} <span class="is-invalid"> {%endif%}
+				{{ registrationform.0.city }}
+						</span>
+				{{ registrationform.0.city.errors }}
+				</div>
+				<div class="col-sm-3 form-group">
+					<label class="requiredField">{{ registrationform.0.state.label }}</label>
+					{% if registrationform.0.state.errors %} <span class="is-invalid"> {%endif%}
+				{{ registrationform.0.state }}
+					</span>
+				{{ registrationform.0.state.errors }}
+				</div>
+				<div class="col-sm-3 form-group">
+					<label class="requiredField">{{ registrationform.0.zip.label }}</label>
+					{% if registrationform.0.zip.errors %} <span class="is-invalid"> {%endif%}
+				{{ registrationform.0.zip }}
+					</span>
+				{{ registrationform.0.zip.errors }}
+				</div>
+				<div class="col-sm-3 form-group">
+				{{ registrationform.0.country.label}}
+				{{ registrationform.0.country}}
+				</div>
+				{% load has_group %}
+				</div>
+				<!--
+				{% if request.user|has_group:"registrar" %}
+					<p class="h4 text-underline">Registrar Detected. Unlocking special fields</p>
+					<div class="row">
+						<div class="col-sm-3 form-group">
+						{{ registrationform.0.postmark.label}}
+						{{ registrationform.0.postmark}}
+						</div>
+					</div>
+				{%endif%}
+				-->
+
+
+
+	</div>
+
+	{%comment%}
+		//This is done on the second page now
+	                <div class=row>
+                        <div class="bg-light col-sm-8 mt-1 mb-3 border">
+                                <p class="">Would you like to donate to TIFD? TIFD is a 501c3 organization and all donations are tax deductable.</p>
+
+                                        <table class="w-100 table-sm">
+                                        <tr>
+
+                                                <td>{{ registrationform.0.donation_chuck.label }} <a href="{% url 'camp:help' %}chuck" title="{% include "camp/help-chuck.html" %}">(?)</a>
+                                                <td>{{ registrationform.0.donation_chuck }} {{ registrationform.0.donation_chuck.as_hidden }}
+
+                                        </tr>
+                                        <tr>
+
+                                                <td>{{ registrationform.0.donation_bobbi_gillotti.label }} <a href="{% url 'camp:help' %}bg" title="{% include "camp/help-bg.html" %}">(?)</a>
+                                                <td>{{ registrationform.0.donation_bobbi_gillotti }} {{ registrationform.0.donation_camp_fund.as_hidden }}
+
+                                        </tr>
+                                        <tr><td colspan=2>
+
+                                        <tr>
+                                                <td>{{ registrationform.0.donation_floor_fund.label }} <a href="{% url 'camp:help' %}ff" title="{% include "camp/help-ff.html" %}">(?)</a>
+                                                <td>{{ registrationform.0.donation_floor_fund }}
+
+                                        </tr>
+                                        <tr>
+                                                <td>{{ registrationform.0.donation_live_music.label }} <a href="{% url 'camp:help' %}lm" title="{% include "camp/help-lm.html" %}">(?)</a>
+                                                <td>{{ registrationform.0.donation_live_music }}
+
+                                        </tr>
+                                        <tr>
+                                                <td>{{ registrationform.0.donation_tifd.label }} <a href="{% url 'camp:help' %}tifd" title="{% include "camp/help-tifd.html" %}">(?)</a>
+                                                <td>{{ registrationform.0.donation_tifd }}
+
+                                        </tr>
+                                        <!--
+                        <tr><td colspan= align="right"><div class="no-change-message"><button type="submit" id="donatebutton" class="text-white rounded button-sm bg-success ">Donate!</button></div>
+                                        -->
+                                        </table>
+                        </div>
+                </div>
+		{%endcomment%}
+
+
+	<div class="row">
+	<div class="regformbox col mt-9 pt-2">
+        {% for form in regformform_person %}
+	<div id="regform_adult-{{forloop.counter0}}">
+
+	<style>
+	.camperbo label { display:none; }
+	.hidelabel { display:none; }
+	</style>
+			<div class="camperbox bg-light border col mb-4">
+				<A name="adult_{{forloop.counter}}">
+				<!-- CAMPER ID:{{ form.instance.pk }} -->
+                                <div class="row">
+                                        <div class="col-sm-12">
+                                                <h4 class="p-1">Family member #{{forloop.counter}} 
+                                                        {% if forloop.counter0 > 0 %}
+                                                        {%include "camp/delete.html" with type="adult" registration_source=1 %}
+                                                        {%endif%}
+                                                </h4>
+                                        </div>
+                                </div>
+
+				<div class=row>
+					<div class="col-sm-4 form-group"><label class="requiredField"> {{form.first_name.label}}</label>
+						{% if form.first_name.errors %} <span class="is-invalid"> {%endif%}
+						{{ form.first_name }} 
+						</span>
+						{{ form.first_name.errors}}</div>
+					<div class="col-sm-4 form-group"><label class="requiredField">{{form.last_name.label}}</label>
+						{% if form.last_name.errors %} <span class="is-invalid"> {%endif%}
+						{{ form.last_name }} 
+						</span>
+						{{ form.last_name.errors}} </div>
+					<div class="col-sm-2 form-group"><label>{{form.gender.label}}</label>{{ form.gender }} </div> 
+				</div>
+
+				<div class=row>
+					<div class="col-sm-4 form-group"> <label class="requiredField">{{form.email.label}}</label>
+						{% if form.email.errors %} <span class="is-invalid"> {%endif%}
+						{{ form.email }}
+						</span>
+						{{form.email.errors}}</div>
+					<div class="col-sm-4 form-group"> <label class="requiredField">{{form.phone.label}}</label> 
+						{% if form.phone.errors %} <span class="is-invalid"> {%endif%}
+						{{form.phone }} 
+						</span>
+						{{form.phone.errors}}</div>
+				</div>
+				<div class=row>
+				</div>
+
+				<div class=row>
+					<div class="col-sm-5 form-group"> <label class="requiredField">Membership type</label> 
+						{% if form.registration_type.errors %} <span class="is-invalid"> {%endif%}
+					{{form.registration_type}}
+
+					<!--
+					&nbsp;&nbsp;<a href="{% url 'membership:help' %}" target=_new>(Help)</a>
+					-->
+						</span>
+
+					{{form.registration_type.errors}}
+					</div>
+					<div class="col-sm-4 form-group" id="membership_years_{{ forloop.counter0 }}"> <label class="requiredField">{{form.membership_years.label}}</label> 
+						{% if form.membership_years.errors %} <span class="is-invalid"> {%endif%}
+						{{form.membership_years }} 
+						</span>
+						{{form.membership_years.errors}}
+					</div>
+
+
+				</div>
+
+
+
+				{% include "camp/buttons.html" with registration_source=1 type="adult" %}
+		{% for field in form.hidden_fields %} {{ field }} {% endfor %}
+
+	</div>
+
+        {%endfor%}
+
+</div>
+
+ </form>
+</div>
+        <script>
+
+	/*
+	Instead of dynamically creating new forms, have django create extras (forms.py) and then 
+	hide all the extra registration forms with javascript
+		*/
+
+	//Hide the adult regforms
+
+
+	//forms are 0-indexed
+	var start_hiding_adult = 1 
+	//jaymark
+	var start_hiding_child = 1
+
+        for (var counter_adult = start_hiding_adult; counter_adult < 20; counter_adult++) {
+		if ( !$("#id_registration_from_adult-"+counter_adult+"-first_name").val() ) {
+			console.log("hiding adult"+counter_adult);
+        		$( "#regform_adult-"+counter_adult ).hide();
+		}
+        }
+
+
+        for (var counter_child = start_hiding_child; counter_child < 20; counter_child++) {
+
+		//console.log("counter_child"+counter_child);
+		////console.log($("#id_registration_from_child-"+counter_child+"-first_name").val());
+
+		if ( !$("#id_registration_from_child-"+counter_child+"-first_name").val() ) {
+			//console.log("hiding child"+counter_child);
+        		$( "#regform_child-"+counter_child ).hide();
+		}
+        }
+
+
+	//Unhide a form when the button is pressed
+
+        //$('#add_adult').click(function() {
+	function AddAdult() {
+
+                if (typeof $("body").data('counter_adult') === 'undefined') { $("body").data('counter_adult',start_hiding_adult); }
+                counter_adult=$("body").data('counter_adult')
+                	console.log('unhiding adult form id '+$("body").data('counter_adult'));
+                        $( "#regform_adult-"+counter_adult ).show();
+                var counter_adult = $("body").data('counter_adult')+1
+                $("body").data('counter_adult',counter_adult);
+        var counter_adult=counter_adult+1
+	}
+	</script>
+	<script>
+
+        //$('#add_child').click(function() {
+	function AddChild(){
+                if (typeof $("body").data('counter_child') === 'undefined') { $("body").data('counter_child',start_hiding_child); }
+                counter_child=$("body").data('counter_child')
+                        $( "#regform_child-"+counter_child ).show();
+                	console.log('unhiding child form id '+$("body").data('counter_child'));
+                var counter_child = $("body").data('counter_child')+1
+                $("body").data('counter_child',counter_child);
+        var counter_child=counter_child+1
+
+	}
+        </script>
+
+	<script>
+		//housing types user error prevention
+
+		//remove "rooming with adult #1 from the first adult entry
+		$('#registration_from_adult-0-housing_type option[value="13"]').remove()
+		//window.addEventListener('load', function () {
+		//window.scrollTo(0, document.querySelector(".is-invalid").offsetTop+200);
+		//})
+
+	//EDIT VIEW
+	//Unhide any form entry and has data in it
+        //for (var counter = 1; counter < 20; counter++) {
+        //$( "#regform_child-"+counter_chuld ).hide();
+	//	if ( $("#id_membershipunit_from_child-"+3+"-first_name").val() != "" ) {
+	//		alert("showing child"+counter)
+	//		$( "#regform_child-"+counter_child ).show();
+	//	}
+
+	//alerts when submitted
+	   //$("#regform_child-"+counter+" input").change(function() {
+	//	alert("Form changed");
+	 //   });
+        //}
+	</script>
+	
+	<script>
+
+$("#id_form-0-state").val("TX");
+
+$(document).ready(function(){
+	{% if "confirmed" in registration.status.status %}
+	$('#main').find('*').prop('disabled',true);
+	{% endif %}
+  $('[data-toggle="delete-tooltip"]').tooltip();
+  $('[data-toggle="save-tooltip"]').tooltip();
+});
+</script>
+	<script>
+function toggle(className, obj) {
+    var $input = $(obj);
+    if ($input.prop('checked')) $(className).show();
+    else $(className).hide();
+}
+	</script>
+
+
+
+
+
+ <script>
+
+	 //make the details fields required when checkboxes are checked //
+
+        $(document).ready(function(){
+
+		for (var counter_adult = 0; counter_adult < 10; counter_adult++) {
+
+		    $('#id_registration_from_child-'+counter_adult+'-band').click(function(){
+			var thisid = $(this).attr("name").split('-')[1]
+			if($(this).prop("checked") == true){
+				$("#id_registration_from_child-"+thisid+"-instruments").prop("required",true);
+				$("#id_registration_from_child-"+thisid+"-instruments").css("background-color","yellow");
+			}
+			else if($(this).prop("checked") == false){
+				$("#id_registration_from_child-"+thisid+"-instruments").prop("required",false);
+				$("#id_registration_from_child-"+thisid+"-instruments").css("background-color","white");
+			}
+		    });
+
+		    $('#id_registration_from_adult-'+counter_adult+'-certification').click(function(){
+			var thisid = $(this).attr("name").split('-')[1]
+			if($(this).prop("checked") == true){
+				$("#id_registration_from_adult-"+thisid+"-certification_details").prop("required",true);
+				$("#id_registration_from_adult-"+thisid+"-certification_details").css("background-color","yellow");
+			}
+			else if($(this).prop("checked") == false){
+				$("#id_registration_from_adult-"+thisid+"-certification_details").prop("required",false);
+				$("#id_registration_from_adult-"+thisid+"-certification_details").css("background-color","white");
+			}
+		    });
+		    $('#id_registration_from_adult-'+counter_adult+'-medical').click(function(){
+			var thisid = $(this).attr("name").split('-')[1]
+			if($(this).prop("checked") == true){
+				$("#id_registration_from_adult-"+thisid+"-medical_details").prop("required",true);
+				$("#id_registration_from_adult-"+thisid+"-medical_details").css("background-color","yellow");
+			}
+			else if($(this).prop("checked") == false){
+				$("#id_registration_from_adult-"+thisid+"-medical_details").prop("required",false);
+				$("#id_registration_from_adult-"+thisid+"-medical_details").css("background-color","white");
+			}
+		    });
+		    $('#id_registration_from_adult-'+counter_adult+'-mobility').click(function(){
+			var thisid = $(this).attr("name").split('-')[1]
+			if($(this).prop("checked") == true){
+				$("#id_registration_from_adult-"+thisid+"-mobility_details").prop("required",true);
+				$("#id_registration_from_adult-"+thisid+"-mobility_details").css("background-color","yellow");
+			}
+			else if($(this).prop("checked") == false){
+				$("#id_registration_from_adult-"+thisid+"-mobility_details").prop("required",false);
+				$("#id_registration_from_adult-"+thisid+"-mobility_details").css("background-color","white");
+			}
+		    });
+		    $('#id_registration_from_adult-'+counter_adult+'-band').click(function(){
+			var thisid = $(this).attr("name").split('-')[1]
+			if($(this).prop("checked") == true){
+				$("#id_registration_from_adult-"+thisid+"-instruments").prop("required",true);
+				$("#id_registration_from_adult-"+thisid+"-instruments").css("background-color","yellow");
+			}
+			else if($(this).prop("checked") == false){
+				$("#id_registration_from_adult-"+thisid+"-instruments").prop("required",false);
+				$("#id_registration_from_adult-"+thisid+"-instruments").css("background-color","white");
+			}
+		    });
+
+		    $('#id_registration_from_adult-'+counter_adult+'-free_t_shirt').click(function(){
+			var thisid = $(this).attr("name").split('-')[1]
+			if($(this).prop("checked") == true){
+				$("#id_registration_from_adult-"+thisid+"-t_shirt_type").prop("required",true);
+				$("#id_registration_from_adult-"+thisid+"-t_shirt_type").css("background-color","yellow");
+			}
+			else if($(this).prop("checked") == false){
+				$("#id_registration_from_adult-"+thisid+"-t_shirt_type").prop("required",false);
+				$("#id_registration_from_adult-"+thisid+"-t_shirt_type").css("background-color","white");
+			}
+		    });
+
+
+		    $('#id_registration_from_adult-'+counter_adult+'-staff').click(function(){
+			var thisid = $(this).attr("name").split('-')[1]
+			if($(this).prop("checked") == true){
+				$("#id_registration_from_adult-"+thisid+"-staff_position").prop("required",true);
+				$("#id_registration_from_adult-"+thisid+"-staff_position").css("background-color","yellow");
+				$("#staff_position-"+thisid).collapse('show');
+				$("#free_t_shirt-"+thisid).collapse('show');
+			}
+			else if($(this).prop("checked") == false){
+				$("#id_registration_from_adult-"+thisid+"-staff_position").prop("required",false);
+				$("#id_registration_from_adult-"+thisid+"-staff_position").css("background-color","white");
+				$("#free_t_shirt-"+thisid).collapse('hide');
+				//$("#free_t_shirt-0").prop("checked",false);
+				$("#staff_position-"+thisid).collapse('hide');
+			}
+		    });
+
+		}
+        });
+    </script>
+
+
+       <script>
+                //hide the membership_years div if it's a lifetime membership
+        var i;
+        for (i = 0; i < 10; i++) {
+                if ( $("#id_registration_from_adult-"+i+"-registration_type").val() == 109 ) {
+                            $("#membership_years_"+i).hide();
+                }
+        }
+
+        </script>
+
+
+        <script>
+          //unlock the custom donation box when custom donation is checked
+        $(function(){
+            $('select[name*="membership_type"]').trigger('change'); //This event will fire the change event.
+            $('select[name*="registration_type"]').change(function(){
+                var data= $(this).val();
+                var id = $(this).attr('id');
+                var split = id.split("-");
+                var counter = split[1];
+                    console.log("split:",split,"counter:",counter,"data:",data,"id",id);
+
+                    if ( data == 109 ) {
+                            $("#membership_years_"+counter).hide();
+                            //$("#custom_donation_"+counter).removeClass("d-none");
+                    }
+                    else {
+                            $("#membership_years_"+counter).show();
+                            //$("#custom_donation_"+counter).hide();
+                            //$("#id_registration_from_adult-"+counter+"-custom_registration_price").val("0")
+                    }
+            });
+        });
+
+        </script>
+
+
+
+</body>
+

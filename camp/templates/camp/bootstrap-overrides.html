@@ -1,0 +1,47 @@
+<style>
+
+body {
+        color:black;
+        font-size:18px; 
+        }
+table {
+        color:black !important;
+        }
+
+.form-control { 
+	color:black !important;
+}
+
+.is-invalid {
+	font-weight: bold !important;
+
+}
+.is-invalid input{
+	background-color:yellow !important;
+
+}
+.is-invalid select{
+	background-color:yellow !important;
+
+}
+
+@media print
+{
+  div   { page-break-inside:auto; }
+  table { page-break-after:auto !important;}
+  tr    { page-break-inside:avoid!important; page-break-after:auto!important; }
+  td    { page-break-inside:avoid!important; page-break-after:auto!important; }
+  thead { display:table-header-group!important; }
+  tfoot { display:table-footer-group!important; }
+}
+
+.table-nested tbody tr,
+.table-nested tbody tr:hover,
+.table-nested tbody td {
+  background-color:transparent;
+  border:none;
+  padding:2px;
+  margin:2px;
+}
+
+</style>

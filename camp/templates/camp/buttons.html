@@ -1,0 +1,25 @@
+<div class="row">
+	<div class="col text-left">
+		<div class="btn-group list-group-horizontal">
+            <button type="button" class="m-2 btn btn-warning" value="Add More" id="add_{{type}}_{{forloop.counter}}" onclick="Add{{type|capfirst}}(this.id)">
+																			{%if registration_source == 1 %}
+																			Add Member
+																			{%else%}
+																			Add {{type}} camper
+																			{%endif%}
+			</button>
+		</div>
+	</div>
+
+    <div class="col text-right">
+         <div class="btn-group list-group-horizontal text-right "> <button type="submit" title="Save registration form" data-toggle="" class="m-2 btn btn-primary" value="Save">Save and continue</button> </div>
+                                {% if forloop.counter0 >= 0 %}
+                                        {% if form.instance.pk %}
+                                        {%else%}
+         </div>
+                                        {%endif%}
+     </div>
+
+                           {% else %} </div> {%endif%}
+</div>
+

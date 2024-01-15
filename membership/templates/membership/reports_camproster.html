@@ -1,0 +1,70 @@
+{% extends 'membership/bootstrap_header.html' %}
+
+{% block content %}
+
+{% if not pdf_view %}
+
+<div class="d-flex" id="wrapper">
+   {% include "membership/navbar.html" %}
+{% endif %}
+
+{% if pdf_view %}
+	<!-- STYLE FOR THE PDF VIEW ONLY -->
+	<style>
+	th, td {
+	  border-bottom: 1px solid #ddd;
+	padding: 5px;
+	}
+	a {
+	  color: black;
+	  text-decoration:none;
+	}
+	.email { display:noe;}
+	</style>
+
+{% endif %}
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+	<div class="table-responsive">
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
+	<thead><tr>
+			<th align= "left">Name</th>
+			<th align= "left">Home Phone</th>
+			<th align= "left">Home Phone</th>
+			<th align= "left">Address</th>
+			<th align= "left">City State Zip</th>
+			<th align= "center" >Email</th>
+		</tr></thead>
+		<tbody>
+{% for result in result_dict %}
+
+<tr>
+
+
+
+			<td><a href={% url "membership:editcampers" result.person__memunit__id %}?year={% if result.campyear %}{{result.campyear}}{%else%}{{thisyear}}{%endif%}>{{result.person__firstname|capfirst}}&nbsp;{{result.person__lastname|capfirst}}</a></td>
+	<td>{{result.person__memunit__homephone|default_if_none:"&nbsp;"}}</td>
+	<td>{{result.person__workcellphone|default_if_none:"&nbsp;"}}</td>
+	<td>{{result.person__memunit__address1}}<br>{{result.person__memunit__address2|default_if_none:"&nbsp;"}}</td>
+	<td>{{result.person__memunit__city}}, {{result.person__memunit__state}}<br>{{result.person__memunit__zip}} {{result.person__memunit__country|default_if_none:""}}</td>
+	<td>
+		{% if result.person__pubmail is True %}
+		{{result.person__email1|default_if_none:"&nbsp;"}}<br>
+		{% endif %}
+		{% if result.person__pubmail2 is True %}
+		{{result.person__email2|default_if_none:"&nbsp;"}}
+		{% endif %}
+	</td>
+	{% endfor %}
+
+		</tbody></table>
+	</div>
+
+	        {% include "membership/tablesort.html" %}
+
+
+{% endblock %}
+
+</div></div>
+	</div>

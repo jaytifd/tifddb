@@ -1,0 +1,23 @@
+{% include "camp/header.html" %}
+{% include "camp/bootstrap-overrides.html" %}
+
+<div class="container-fluid" >
+        <div class="container bg-white border border-secondary m-5 p-5">
+		<p>Redirecting to paypal..  If this does not work after a few seconds, please try clicking the paypal button below.</p>
+		<p><b>If you have any problems, try logging into paypal first and returning to this page.</b>
+		<p>If you need help, feelfree to contact us at registrar@tifd.org.  For reference, your registration number is: {{registration.id}}</p>
+
+                                 <div class="btn-group list-group-horizontal "> {{ paypal_form.render }} </div>
+
+	<script>
+
+		$( document ).ready(function() {
+		  // Handler for .ready() called.
+		});
+		$(function() {
+		  // Handler for .ready() called.
+		$( "#paypalform" ).submit();
+		});
+	</script>
+
+ </body>

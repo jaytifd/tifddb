@@ -1,0 +1,6 @@
+
+{% for instance in field_names %}
+    {% for field, value in instance.fields.items %}
+    {{ field }}: {{ value }}<br>
+    {% endfor %}
+{% endfor %}

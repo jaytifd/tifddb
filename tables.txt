@@ -1,0 +1,46 @@
+                                                                                     membership_payments
+ camp_camper                                camp_registration                     +-----------------------
+ +-------------------------------           +--------------------------            | Field                |
+ | Field                        |           | Field                   |            +----------------------+
+ +------------------------------+           +-------------------------+            | id                   |
+ | id                           |     +---->| id                      | <----------+ registration_id      |
+ | created_at                   |     |     | transaction_id          |            | date_recd            |
+ | updated_at                   |     |     | address1                |            | cash                 |
+ | adult_or_child               |     |     | city                    |            | check_num            |
+ | first_name                   |     |     | state                   |            | net_amt              |
+ | last_name                    |     |     | zip                     |            | paypal_fee           |
+ | email                        |     |     | country                 |            | waiting_for_deposit  |
+ | phone                        |     |     | donation_bobbi_gillotti |            | who_has_possession   |
+ | gender                       |     |     | donation_floor_fund     |            | deposit_date         |
+ | age                          |     |     | donation_live_music     |            | notes                |
+ | band                         |     |     | donation_tifd           |            | updated_at           |
+ | instruments                  |     |     | rebate_id               |            | created_at           |
+ | share_housing                |     |     | payment                 |            | pp_ipn_name          |
+ | family_program               |     |     | camper_note             |            | pp_ipn_email         |
+ | certification                |     |     | auction_items           |            | pp_ipn_phone         |
+ | certification_details        |     |     | session                 |            | payment_type         |
+ | dvd                          |     |     | payment_type            |            | membership_fee       |
+ | housing_type_id              |     |     | agreecheckbox           |            | years_paid           |
+ | registration_type_id         |     |     | registrar_approval_note |            | bobbi_fund           |
+ | registration_id              +-----+     | created_at              |            | floor_fund           |
+ | publish                      |           | updated_at              |            | music_fund           |
+ | mobility                     |           | address2                |            | general_fund         |
+ | mobility_details             |           | cart_total              |            | camp_fee             |
+ | diet                         |           | paypal_fee              |            | t_shirt_fee          |
+ | diet_details                 |           | paypal_gross            |            | dvd_fee              |
+ | medical_details              |           | registration_status_id  |            | membership_person_id |
+ | medical                      |           | year                    |            | legacy_memid         |
+ | t_shirt_type_id              |           | membership_fee_gross    |            | camp_fund            |
+ | free_t_shirt                 |           | late_fee                |            | housing_fee          |
+ | staff                        |           | adjustment              |            | other_fee            |
+ | staff_position               |           | email_confirmation_sent |            | late_fee             |
+ | housing_assigned             |           | adjustment_note         |            | gross_amt            |
+ | membership_years             |           | postmark                |            | refund_amt           |
+ | join_tifd                    |           | registration_source     |            | shipping_fee         |
+ | custom_registration_price    |           | shipping_fee            |            | pp_ipn_id            |
+ | membership_^alid_from        |           | donation_camp_fund      |            | pp_ipn_txn_id        |
+ | membership_valid_to          |           | donation_chuck          |            | chuck_fund           |
+ | custom_registration_discount |           +-------------------------+            | texakolo_fund        |
+ | need_linen                   |                                                  | gfc_linens           |
+ +------------------------------+                                                  +----------------------+
+

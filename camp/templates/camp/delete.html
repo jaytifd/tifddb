@@ -1,0 +1,85 @@
+                                                <a href="#" title="Delete this camper" class="h5 float-right mr-n3 mt-n1 text-dark align-top" value="Delete-{{forloop.counter0}}" id="delete_{{type}}-{{forloop.counter0}}">
+                                                    <button type="button" class="m-2 btn btn-danger">Delete Camper</button>
+                                                </a>
+
+
+                     {%if type == 'child' %}
+                          <script>
+                              console.log("child");
+						$( "#delete_{{type}}-{{forloop.counter0}}" ).click(function() {
+                          var c=confirm("Are you sure you want to delete this camper?");
+                            if ( c == true ) {
+								$( "#regform_{{type}}-{{forloop.counter0}}" ).hide();
+								//$('#regform_{{type}}-{{forloop.counter0}}').find('input').val('');
+								//$('#regform_{{type}}-{{forloop.counter0}}').find('select').val('');
+								//fooooo
+								$('#regform_{{type}}-{{forloop.counter0}}').find('input').val('');
+
+								//the above input is finding the checkboxes too
+								$("#id_registration_from_{{type}}-{{forloop.counter0}}-join_tifd").val("on");
+								$("#id_registration_from_{{type}}-{{forloop.counter0}}-join_tifd").prop( "checked", true);
+
+
+								//$('#regform_{{type}}-{{forloop.counter0}}').find('checkbox').val('True');
+								$('#id_registration_from_{{type}}-{{forloop.counter0}}-membership_years').val(1);
+
+                                $('#regform_{{type}}-{{forloop.counter0}}').find('#registration_from_child-{{forloop.counter0}}-registration_type').val(11);  //child registration type select
+                                $('#regform_{{type}}-{{forloop.counter0}}').find('#id_registration_from_child-{{forloop.counter0}}-t_shirt_type').val(1);  //child shirt type select
+
+                                $('#regform_{{type}}-{{forloop.counter0}}').find('#id_registration_from_adult-{{forloop.counter0}}-custom_registration_discount').val(0);
+                                $('#regform_{{type}}-{{forloop.counter0}}').find('#id_registration_from_adult-{{forloop.counter0}}-custom_registration_price').val(0);
+
+								 {% if form.instance.pk %}
+								//alert("here");
+								window.location.href = "{% url "camp:deletecamper" registration.id %}?delete_{{type}}={{ form.instance.pk }}"
+								{% endif %}
+								return false;
+                            }
+							else { 
+								return false;
+							}
+
+                                                });
+                          </script>
+                      {%else%}
+                                        <script>
+                              console.log("adult");
+						$( "#delete_{{type}}-{{forloop.counter0}}" ).click(function() {
+                          var c=confirm("Are you sure you want to delete this camper?");
+                            if ( c == true ) {
+								$( "#regform_{{type}}-{{forloop.counter0}}" ).hide();
+								//$('#regform_{{type}}-{{forloop.counter0}}').find('input').val('');
+								//$('#regform_{{type}}-{{forloop.counter0}}').find('select').val('');
+								//fooooo
+								$('#regform_{{type}}-{{forloop.counter0}}').find('input').val('');
+
+								//the above input is finding the checkboxes too
+								$("#id_registration_from_{{type}}-{{forloop.counter0}}-join_tifd").val("on");
+								$("#id_registration_from_{{type}}-{{forloop.counter0}}-join_tifd").prop( "checked", true);
+
+
+								//$('#regform_{{type}}-{{forloop.counter0}}').find('checkbox').val('True');
+								$('#id_registration_from_{{type}}-{{forloop.counter0}}-membership_years').val(1);
+								{% if registration_source == 1 %}
+								$('#regform_{{type}}-{{forloop.counter0}}').find('select').val('107');
+								{% else %}
+								$('#regform_{{type}}-{{forloop.counter0}}').find('select').val(1);  //change this
+                                $('#regform_{{type}}-{{forloop.counter0}}').find('#registration_type-{{forloop.counter0}}').val(1);  //adult registration type select
+								{%endif%}
+
+                                $('#regform_{{type}}-{{forloop.counter0}}').find('#id_registration_from_adult-{{forloop.counter0}}-custom_registration_discount').val(0);
+                                $('#regform_{{type}}-{{forloop.counter0}}').find('#id_registration_from_adult-{{forloop.counter0}}-custom_registration_price').val(0);
+
+								 {% if form.instance.pk %}
+								//alert("here");
+								window.location.href = "{% url "camp:deletecamper" registration.id %}?delete_{{type}}={{ form.instance.pk }}"
+								{% endif %}
+								return false;
+                            }
+							else { 
+								return false;
+							}
+
+                                                });
+                                        </script>
+                   {%endif%}

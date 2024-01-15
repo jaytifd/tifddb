@@ -1,0 +1,80 @@
+                {% load get_verbose %}
+                {% load has_group %}
+
+
+		<!--  
+
+			THIS TEMPLATE IS USED FOR BOTH THE FINAL VIEW AND THE CHECKPAYMENT VIEW
+
+		-->
+
+		<p class="h5 text-black p-2 ">Registration Details&nbsp;</p>
+{% if registration.camper_note %}
+                <table class="table table-sm table-bordered">
+                        <tbody>
+                        <tr class="table-warning">
+				<td width=50% class="" colspan=2><b>Note to registrar</b>
+				<tr><td>{{registration.camper_note}}
+						</table>
+	{% endif %}
+
+{% for r in campers %}
+                <table class="table table-sm table-bordered table-camper" width=100%>
+                        <tbody>
+                        <tr class="table-primary">
+				<td width=50% class="" colspan=2><b>{{r.first_name|capfirst}} {{r.last_name}}</b>  
+
+					{% if not email_view %} 
+					<a class="h6 text-black print-hide" href="
+                                          {% if registration.registration_source == 1 %}
+						{% url 'membership:create' %}{{registration.id}}#adult_{{forloop.counter}}
+                                          {% else %}
+						{% url 'camp:create' %}{{registration.id}}#adult_{{forloop.counter}}
+                                          {%endif%}
+						">{% if read_only is None %}(edit){%endif%}</a>
+					{%endif %}
+
+                        {% if r.gender %}       <tr>            <td width=50%>{% get_verbose_field_name r 'gender' %}<td width=50%>{{r.gender}}{%endif%}
+                        {% if r.email %}<tr>            <td width=50%>{% get_verbose_field_name r 'email' %}<td width=50%>{{r.email}}{%endif%}
+                        {% if r.phone %}<tr>            <td width=50%>{% get_verbose_field_name r 'phone' %}<td width=50%>{{r.phone}}{%endif%}
+                                        <tr>          <td width=50%>Consent to publish?<td width=50%>{{r.publish|yesno:"Yes,No" }}
+                        {% if r.diet_details %}<tr>     <td width=50%>Dietary restrictions<td width=50%>{{r.diet_details.strip}}{%endif%}
+                        {% if r.share_housing %}<tr>    <td width=50%>Share housing with<td width=50%>{{r.share_housing}}{%endif%}
+			{% if r.band or r.instruments %}<tr>             <td width=50%>Band?<td width=50%>Yes, {{r.instruments}}{%endif%}
+			{% if r.staff or r.staff_position %}<tr>             <td width=50%>Camp Staff?<td width=50%>Yes, {{r.staff_position}}{%endif%}
+			{% if r.mobility or r.mobility_details %}<tr>         <td width=50%>Mobility device?<td width=50%>Yes, {{r.mobility_details}}{%endif%}
+			{% if r.medical or r.medical_details %}<tr>          <td width=50%>Has Medical/Allergy?<td width=50%>Yes, {{r.medical_details}}{%endif%}
+			{% if r.certification or r.certification_details %}<tr>            <td width=50%>CPR certification?<td width=50%>Yes, {{r.certification_details}}{%endif%}
+                        {% if r.t_shirt_type %}<tr>          <td width=50%>T-Shirt<td width=50%>{{r.t_shirt_type.description}}{%endif%}
+                        {% if r.dvd %}<tr>              <td width=50%>Dance review video<td width=50%>Yes{%endif%}
+						{% if r.membership_valid_to %}<tr>              <td width=50%><b>Membership valid until</b><td width=50%><b>{{r.membership_valid_to}}</b>{%endif%}
+
+			{% if r.adult_or_child == "child" %}
+			{% if r.age %}<tr>              <td width=50%>Age<td width=50%>{{r.age}}{%endif%}
+				{% if not virtual_camp %}
+			<tr><td width=50%>Family Program?<td width=50%>{% if r.family_program %}Yes{%else%}No{%endif%}
+				{% endif %}
+			{% endif %}
+                </table>
+{% endfor %}
+
+<!--
+{% for r in campers_child %}
+                <table class="table table-sm table-bordered table-camper" width=100%>
+                        <tbody>
+                        <tr class="table-primary">
+				<td width=50% class="" colspan=2><b>{{r.first_name|capfirst}} {{r.last_name}}<b>  
+							{% if not email_view %}
+							<a class="h6 text-black print-hide" href="{% url 'camp:create' %}{{registration.id}}#adult_{{forloop.counter}}">{% if read_only is None %}(edit){%endif%}</a>
+							{% endif %}
+
+                        {% if r.gender %}<tr>           <td width=50%>Gender<td width=50%>{{r.gender}}{%endif%}
+                        {% if r.diet_details %}<tr> <td width=50%>Dietary restrictions<td width=50%>{{r.diet_details.strip}}{%endif%}
+			{% if r.band or r.instruments %}<tr>             <td width=50%>Band?<td width=50%>Yes, {{r.instruments}}{%endif%}
+						<tr><td width=50%>Family Program?<td width=50%>{% if r.family_program %}Yes{%else%}No{%endif%}
+                        {% if r.t_shirt_type %}<tr>          <td width=50%>T-Shirt<td width=50%>{{r.t_shirt_type.description}}{%endif%}
+                        {% if r.dvd %}  <tr>    <td width=50%>DVD<td width=50%>Yes{%endif%}
+                </table>
+{% endfor %}
+-->
+

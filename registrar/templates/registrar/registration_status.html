@@ -1,0 +1,52 @@
+                                {% if campers.0.registration.registration_status.id == 6 or campers.0.registration.registration_status.id == 5 %}
+                                <span class="bg-success text-light font-weight-bold p-2 m-2 rounded text-nowrap" data-toggle="modal" data-target="#mymodal-{{regid}}" title="{{campers.0.registration.registration_status.description}}">{{campers.0.registration.registration_status}}</span>
+
+                                {%elif campers.0.registration.registration_status.id == 3 or campers.0.registration.registration_status.id == 4 %}
+                                <span class="bg-warning text-black font-weight-bold p-2 m-2 rounded text-nowrap" data-toggle="modal" data-target="#mymodal-{{regid}}" title="{{campers.0.registration.registration_status.description}}">{{campers.0.registration.registration_status}}</span>
+                                {%elif campers.0.registration.registration_status.id == 7 %}
+                                <span class="bg-danger text-light font-weight-bold p-2 m-2 rounded text-nowrap" data-toggle="modal" data-target="#mymodal-{{regid}}" title="{{campers.0.registration.registration_status.description}}">{{campers.0.registration.registration_status}}</span>
+                                {%else%}
+                                <span class="bg-secondary text-light font-weight-bold p-2 m-2 rounded text-nowrap" data-toggle="modal" data-target="#mymodal-{{regid}}" title="{{campers.0.registration.registration_status.description}}"> {{campers.0.registration.registration_status}}</span>
+                                {%endif%}
+                                {% if campers.0.registration.email_confirmation_sent %}
+                                        <svg class="bi bi-envelope" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <title>Email sent!</title>
+                                          <path fill-rule="evenodd" d="M14 3H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"/>
+                                          <path d="M.05 3.555C.017 3.698 0 3.847 0 4v.697l5.803 3.546L0 11.801V12c0 .306.069.596.192.856l6.57-4.027L8 9.586l1.239-.757 6.57 4.027c.122-.26.191-.55.191-.856v-.2l-5.803-3.557L16 4.697V4c0-.153-.017-.302-.05-.445L8 8.414.05 3.555z"/>
+                                        </svg>
+                                {%endif%}
+                                <div class="modal fade" id="mymodal-{{regid}}" tabindex="-1" role="dialog" aria-labelledby="mymodalLabel-{{regid}}" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="mymodalLabel-{{regid}}">Modify registration #{{regid}}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+					      <form method=POST action="{% url "registrar:registrar_update" regid %}?return={{return}}">
+                                                      {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <label for="status">Change Status</label>
+                                                            <select class="form-control" id="status" name="status">
+                                                                    {% for option in registration_status_options %}
+                                                                    <option value="{{option.id}}" {% if campers.0.registration.registration_status.id == option.id %} selected="selected" {%endif%} >{{option.status}}
+
+                                                                    </option>
+                                                                    {%endfor %}
+
+                                                            </select>
+                                                         </div>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                              </form>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+
+

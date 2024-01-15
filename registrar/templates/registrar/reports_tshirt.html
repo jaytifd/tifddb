@@ -1,0 +1,78 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+        border-bottom: 1px solid #ddd;
+        padding-top: 3px;
+	font-size:10px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+        <div class="table-responsive">
+		{% if request.GET.q %}
+		<!-- FILTER applied: "{{request.GET.q}}" -->
+	{% endif %}
+	{% if not pdf_view %}
+		Results: {{ result_list|length }}
+          <a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">PDF</button></a> 
+          <a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">CSV</button></a>
+	  {% endif %}
+
+{% if request.GET.q and pdf_view %}
+<p class="h3 bg-warning">Filter applied: "{{ request.GET.q }}"</p>
+{%endif%}
+
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
+        <thead><tr>
+				<th align= "left">Name</th>
+				<th align= "left">Address</th>
+				<th align= "left">Phone</th>
+				<th align= "left">Email</th>
+				<th align= "left">T-shirt</th>
+				<th align= "left">Free?</th>
+				<th align= "left">Registered at</th>
+				<th align= "left">Registration Status?</th>
+                </tr></thead>
+                <tbody>
+
+{% for result in result_dict %}
+
+<tr>
+		<td nowrap>{{result.first_name}}&nbsp;{{result.last_name}} </td>
+		<td nowrap>
+			{{result.registration__address1}}<br>
+			{% if result.registration__address2 %}{{result.registration__address2}}{%endif%}
+			{{result.registration__city}},&nbsp;{{result.registration__state}}&nbsp;{{result.registration__zip}}
+			{% if result.registration__country %}<br>{{result.registration__country}} {%endif%}
+		</td>
+		<td>{{result.phone}}</td>
+		<td width=20% nowrap>{{result.email}}</td>
+		<td>{{result.t_shirt_type__description}}</td>
+		<td width=5% nowrap>{{result.free_t_shirt|yesno:"Yes,No" }}</td>
+		<td nowrap>{{result.registration__created_at|date:"SHORT_DATE_FORMAT"  }}</td>
+		<td >{{result.registration__registration_status__status}}</td>
+</tr>
+{% endfor %}
+
+		</tbody></table>
+	</div>
+
+	{% include "registrar/tablesort.html" %}
+{% endblock %}
+
+
+</div></div>

@@ -1,0 +1,109 @@
+{% extends 'membership/bootstrap_header.html' %}
+
+{% block content %}
+
+{% if not pdf_view %}
+
+<div class="d-flex" id="wrapper">
+   {% include "membership/navbar.html" %}
+{% endif %}
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+        <div class="table-responsive">
+		{% if request.GET.q %}
+		<!-- FILTER applied: "{{request.GET.q}}" -->
+	{% endif %}
+		<small>Results: {{ campers_adult|length }}</small>
+
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
+        <thead>
+		<th>
+		<th>ID
+		<th>Address
+		<th>Adult Campers
+		<th>Registration
+		<th>note
+		<th>Status
+                </thead>
+                <tbody>
+
+
+{% for regid,campers in mycampers.items %}
+
+<!-- Camper Modal popup  -->
+<div class="modal fade" id="mymodal-{{regid}}" tabindex="-1" role="dialog" aria-labelledby="mymodalLabel-{{regid}}" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mymodalLabel-{{regid}}">Modify registration #{{regid}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+	      <form method=POST action="{% url "membership:registrar_update" regid %}">
+		      {% csrf_token %}
+		      <div class="form-group">
+			<label for="paymentinput">Record Payment</label>
+			<input name=payment type="number" class="form-control" id="paymentinput" placeholder="$">
+		      </div>
+		        <div class="form-group">
+			    <label for="status">Change Status</label>
+			    <select class="form-control" id="status" name="status">
+				    {% for option in registration_status_options %}
+				    <option value="{{option.id}}">{{option.status}}</option>
+				    {%endfor %}
+
+			    </select>
+			 </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+	      </form>
+      </div>
+    </div>
+  </div>
+</div>
+	
+
+		<tr>
+			<td><button class="btn-sm btn-primary text-light" data-toggle="modal" data-target="#mymodal-{{regid}}">Manage</button></td>
+			<td><a href="{% url "camp:create_edit" regid %}">{{regid}}</a></td>
+			<td> 
+				{{campers.0.registration.address1}}<br>
+				{% if campers.0.registration.address2 %}
+				{{campers.0.registration.address2}}<br>
+				{%endif %}
+				{{campers.0.registration.city}}
+				{{campers.0.registration.state}}
+				{{campers.0.registration.zip}}
+				
+		<td>
+			{%for camper in campers %}
+			<a nowrap href="/admin/camp/camper_adult/{{camper.id}}">{{camper.first_name}} {{camper.last_name}}</a><br>
+			{% endfor %}
+			<td>
+			{%for camper in campers %}
+			{{camper.registration_type.description}}<br>
+			{% endfor %}
+		<td> {{campers.0.registration.camper_note}}
+			<td> {% if campers.0.registration.registration_status.id == 6 or campers.0.registration.registration_status.id == 5 %}
+				<span class="bg-success text-light font-weight-bold p-2 m-2 rounded">{{campers.0.registration.registration_status}}</span>
+
+				{%elif campers.0.registration.registration_status.id == 3 or campers.0.registration.registration_status.id == 4 %}
+					<span class="bg-warning text-black font-weight-bold p-2 m-2 rounded">{{campers.0.registration.registration_status}}</span>
+				{%elif campers.0.registration.registration_status.id == 7 %}
+					<span class="bg-danger text-light font-weight-bold p-2 m-2 rounded">{{campers.0.registration.registration_status}}</span>
+				{%else%}
+				<span class="bg-secondary text-light font-weight-bold p-2 m-2 rounded"> {{campers.0.registration.registration_status}}</span>
+				{%endif%}
+{% endfor %}
+
+	</tbody></table>
+	</div>
+
+	{% include "membership/tablesort.html" %}
+{% endblock %}

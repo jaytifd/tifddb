@@ -1,0 +1,29 @@
+  <div class="align-center p-0 m-0 text-left bg-white">
+		{% if user.is_authenticated %}
+			<div class="bg-info text-dark"> Logged in as {{ user.username }}</div>
+		{% endif %}
+
+                <div class=row>
+                        <div class="col align-self-end">
+                                <img src="/static/img/TIFD-logo-horiz-blk.png" class="p-1 m-2 img-fluid">
+                        </div>
+                        <span class="align-self-end p-0 m-0">
+                	        <div class="col align-self-end mb-3">
+					<p class="h4 p-0 m-0">Texas Camp {% now "Y" %}</p>
+					<p class="h4 p-0 m-0">{{camp_start}} – {{camp_end}}</p>
+					<p class=h5><b>Four days of international folk dancing and music!</b></p>
+					<p class="h5 d-none text-danger"><b>With virtual options!</b></p>
+                        	</div>
+                        </span>
+                </div>
+                <div class="row">
+			<div class="col-sm-12 h3">
+			<!-- Membership renewal, T-shirt, and Dance review video order form. -->
+		</div>
+			<div class="col-sm-12 h5">
+				<!-- Virtual Texas Camp 2020 is totally free but donations are gladly accepted! -->
+		</div>
+
+</div>
+
+

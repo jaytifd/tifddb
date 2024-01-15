@@ -1,0 +1,79 @@
+{% extends 'membership/bootstrap_header.html' %}
+
+{% block content %}
+
+{% if not pdf_view %}
+
+<div class="d-flex" id="wrapper">
+   {% include "membership/navbar.html" %}
+{% endif %}
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+          border-bottom: 1px solid #ddd;
+        padding: 5px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+        <div class="table-responsive">
+		{% if request.GET.q %}
+		<!-- FILTER applied: "{{request.GET.q}}" -->
+	{% endif %}
+		<small>Results: {{ result_list|length }}</small>
+
+		<a href={% url 'membership:payments_add'%}>Add new payment</a>
+
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
+        <thead><tr>
+			<th>ID
+			<th>Registration
+			<th>Person
+			<th>Date Recv
+			<th>Who has
+			<th>check #
+			<th>PayPal fee
+			<th>Cash
+			<th>Waiting for deposit
+			<th>Notes
+			<th>Total
+
+               </tr>
+	</thead>
+        <tbody>
+
+{% for payment in payments %}
+	
+<tr>
+	<td><a href="{% url "membership:payments_add_edit" payment.id %}">{{payment.id}}</a></td>
+	<td>{{payment.registration}}</td>
+	<td>{{payment.membership_person}}</td>
+	<td>{{payment.date_recd|date:"SHORT_DATE_FORMAT"}}</td>
+	<td>{{payment.who_has_possession}}</td>
+	<td>{{payment.check_num}}</td>
+	<td>{{payment.paypal_fee}}</td>
+	<td>{{payment.cash}}</td>
+	<td>{{payment.waiting_for_deposit}}</td>
+	<td>{{payment.notes}}</td>
+	<td>{{payment.gross_amt}}</td>
+</tr>
+{% endfor %}
+
+		</tbody></table>
+	</div>
+
+	{% include "membership/tablesort.html" %}
+{% endblock %}
+
+
+</div></div>

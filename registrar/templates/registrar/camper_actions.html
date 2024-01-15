@@ -1,0 +1,119 @@
+				<a name="{{forloop.counter}}">
+				<div class="btn-group">
+
+					{% if campers.0.registration.cart_total == campers.0.mypayments_total %}
+						<!--PAID IN FULL -->
+						{% if campers.0.registration.email_confirmation_sent %}
+                        <!-- EMAIL CONF SENT -->
+						<a nowrap class="btn bg-success btn-group rounded-left text-light text-nowrap ">Complete!</a>
+                          <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{%else%}
+							<a nowrap class="bg-primary btn text-light text-nowrap rounded-left"href="{% url "registrar:approve" regid %}">
+							Send Conf Email
+							</a>
+                          <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						{%endif%}
+
+					{% elif campers.0.registration.cart_total < campers.0.mypayments_total %}
+						<a nowrap class="bg-primary text-light btn btn-group rounded-left text-nowrap" href="{% url "registrar:approve" regid %}">Send Conf Email</a>
+                          <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<!-- OVERPAID -->
+					{% elif campers.0.mypayments_total == 0 %}
+						<!-- NOT PAID OR UNDERPAID -->
+						  <a class="bg-primary text-light btn btn-group rounded-left text-nowrap" href="#" data-toggle="modal" data-target="#qk-mymodal-{{regid}}"><b>Quick Payment</b></a>
+                          <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  <!--  <a class="bg-primary text-light btn btn-group rounded-left text-nowrap" href="{% url "registrar:payments_add" %}?registration_id={{regid}}">Add Payment</a> -->
+					{%else %}
+						  <a class="bg-primary text-light btn btn-group rounded-left text-nowrap" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}"><b>Itemize Payment</b></a>
+                          <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{%endif%}
+
+			{% if not campers.0.registration.email_confirmation_sent_no %}
+		  </button>
+				  <div class="dropdown-menu">
+					  <div class="list-group">
+						  <a class="dropdown-item" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}">Itemize Payment</a>
+						  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#qk-mymodal-{{regid}}"><b>Quick Payment</b></a>
+						  <a class="dropdown-item" href="{% url "registrar:approve" regid %}?year={{thisyear}}">Send Conf Email</a>
+						  <a class="dropdown-item" href="#"><hr></a>
+						  <a class="dropdown-item" id="delete_{{forloop.counter0}}"href="{% url "camp:delete_entire_registration" regid %}?year={{thisyear}}">Delete Registration</a>
+
+						  <a class="dropdown-item" href="{% url "registrar:donationletter" regid %}?year={{thisyear}}">Create Donation Letter</a>
+						  <a class="dropdown-item" href="{% url "camp:create_edit" regid %}">Edit registration form page1</a>
+						  <a class="dropdown-item" href="{% url "camp:confirm" regid %}">Edit registration form page2</a>
+						  <a class="dropdown-item" href="{% url "registrar:refund" regid %}?year={{thisyear}}">Refund</a>
+						  <a class="dropdown-item d-none" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}">Add Payment - custom itemization</a>
+                              {% comment %}
+                                There could be more than one payment 
+                              {%endcomment%}
+						  {%for payment in campers.0.mypayments %}
+						  	{% if payment.pp_ipn_id %}
+						  		<a class="dropdown-item" id="delete_{{forloop.counter0}}"href="{% url "registrar:ipn_view" payment.pp_ipn_id %}">View PayPal IPN debug info</a>
+						  	{%endif%}
+						  {%endfor %}
+
+					  </div>
+				  </div>
+
+				</div>
+		{%endif%}
+			                 <script>
+                                                $( "#delete_{{forloop.counter0}}" ).click(function() {
+                                                        var c=confirm("Are you sure you want to delete the entire registration?  This cannot be undone.");
+                                                        if ( c == true ) {
+                                                                return true;
+                                                        }
+                                                        else {
+                                                                return false;
+                                                        }
+
+                                                });
+					</script>
+
+	                         <div class="modal fade" id="qk-mymodal-{{regid}}" tabindex="-1" role="dialog" aria-labelledby="mymodalLabel-{{regid}}" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="mymodalLabel-{{regid}}">Add quick payment #{{regid}}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+					      <form method=POST action="{% url "registrar:payments_quick" regid %}?return={{return}}">
+                                                      {% csrf_token %}
+                                                        <div class="form-group">
+								<div class="row">
+									<div class="col">
+									<label>Amount</label>
+									<input readonly type="text" name="qp_total" value="{{campers.0.registration.cart_total|stringformat:".02F"}}" class="form-control" autocomplete="off" required>
+									</div>
+									<div class="col">
+										<label>Type</label>
+									    <select class="form-control" id="status" name="status">
+										{% for key,val in PAYMENT_TYPES %}
+										    <option value="{{key}}" {% if key == "1" %} selected="selected" {%endif%} >{{val}}
+											</option>
+										{%endfor %}
+									    </select>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+									</div>
+									<div class="col mt-2">
+									<label>Check #</label>
+									<input type="text" name="qp_checknum" value="" class="form-control" autocomplete="off" required>
+									</div>
+								</div>
+                                                         </div>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                              </form>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+

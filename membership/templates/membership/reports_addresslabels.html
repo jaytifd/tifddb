@@ -1,0 +1,85 @@
+{% extends 'membership/bootstrap_header.html' %}
+
+{% block content %}
+
+
+<!--
+<div class="col s12">
+<h3> Year: {{ thisyear }}</h3>
+</div>
+-->
+
+{% if not pdf_view %}
+
+
+
+{% endif %}
+
+{% if pdf_view %}
+
+	<!-- STYLE FOR THE PDF VIEW ONLY -->
+	<style>
+
+	.outer  {
+	padding: 10px;
+		font-size:13px;
+	}
+	.addresslabel {
+	padding: 1px;
+		border: none;
+	}
+	a {
+	  color: black;
+	  text-decoration:none;
+	}
+	.email { display:noe;}
+
+	</style>
+
+
+<table class="outer">
+
+
+	{% for result in result_dict %}
+	{% if forloop.counter0|divisibleby:3 %}<tr class="outer">{%endif%}
+	<td class="outer" valign="top">
+		<table class="addresslabel">
+			<tr><td class=addresslabel>{{result.mailingname|capfirst}}</td>
+			<tr><td class=addresslabel>{{result.address1|default_if_none:"&nbsp;"}}</td>
+			 {% if result.address2 %}
+			 <tr><td class=addresslabel>{{result.address2|default_if_none:"&nbsp;"}}
+			{% endif %}
+			<tr><td class=addresslabel>{{result.city|default_if_none:"&nbsp;"}} {{result.state|default_if_none:"&nbsp;"}} {{result.zip|default_if_none:"&nbsp;"}} 
+			 {% if result.country %}
+			 <tr><td class=addresslabel>{{result.country}}
+			{% endif %}
+		</table>
+	{%endfor%}
+
+{% else %}
+		
+                    <small>Results: {{ result_list|length }}</small>
+<div class="row">
+
+
+
+{% for result in result_dict %}
+
+	 		<div class="col-md-4 mb-5">
+				{{result.mailingname|capfirst}}<br>
+				{{result.address1|default_if_none:"&nbsp;"}}<br>
+					 {% if result.address2 %}
+					{{result.address2|default_if_none:"&nbsp;"}}
+					{% endif %}
+			 {{result.city|default_if_none:"&nbsp;"}} {{result.state|default_if_none:"&nbsp;"}} {{result.zip|default_if_none:"&nbsp;"}} 
+			 {% if result.country %}<br>{{result.country}} {% endif %}
+			 <br>
+			</div>
+	{% endfor %}
+	</div>
+
+
+	{% endif %}
+{% endblock %}
+
+</div></div>

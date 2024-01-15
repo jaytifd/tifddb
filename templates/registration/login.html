@@ -1,0 +1,52 @@
+
+{% include "camp/header.html" %}
+{% block content %}
+
+  {% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+  {% endif %}
+  
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p class="warn">Your account doesn't have access to this page. To proceed,
+      please login with an account that has access.</p>
+    {% else %}
+      <p>Please login to see this page.</p>
+    {% endif %}
+  {% endif %}
+  
+
+
+
+
+
+
+<div class="container">
+ 
+      <form class="form-signin" action="" method="post" id="login-form">{% csrf_token %}
+    <div class="row">
+       <div class="col-sm-1">{{ form.username.label_tag }}</div>
+        <div class="col-sm-3">{{ form.username }}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-1"> {{ form.password.label_tag }}</div>
+        <div class="col-sm-3">{{ form.password }}</div>
+    </div>
+    <div class="row">
+        <div class="col">
+                <button class="btn col-sm-2 btn-primary btn-block" type="submit">Sign in</button>
+        </div>
+        <div class="col-sm-3 checkbox d-none">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+    </div>
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
+  
+  {# Assumes you setup the password_reset view in your URLconf #}
+  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+  
+{% endblock %}
+</div> <!-- /container -->

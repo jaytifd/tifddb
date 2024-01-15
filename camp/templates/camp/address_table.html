@@ -1,0 +1,30 @@
+                        <div class="w-100 address ml-3">
+                                <table class="w-100 table-sm ">
+                                        <thead>
+                                                <th colspan=2 class="table-primary text-center ">Mailing address <a class="" href="
+                      {% if registration.registration_source == 1 %}
+                      {% url 'membership:create' %}{{registration.id}}
+                      {% else %}
+                      {% url 'camp:create' %}{{registration.id}}
+                      {%endif%}
+                                                        ">(edit)</a>
+
+                                        </thead>
+                                        <tbody>
+                                        <tr><td style="padding:1px;">
+                                        {% for r in campers %}
+                                        <span class="font-weight-bold" style="font-family:monospace;">{{r.first_name}} {{r.last_name}}{% if not forloop.last%},{%endif%}</span>
+                                                {%endfor %}
+
+                                                <tr><td style="padding:1px; font-family:monospace;">{{ registration.address1 }}
+                                                                {% if registration.address2 %}<tr><td style="font-family:monospace; padding:1px;">{{ registration.address2 }}{%endif%}
+                                                <tr><td style="font-family:monospace; padding:1px;">{{ registration.city }},
+                                                                {{ registration.state }}
+                                                                {{ registration.zip }} {% if registration.country %}{{ registration.country }}{%endif%}
+                                                </span>
+                                        </tbody>
+                                </table>
+
+                                <!-- Transaction_id: {{registration.transaction_id}} -->
+                        </div>
+

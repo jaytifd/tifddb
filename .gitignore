@@ -1,0 +1,44 @@
+# Django #
+tmp
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+settings.py
+my.cnf
+.my.cnf
+*.db
+*.sh
+*.sql
+*.sw?
+*.pyc
+*.gz
+*pyc
+debuglog.txt
+
+# Distribution / packaging
+.Python build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.whl
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+

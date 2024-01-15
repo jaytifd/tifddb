@@ -1,0 +1,34 @@
+        <nav id="sidebar">
+
+            <div class="col-sm-0 p-2 m-0">
+                  <div class="card" style="width: 18rem;">
+                  <div class="card-header">
+                          Admin functions
+                  </div>
+                  <ul class="list-group list-group-flush">
+			  <li class="list-group-item"><a href="{% url "membership:registrar" %}?year={{thisyear}}">Manage {{thisyear}} camp registrations</a><br>
+			  <li class="list-group-item"><a href="{% url "membership:reports_by_slug" "camproster" %}?year={{thisyear}}">List of campers for {{thisyear}}</a><br>
+				  <li class="list-group-item"><a href="{% url "membership:editcampers" %}">Edit a camp registration</a></li>
+					  <li class="list-group-item"><a href="{% url "membership:payments" %}">Manage Payments</a></li>
+                          <li class="list-group-item"><a href="/admin/membership/membershipmemunitproxy/add/">Add TIFD members</a></li>
+				  <li class="list-group-item"><a href="{% url "membership:memunit_add" %}">Add camper - NEW MEMBER</a></li>
+                          <li class="list-group-item"><a href="/membership/">List of TIFD members in current standing</a></li>
+                          <li class="list-group-item"><a href="/newcampers">Add camper - EXISTING MEMBER</a></li>
+                  </ul>
+                  </div>
+
+            </div>
+
+            <div class="col-sm-0 p-2 m-0">
+                  <div class="card" style="width: 18rem;">
+                  <div class="card-header">
+                          Reports for {{thisyear}}
+                  </div>
+                  <ul class="list-group list-group-flush">
+                  {% for r in reports %}
+                  <li class="list-group-item"><a href="{% url 'membership:reports_home' %}/{{r.slug}}{% if request.GET.year %}?year={{request.GET.year}}{%endif%}">{{r.title}}</a><br><small>{{r.description}}</small></li>
+                   {% endfor %}
+                  </ul>
+                </div>
+            </div>
+        </nav>

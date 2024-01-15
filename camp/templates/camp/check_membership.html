@@ -1,0 +1,107 @@
+{% include "camp/header.html" %}
+{% include "camp/bootstrap-overrides.html" %}
+
+<style>
+.border-3 {
+    border-width:3px !important;
+}
+.border-4 {
+    border-width:4px !important;
+}
+.border-2 {
+    border-width:2px !important;
+}
+
+.asteriskField { display:none; }
+.requiredField { color:red; font-weight:bold;}
+
+
+</style>
+
+
+<div class="container-fluid" style="background-color:#e6e6e6" >
+<div class="container bg-white border border-secondary">
+	{%include "camp/check_membership_header.html" %}
+	<div class="row d-none">
+		<div class="col">
+    			Need to renew? <a href="{% url "membership:create" %}">Click here</a> to renew your TIFD membership online.
+		</div>
+	</div>
+
+   {% if data.failed_search %}
+   <div class="row">
+       <div class="col">
+           <div class=jumbotron>
+               <p class=h5>
+               Sorry, there was no membership record found under "{{data.first_name}} {{data.last_name}}".<br>
+               <br>Perhaps it was misspelled?   
+               <a href="{% url "camp:check_membership" %}">Try again</a> or contact <a href=mailto:registrar@tifd.org>registrar@tifd.org</a> if this might be a mistake.</p>
+               </p>
+	<div class="row">
+		<div class="col">
+    			Need to renew? <a href="{% url "membership:create" %}">Click here</a> to renew your TIFD membership online.
+		</div>
+	</div>
+       </div>
+   </div>
+   {% elif data.first_name %}
+   <div class="row">
+       <div class="col">
+           <table class="table table-responsive">
+		   <!-- <caption class="text-dark">Membership record found</caption> -->
+               <thead>
+
+                   <tr>
+                       <th>First</th>
+                       <th>Last</th>
+                       <th>Membership expiration date</th>
+                       <th>Membership source</th>
+                   </tr>
+               </thead>
+               <tbody>
+                   <tr>
+                       <td>{{data.first_name}}</td>
+                       <td>{{data.last_name}}</td>
+                       <td>{{data.membership_valid_to}}</td>
+                       <td>{{data.registration_source}}</td>
+                   </tr>
+               </tbody>
+           </table>
+
+       </div>
+   </div>
+	<div class="row">
+		<div class="col">
+    			Need to renew? <a href="{% url "membership:create" %}">Click here</a> to renew your TIFD membership online.
+		</div>
+	</div>
+
+   {% else %}
+   <div class="row mt-1">
+	   <div class="col">
+<form id=main method=POST action="">
+	  {% csrf_token %}
+      <b>Enter your first and last name to look up your TIFD membership expiration date.</b> If you notice any disceprencies in your membership record or have any questions feel free to email <b>registrar [at] tifd.org</b></a> 
+	   </div>
+   </div>
+   <div class="row m-1 p-2">
+	   <div class="col">
+		  <div class="form-group col-sm-3">
+		    <label for="first_name">First Name</label>
+		    <input type="text" name="first_name" class="form-control" id="first_name" aria-describedby="first_name_help" placeholder="first name">
+		    <small id="first_name_help" class="d-none form-text text-muted">First name</small>
+		  </div>
+		  <div class="form-group col-sm-3">
+		    <label for="last_name">Last Name</label>
+		    <input type="text" name="last_name" class="form-control" id="last_name" aria-describedby="last_name_help" placeholder="last name">
+		    <small id="last_name_help" class="d-none form-text text-muted">Last name</small>
+		  </div>
+		    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+		</form>
+{%endif%}
+	   </div>
+   </div>
+
+</body>
+
+

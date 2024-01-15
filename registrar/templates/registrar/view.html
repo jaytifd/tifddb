@@ -1,0 +1,91 @@
+{% include "camp/header.html" %}
+<style>
+.change-message {
+    display: none;
+}
+
+</style>
+
+        <div class="container bg-white border border-secondary">
+
+
+	<div class="row">
+		<div class="col-sm-5 text-dark">
+			<table class="table responsive border">
+				<tr>
+					<td>updated at</td>
+					<td>{{registration.updated_at}}</td>
+				</tr>
+				<tr>
+					<td>created at</td>
+					<td>{{registration.created_at}}</td>
+				</tr>
+				{% if registration.camper_note %}
+				<tr> <td>note<td>{{registration.camper_note}}</tr>
+				{%endif%}
+			</table>
+		</div>
+		<div class="col-sm-5 text-dark">
+		                        {%include "camp/address_table.html" %}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col"><hr></div>
+	</div>
+	<div class=row>
+       		 <div class="col text-dark">
+			{% include "camp/shopping_cart_table.html" %}
+		</div>
+
+		<div class="col text-dark">
+				{% include "camp/campers_table.html" %}
+		</div>
+
+	</div>
+        <div class="row">
+        <div class="col">
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#details" aria-expanded="false" aria-controls="details">
+    More
+  </button>
+  </div>
+  </div>
+
+	<div class="row collapse" id="details">
+		<div class="col">
+				<caption>REGISTRATION</caption>
+				<table class="table border">
+				{%for key,val in registration_dict.items%}
+				{% if val %}
+					<tr><td>{{key}}<td>{{val}}</tr>
+				{%endif%}
+				{%endfor %}
+				</table>
+		</div>
+		<div class="col">
+			{% for c in campers_list %}
+			<caption>Camper {{forloop.counter}}</caption>
+				<table class="table border">
+				{%for key,val in c.items%}
+				{% if val %}
+					<tr><td>{{key}}<td>{{val}}</tr>
+				{%endif%}
+				{%endfor %}
+				</table>
+			{%endfor %}
+		</div>
+		<div class="col">
+			{% for p in payments_list %}
+			<caption>Payment {{forloop.counter}}</caption>
+				<table class="table border">
+				{%for key,val in p.items%}
+				{% if val %}
+					<tr><td>{{key}}<td>{{val}}</tr>
+				{%endif%}
+				{%endfor %}
+				</table>
+			{%endfor %}
+		</div>
+	</div>
+
+
+	</body>

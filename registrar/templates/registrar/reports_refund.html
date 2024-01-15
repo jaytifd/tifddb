@@ -1,0 +1,77 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+        border-bottom: 1px solid #ddd;
+        padding-top: 3px;
+	font-size:12px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+        <div class="table-responsive">
+		{% if request.GET.q %}
+		<!-- FILTER applied: "{{request.GET.q}}" -->
+	{% endif %}
+	{% if not pdf_view %}
+		Results: {{ payments|length }}
+		Gross total: {{ total_gross }}
+          <a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">PDF</button></a> 
+          <a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">CSV</button></a>
+	  {% endif %}
+
+{% if request.GET.q and pdf_view %}
+<p class="h3 bg-warning">Filter applied: "{{ request.GET.q }}"</p>
+{%endif%}
+
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
+        <thead><tr>
+				<th align= "left">Registration</th>
+				<th align= "left">PP IPN</th>
+				<th align= "left">pmt.Gross</th>
+				<th align= "left">pmt.mem</th>
+				<th align= "left">pmt.PPfee</th>
+				<th align= "left">pmt.refund</th>
+				<th align= "left">cart_total</th>
+                </tr></thead>
+                <tbody>
+
+{% for result in payments %}
+
+<tr>
+	<td nowrap>
+		<a href="{% url "registrar:payments_add_edit" result.pk%}">{{result.registration}}</a>
+	</td>
+	<td nowrap>
+		&nbsp;[<a href="https://www.paypal.com/activity/payment/{{result.pp_ipn_txn_id}}">{{result.pp_ipn_txn_id}}</a>]
+	</td>
+
+	<td nowrap>{{result.gross_amt}} </td>
+	<td nowrap>{{result.membership_fee}} </td>
+	<td nowrap>{{result.paypal_fee}} </td>
+	<td nowrap>{{result.refund_amt}} </td>
+	<td nowrap>{{result.registration.cart_total}} </td>
+</tr>
+{% endfor %}
+
+		</tbody></table>
+	</div>
+
+	{% include "registrar/tablesort.html" %}
+{% endblock %}
+
+
+</div></div>

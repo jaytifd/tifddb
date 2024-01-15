@@ -1,0 +1,126 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+        border-bottom: 1px solid #ddd;
+        padding-top: 3px;
+	font-size:12px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container">
+<div class="row">
+<div class="col-sm-12">
+        <div class="table-responsive">
+		{% if request.GET.q %}
+		<!-- FILTER applied: "{{request.GET.q}}" -->
+	{% endif %}
+	<p class="h3 text-center">{{page_title}}</p>
+	{% if not pdf_view %}
+		Results: {{ result_list|length }}
+          <a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">PDF</button></a> 
+          <a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">CSV</button></a>
+	  {% endif %}
+
+{% if request.GET.q and pdf_view %}
+<p class="h3 bg-warning">Filter applied: "{{ request.GET.q }}"</p>
+{%endif%}
+
+	<script>
+		$(document).ready(function () {
+$('#reporttable').DataTable({
+"scrollY": "50vh",
+"scrollCollapse": true,
+});
+$('.dataTables_length').addClass('bs-select');
+});
+	</script>
+
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter table-sm" id=reporttable>
+        <thead><tr>
+			{% for h in headers %}
+                {% if h not in hidden_fields %}
+                    {% if forloop.counter == 2 %}
+                    <th>Name</th>
+                    {% endif %}
+                    {% if forloop.counter > 2 %}
+                    <th class="text-nowrap" align= "left">{{h|capfirst}}</th>
+                    {% endif %}
+               {% endif %}
+			{% endfor %}
+                </tr></thead>
+                <tbody>
+
+{% for result in result_dict %}
+<tr>
+	{% for key,value in result.items %}
+		{% if key not in hidden_fields %} 
+			{% if forloop.counter == 2 %}
+			<td>
+                {%if result.registration %} {% comment %}  -- NOT a donation -- {%endcomment%}
+                    {%if request.path == '/registrar/reports/member_search' %}
+                        {%if result.registration__registration_source == 1 %}
+                            <a href="{% url "membership:create" %}?renewid={{result.registration}}">
+                        {% else %}
+                             <a href="{% url "camp:create" %}?renewid={{result.registration}}">
+                        {%endif%}
+                    {%else%}
+					    <a href="{% url "registrar:view" result.registration %}?year={% if result.campyear %}{{result.campyear}}{%else%}{{thisyear}}{%endif%}">
+                    {%endif%}
+                        {{result.last_name}},&nbsp;{{result.first_name}}
+                {%elif result.donations_report %} {% comment %}  -- a donation -- {%endcomment%}
+					    <a href="{% url "registrar:payments_add_edit" result.id %}?year={% if result.campyear %}{{result.campyear}}{%else%}{{thisyear}}{%endif%}">
+                        {{result.last_name}},&nbsp;{{result.first_name}}
+				{%elif result.membership_address %}
+					{{result.last_name}},&nbsp;{{result.first_name}}
+					<!-- <a href="{% url "registrar:view" result.membership_address %}?year={% if result.campyear %}{{result.campyear}}{%else%}{{thisyear}}{%endif%}">{{result.last_name}},&nbsp;{{result.first_name}}
+	     				-->
+				{%else%}
+					{{result.last_name}},&nbsp;{{result.first_name}}
+				{%endif%}
+			</td>
+			{%endif%}
+
+			{% if forloop.counter > 3 %}
+				<td>
+						{% if value is True %}Yes{% elif value is False %}No{% else %}
+						{% if "ostmark" in key or "date" in key or "ed_at" in key or "valid_to" in key%}
+                            {% if value.year > 2900 %} 
+                                LIFE
+                            {% else %}
+							    {{value|date:'Y-m-d'}}
+                            {% endif %}
+
+							{% elif "note" in key %}
+							<small>{{value|default_if_none:""}}</small>
+							{% else %}
+							{{value|default_if_none:""}}
+						{%endif%}
+						{%endif%}
+				</td>
+			{% endif %}
+		</a>
+		{% endif %}
+	 {% endfor %}
+</tr>
+{% endfor %}
+
+		</tbody></table>
+	</div>
+
+	{% include "registrar/tablesort.html" %}
+{% endblock %}
+
+
+</div></div>

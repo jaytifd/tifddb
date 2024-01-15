@@ -1,0 +1,22 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+        {% if user.is_authenticated %}
+                     You are logged in as {{user.username|title}}
+		     <h3>Home Page</h3>
+
+    {% include "registrar/year_selector.html" %}
+
+<div class="row">
+    <div class="col-sm-3">
+    <form method='GET'>
+  <input type='text' name='q' value='{{ request.GET.q }}'>
+  <input class="button" type='submit' value="Search">
+</form>
+
+
+</div>
+
+{%endif%}
+{% endblock %}

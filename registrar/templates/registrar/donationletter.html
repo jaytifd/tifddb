@@ -1,0 +1,102 @@
+{% include 'camp/header.html' %}
+
+{% if pdf_view %}
+
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+	body { margin: 25px 25px 25px 25px !important; 
+		font-size: 16px;
+	}
+
+	.addresslabel td { 
+			border-left: 1px solid black !important;
+			padding-left: 10px; 
+	}
+
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+
+
+<div class="container {%if not pdf_view%}border{%endif%}">
+
+{% if not pdf_view %}
+<a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">Generate PDF</button></a>
+{%endif%}
+
+<div class="row">
+	<div class="col">
+	<img src="http://register.tifd.org/static/img/TIFD-logo-horiz-blk.png" width=400px>
+	</div>
+</div>
+	<div class="row">
+		<div class="col">
+			PO Box 4516. Austin, TX 78765<br>
+	{% now "F jS Y" %}
+		</div>
+	</div>
+
+<div class="row mt-3">
+	<div class="col">
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-4 ml-1 mt-1 p-3 " >
+	       <table class="addresslabel p-5" >
+		       <tr><td>
+	{% for camper in campers %}
+	{{camper.first_name|capfirst}} {{camper.last_name}}{% if not forloop.last%} &amp; {%endif%}
+	{%endfor%}
+		<tr><td class=addresslabel nowrap>{{registration.address1|default_if_none:"&nbsp;"}}</td>
+		 {% if registration.address2 %}
+		 <tr><td class=addresslabel nowrap>{{registration.address2|default_if_none:"&nbsp;"}}
+		{% endif %}
+		<tr><td class=addresslabel nowrap>{{registration.city|default_if_none:"&nbsp;"}}, {{registration.state|default_if_none:"&nbsp;"}} {{registration.zip|default_if_none:"&nbsp;"}}
+		 {% if registration.country %}
+		 <tr><td class=addresslabel nowrap>{{registration.country}}
+		{% endif %}
+	</table>
+
+	</div>
+</div>
+<div class="row mt-5 m-9 p-9">
+	<div class="col-sm-5">
+	Dear
+        {% for camper in campers %}
+	{{camper.first_name|capfirst}} {{camper.last_name}}{% if not forloop.last%} &amp; {%endif%}{%endfor%},<br><br>
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+	On behalf of our members, the Texas International Folk Dancers Board of Trustees would like to express our deep appreciation for your generous donations in {%now "Y"%}.<br>
+	</div>
+</div>
+<div class="row">
+	<div class="col mt-4">
+		<caption>Donation summary for {%now "Y"%}:</caption>
+	<table class="table w-50">
+		{%for key,val in donations.items %} <tr> {% if val %}<td>{{key}}<td>${{val}}</tr>{%endif%} {%endfor%}
+				<tr><td><b>Total donations for {%now "Y"%}	</b><td><b>${{donations_total}}</b></tr>
+				<tr><td><td>
+	</table>
+
+	</div>
+</div>
+<div class="row">
+	<div class="col mt-4">
+
+	Texas International Folk Dancers is a non-profit, tax-exempt corporation under 501(c)(3). This means that your membership dues and donations made to TIFD are tax deductible to the extent allowed by law. In compliance with IRS regulations, this letter serves as verification that you received no goods or services in exchange for your donations.<br><br>
+
+	Thank you again!<br><br>
+
+Sincerely,<br><br>
+
+{{treasurer}}
+
+</div></div>

@@ -1,0 +1,27 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+
+<!--
+<div class="d-flex" id="wrapper">
+-->
+<div class="container-fluid">
+	<div class=row>
+	<div class="col-sm-3 mr-3 ">
+			<ul class=list-group>
+				<li class="list-group-item active">Payment instructions</li>
+				<li class=list-group-item>Itemize the payment fields until the <b>remaining balance</b> field is zero.  The itemization fields are be automatically populted and hopefully do not need changes</li> 
+				<li class=list-group-item>Registrar price adjustments should be done <b>before</b> saving the payment.</li>
+				<li class=list-group-item>All the itemized "fee" fields are pre filled-in based on the shopping cart contents.  They are dynamically added up to the <b>gross</b> amount and deducted from the remaining balance.</li>
+				<li class=list-group-item>If camper has overpaid, add the overage to the <b>refund</b> box.</li>
+				<li class=list-group-item><b>Refunds:</b><br>
+					To do a refund, add the refund amount to the refund box.  Then fix up the camp/membership to reflect the changes.  For example, if a camper cancels a t-shirt, add 18 to the refund box.  Leave 18 in the t-shirt box, and then edit the registration and remove the t-shirt from the order.
+				</li>
+
+
+	</div>
+
+{% endblock %}
+
+

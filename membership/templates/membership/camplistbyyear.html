@@ -1,0 +1,104 @@
+{% extends 'membership/base.html' %}
+
+
+{% block content %}
+
+<!--
+<form method='GET'>
+  <input type='text' name='q' value='{{ request.GET.q }}'>
+  <input class="button" type='submit' value="Search Memunit">
+</form>
+-->
+
+<form method="GET">
+<select name="year">
+{% for entry in years %}
+    <option value="{{ entry.year }}">{{ entry.year }}</option>
+{% endfor %}
+</select>
+  <input class="button" type='submit' value="Filter Year">
+</form>
+
+<pre>
+
+foo
+{% for x in object_list.memunit.all %}
+mailingname: {{ x.mailingname }}
+{% endfor %}
+{% for x in object_list.person.all %}
+person {{ x.firstname }}
+{% endfor %}
+
+</pre>
+
+<table>
+
+<th>id</th>
+<th>memunit_id</th>
+<th>Year</th>
+<th>Postmark</th>
+<th>SecondPage</th>
+<th>ExpLateFee</th>
+<th>Received</th>
+<th>RegNum</th>
+<th>ConfirmSent</th>
+<th>MobilityAssistanceDevice</th>
+<th>HousingPref</th>
+<th>HousingPref2</th>
+<th>HousingNotes</th>
+<th>QualifyAsFamily</th>
+<th>HousingFee</th>
+<th>NumSingers</th>
+<th>NumSyllabi</th>
+<th>ExpCampFees</th>
+<th>ExpShirtFees</th>
+<th>MembershipRebate</th>
+<th>MembershipFee</th>
+<th>NumVHS</th>
+<th>NumDVD</th>
+<th>Adjustment</th>
+<th>RefundRequested</th>
+<th>PaymentRequested</th>
+<th>MemYearAtStart</th>
+<th>Notes</th>
+
+{% for i in object_list %}
+<tr>
+<td>
+	{{ i.memunit.mailingname }}
+<td>{{ i.id }}</td>
+<td>{{ i.memunit_id }}</td>
+<td>{{ i.year }}</td>
+<td>{{ i.postmark }}</td>
+<td>{{ i.secondpage }}</td>
+<td>{{ i.explatefee }}</td>
+<td>{{ i.received }}</td>
+<td>{{ i.regnum }}</td>
+<td>{{ i.confirmsent }}</td>
+<td>{{ i.mobilityassistancedevice }}</td>
+<td>{{ i.housingpref }}</td>
+<td>{{ i.housingpref2 }}</td>
+<td>{{ i.housingnotes }}</td>
+<td>{{ i.qualifyasfamily }}</td>
+<td>{{ i.housingfee }}</td>
+<td>{{ i.numsingers }}</td>
+<td>{{ i.numsyllabi }}</td>
+<td>{{ i.expcampfees }}</td>
+<td>{{ i.expshirtfees }}</td>
+<td>{{ i.membershiprebate }}</td>
+<td>{{ i.membershipfee }}</td>
+<td>{{ i.numvhs }}</td>
+<td>{{ i.numdvd }}</td>
+<td>{{ i.adjustment }}</td>
+<td>{{ i.refundrequested }}</td>
+<td>{{ i.paymentrequested }}</td>
+<td>{{ i.memyearatstart }}</td>
+<td>{{ i.notes }}</td>
+
+
+{% endfor %}
+
+</table>
+
+
+{% endblock %}

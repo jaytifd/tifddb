@@ -1,0 +1,16 @@
+<script async>
+$.extend( $.tablesorter.defaults, {
+        theme: 'bootstrap',
+        widthFixed: false
+});
+$('#reporttable').tablesorter({widgets:['zebra','stickyHeaders']});
+$('#reporttable2').tablesorter({widgets:['zebra','stickyHeaders']});
+
+setTimeout(function(){
+        $('.compatibility').tablesorter();
+        $('table.options, table.api').tablesorter({widgets:['stickyHeaders']});
+}, 1000);
+
+</script>
+
+

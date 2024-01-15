@@ -1,0 +1,80 @@
+{% include "camp/header.html" %}
+{% include "camp/bootstrap-overrides.html" %}
+
+<style>
+.change-message {
+    display: none;
+}
+
+</style>
+
+
+<div class="container-fluid" style="background-color:#e6e6e6">
+        <div class="container bg-white border border-secondary">
+		<div class="message p-3 m-3">
+			<p class="h3 text-center">All your information has been successfully saved.</p>
+			<p>
+			Please make a final review of all of your information.  If everything looks correct, click one of the payment buttons below to finish registering. 
+			</p>
+			<p>
+			<!--
+			You can still still change your registration by using the  <a class="h6 text-black" href="{% url 'camp:create' %}{{registration.id}}#adult_{{forloop.counter}}">(edit)</a> 
+			links below or proceed to payment either by <a href={% url 'camp:check_payment' registration.pk %}>mailing a check</a> or clicking the paypal button.</p>
+			<p>We are looking forward to seeing you at camp!</p>
+			-->
+		</div>
+
+		<!-- <div class="col text-dark p-2 mr-2 text-left">Registration Status: <b>{{registration.status.status}}</b> </div> -->
+
+		{% include "camp/breadcrumbs.html" %}
+			<div class="row">
+				<div class="col">
+                                <div class="text-important"><b>Total due: ${{registration.cart_total|stringformat:".02F"}}</b></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+				Payment options:
+				<div class="btn-group list-group-horizontal" id="paypaldiv">
+                                    <!--
+                                    <a href="{%url 'camp:paypal_payment' registration.pk %}"><img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-medium.png"></a> 
+                                    <a href="{%url 'camp:paypal_payment' registration.pk %}"><img src="/static/img/checkout-logo-medium.png"></a> 
+                                    -->
+                                 {{ paypal_form.render }} 
+				</div>
+				<!--
+				-->
+				{% if registration.registration_source != 99 %}
+                                 <div class="btn-group"> <a href={% url 'camp:check_payment' registration.pk %}><button type="button" class="btn btn-primary p-1 mb-2">Mail a check</button></a> </div>
+				 {%endif%}
+				</div>
+			</div>
+
+				 <hr>
+		<div class=row>
+                   <div class="col-sm-5">
+			{% include "camp/shopping_cart_table.html" %}
+		</div>
+
+        <div class="col-sm-6">
+			{% include "camp/campers_table.html" %}
+	</div>
+        {%include "camp/tifdfooter.html" %}
+
+
+<script>
+$(document).ready(function(){
+
+    $('#paypaldiv').click(function(e) {
+        $.ajax({url: "{% url 'camp:status' registration.pk %}", data:{"action":"change","status":3},async:false,success: function(result){
+        $("#div1").html(result);
+        }});
+        console.log("sent status change request");
+    });
+});
+
+</script>
+
+
+	</body>
+

@@ -1,0 +1,134 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+{% if not pdf_view %}
+
+<div class="d-flex" id="wrapper">
+{% endif %}
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+          border-bottom: 1px solid #ddd;
+        padding: 5px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container">
+<div class="row">
+<div class="col-sm-12">
+	<form method=POST action="{% url "registrar:deposit" %}">
+
+		{% if request.GET.q %}
+		<!-- FILTER applied: "{{request.GET.q}}" -->
+	{% endif %}
+		<small>Results: {{ payments|length }}</small>
+
+		<a class=d-none href="{% url 'registrar:payments_add'%}?return=payments">Add new payment</a>
+
+	{% csrf_token %}
+	<div class="row">
+		<div class="col-9 m-2">
+			Showing all payments for {{thisyear}}.  Click the checkbox next to a payment to add to a deposit slip.
+		</div>
+		<div class="col ">
+		<button type=submit class=" float-right btn btn-primary" value=Save>Deposit</button>
+		</div>
+	</div>
+
+        <div class="table-responsive">
+
+
+<table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
+        <thead><tr>
+			<th class="sorter-false"><input type="checkbox" id="checkAll" name="payments-th" value="">
+			<th>ID
+			<th>Registration
+			<th>Date Recv
+			<th>Who has
+			<th>Type
+			<th>Waiting for deposit
+			<th>Notes
+			<th>Total
+			<th class="sorter-false">
+
+               </tr>
+	</thead>
+        <tbody>
+
+
+
+{% for payment in payments %}
+<tr>
+	<td>{% if payment.waiting_for_deposit %}
+		<input type="checkbox" id="payments" name="payments" value="{{payment.id}}">
+		{%endif%}
+	</td>
+	<td><a href="{% url "registrar:payments_add_edit" payment.id %}?return=payments">{{payment.id}}</a></td>
+	<td>
+		{%if payment.registration and payment.registration_id != 1%}{{payment.registration|default_if_none:""}}
+		{%elif payment.membership_person %}{{payment.membership_person}}
+		{%elif payment.pp_ipn_name %}{{payment.pp_ipn_name}}<br>{{payment.pp_ipn_email}}
+		{%else%}No person / No Registration
+		{%endif%}
+	</td>
+	<td>{{payment.date_recd|date:"SHORT_DATE_FORMAT"}}</td>
+	<td>{{payment.who_has_possession}}</td>
+
+	{%comment%}
+	see also: camp/templates/camp/shopping_cart_table.html
+	{%endcomment%}
+	<td>
+		{% if payment.paypal_fee > 0 %}
+			PayPal
+		{%elif payment.check_num %}
+		Check #{{payment.check_num}}
+		{%elif payment.cash %}
+			Cash
+		{%endif%}
+
+	</td>
+
+	<td>{% if payment.waiting_for_deposit %}Yes
+		{% else %}No
+		{%endif%}
+	</td>
+	<td class="small">{{payment.notes|default_if_none:""}}</td>
+	<td>{{payment.gross_amt}}</td>
+		<div id="payment_delete">
+	<td>
+		<a id="ayment_delete" href="{% url "registrar:payments_delete" payment.pk%}?return_to=payments" title="Delete Payment" onclick="return confirm('Are you sure you want to delete this payment')"><p class="h3">&times;</p></a></td>
+		</div>
+</tr>
+
+
+{% endfor %}
+
+		</tbody></table>
+	</div>
+	</form>
+
+	{% include "registrar/tablesort.html" %}
+
+<script>
+	$(document).ready(function() {
+	    $("#checkAll").click(function() {
+        	var checkBoxes = $("input[name=payments");
+        	checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+    });
+});
+
+
+</script>
+{% endblock %}
+
+</div></div>
+

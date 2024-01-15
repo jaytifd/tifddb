@@ -1,0 +1,185 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+
+
+
+{% block content %}
+<!--
+<link rel="stylesheet" href="/static/jquery-ui-1.12.1.custom/jquery-ui.min.css" type="text/css" />
+<script src="/static/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+-->
+
+<link rel="stylesheet" href="/static/jquery.qtip.css" type="text/css" />
+<script src="/static/jquery.qtip.min.js"></script>
+
+<style>
+.qtip { 
+	max-width: none !important; 
+	font-size: 18px !important;
+}
+
+</style>
+
+{% load mathfilters %}
+{% if not pdf_view %}
+
+<div class="d-flex" id="wrapper">
+{% endif %}
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-12">
+	<div class="row">
+		<div class="small col">
+				Total campers (paid and unpaid): {{ number_of_campers }}
+				Total owed: {{registration_header_info.total_owed}}
+				Total revcd: {{registration_header_info.total_gross}}
+				Total PayPal fees: {{registration_header_info.total_pp_fees}}
+				Outstanding: {{registration_header_info.outstanding}}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<form method=GET>
+				Filters -  
+				Email sent: <input type=checkbox name=email_sent {% if email_sent %}checked{%endif%}> 
+				Paid: <input type=checkbox name=paid {% if paid %}checked{%endif%}>
+				Camp only: <input type=checkbox name=camponly {% if camponly %}checked{%endif%}>
+				Membership only: <input type=checkbox name=memonly {% if memonly %}checked{%endif%}>
+			        <button type="submit" class="btn-primary btn-sm">Apply</button>
+
+			</form>
+		</div>
+	</div>
+	<div class="table-responsive" id="maintable">
+
+<table class="table table-hover table-responsive-md table-condensed tablesorter" id=reporttable>
+        <thead>
+		<th>
+		<th>Campers
+		<th>Date Recd 
+		<th>Note&nbsp;from&nbsp;camper
+		<th>Cart&nbsp;total
+		<th>Payments
+		<th>Owed
+		<th>Payment Status
+		<th>Registration Status
+                </thead>
+                <tbody>
+
+{% for regid,campers in mycampers.items %}
+
+	<tr >
+		<td>
+			{% include "registrar/camper_actions.html" %}
+			</td>
+
+
+					<td nowrap >
+						{% include "registrar/camper_names.html" %}
+	<script>
+
+		$('.viewpop{{forloop.counter0}}').qtip({
+				content: {
+				text: 'Loading...', // The text to use whilst the AJAX request is loading
+				ajax: {
+					url: '{% url "registrar:view" regid %}', // URL to the local file
+					type: 'GET', // POST or GET
+					data: {}, // Data to pass along with your request
+					success: function(data, status) {
+						// Process the data
+						// Set the content manually (required!)
+						this.set('content.text', data);
+					}
+				}
+			},
+				style: {
+       				classes: 'qtip-dark',
+				width: 900, // Overrides width set by CSS (but no max-width!)
+				height: 500 // Overrides height set by CSS (but no max-height!)
+			},
+			     	show: { delay: 0, solo: true},
+     				hide: { fixed: true, delay: 200 },
+			    position: { 
+				        my : 'left top',
+    					at : 'right top',
+				    	adjust : {
+				       	screen : true
+	    				}
+			    }
+
+
+	});
+	</script>
+
+		<td nowrap> 
+			{% if campers.0.registration.postmark %}
+			{{campers.0.registration.postmark|date:'Y-m-d'}}
+			{%else%}
+			{{campers.0.registration.created_at|date:'Y-m-d'}}
+			{%endif%}
+
+		</td>
+		<td>{{campers.0.registration.camper_note|default_if_none:""}}
+		<td>{{campers.0.registration.cart_total}}</td>
+			<td>	 
+				<table class="table-nested">
+			      {% for p in campers.0.mypayments %}
+			      <tr class="{% cycle 'bg-none' 'bg-none'%}"><td colspan=2><a href="{% url "registrar:payments_add_edit" p.id %}?return=registrar">{{p.gross_amt}}</a><td>
+					{% if p.notes %}
+					<td><i>"{{p.notes}}"</i></td>
+					{%endif%}
+	</tr>
+			      {% endfor %}
+				</table>
+				<td>
+					{{ campers.0.registration.cart_total|sub:campers.0.mypayments_total }}
+				</td>
+			      <td>
+
+				    	{% if campers.0.registration.cart_total == campers.0.mypayments_total %}
+					<span class="bg-success text-light font-weight-bold p-2 m-2 rounded text-nowrap">
+						PAID IN FULL
+					</span>
+					{% elif campers.0.registration.cart_total < campers.0.mypayments_total %}
+					<span class="bg-warning text-dark font-weight-bold p-2 m-2 rounded text-nowrap">
+						OVERPAID
+					</span>
+					{%else %}
+					<span class="bg-primary text-light font-weight-bold p-2 m-2 rounded text-nowrap">NOT PAID</span>
+
+					{%endif%}
+
+			<td nowrap> 
+				{% include "registrar/registration_status.html" %}
+			</td>
+
+
+							
+			</td>
+{% endfor %}
+
+	</tbody></table>
+	</div>
+
+	<script>
+	function deposit_today() {
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+        $('#id_date_recd').val(today);
+    //$("#id_depositdate").datepicker("setDate", new Date());
+}
+	</script>
+
+	<script>
+	$( document ).click(function() {
+   		$('.ui-tooltip').remove();
+	});
+
+	</script>
+
+
+	{% include "registrar/tablesort.html" %}
+{% endblock %}

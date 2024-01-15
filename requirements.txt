@@ -1,0 +1,14 @@
+Django
+django-simple-history
+django-paypal
+django-localflavor
+django-bootstrap4
+django-extensions
+django-nested_admin
+django-ckeditor
+django-debug-toolbar
+django-crispy-forms
+django-mathfilters
+xhtml2pdf
+weasyprint
+html2text

@@ -1,0 +1,194 @@
+{% include "camp/bootstrap-overrides.html" %}
+
+        {% for message in messages %}
+	<h2>
+         {{ message }}
+	</h2>
+    {%endfor%}
+
+
+    {%comment%}
+
+    BE CAREFUL WITH THE FORMATTING HERE, THIS TEMPLATE IS USED TO SEND OUT THE EMAIL CONFIRMATIONS
+    IT ALSO NEEDS TO BE PRINTABLE
+
+    {%endcomment%}
+
+
+
+<style>
+
+@page {
+  size: A4;
+}
+@page :left {
+  margin-left: 0cm;
+}
+
+@page :right {
+  margin-left: 0cm;
+}
+
+@media print {
+    .printEl {
+        width: 8.5in;
+        height: 11in;
+    }
+body { 
+font-size:14px;
+}
+table tr td {
+font-size:14px;
+}
+}
+
+.table-camper {
+border:solid black 2px;
+border-collapse: collapse;
+margin:5px;
+padding:5px;
+}
+
+
+.print-hide {
+	display:none;
+}
+
+
+body { 
+font-size:18px;
+}
+
+.main { 
+	margin: auto;
+	width: 8.5in; 
+	
+}
+
+.column {
+  float: left;
+  padding: 10px;
+}
+
+.left, .right {
+  width: auto;
+  margin: 1%;
+}
+.left {
+  border: solid 2px;
+}
+
+.checkview_cart_person {
+	font-weight:bold;
+	text-decoration:underline;
+}
+.checkview_cart_person td:first-child{
+	font-weight:bold;
+	text-decoration:underline;
+	margin-top:10px;
+	padding-top:10px;
+}
+.checkview_cart_total td:first-child{
+	font-weight:bold;
+	text-decoration:underline;
+	margin-top:10px;
+	padding-top:10px;
+}
+.checkview_discount td:first-child{
+	font-weight:bold;
+	text-decoration:underline;
+	margin-top:10px;
+	padding-top:10px;
+}
+.checkview_payment td:first-child{
+	font-weight:bold;
+	text-decoration:underline;
+	margin-top:10px;
+	margin-bottom:10px;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.checkview_balance {
+	font-weight:bold;
+	text-decoration:underline;
+	margin-top:10px;
+	margin-bottom:10px;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+
+.checkview_table {
+	border:0px;
+}
+
+</style>
+
+{% load get_verbose %}
+
+        <div class="main pt-3">
+		<div class=row>
+			<div class="col">
+				{% if email_view %}
+				<!-- handled via the camp_templates table -->
+				{%else %}
+				{% if registration.registration_source == 0 %}
+				<p class=h2>Thank you for registering!</p>
+				<p>Your information has been forwarded to the camp registrar and we have sent all adult campers a confirmation email containing the registration information.</p>
+				<p> To complete your registration please print this page and send it along with a check or money order to the camp registrar:</p>
+				{% else %}
+
+				<p class=h2>Thank you for becoming a TIFD member!</p>
+				<p>Your information has been forwarded to the membership registrar and we have sent all members in your registration a confirmation email containing the registration information.</p>
+				<p> To complete your registration please print this page and send it along with a check or money order to the membership registrar:</p>
+
+				{%endif%}
+				<pre class="text-center">
+{{registrar_info.name}}
+{{registrar_info.mailing_address}}
+				</pre>
+				<p><b>Please make checks out to: TIFD </b>(or) <b>Texas International Folk Dancers</b>
+				{%endif%}
+			</div>
+		</div>
+		{% if not email_view %}
+		If you have trouble printing, just send us a letter with your name, address, contact information, and registration ID (<b>{{registration.id}}</b>) along with your payment.
+		{% endif %}
+		<div class=row>
+
+		<div class="col column left">
+			<p><b>Registration ID: {{registration.id}}</b></p>
+			<p>Payment type: {{registration.payment_type}}</p>
+			{% include "camp/shopping_cart_table.html" %}
+                </div>
+
+
+		<div class="col column right">
+				<div id=addresstable class="table-camper">
+	                               <table class="table table-sm" width=100%>
+                                        <thead>
+                                                <th colspan=2 class="table-primary text-center ">Mailing address
+                                        </thead>
+                                        <tbody>
+                                        <tr class=""><td style="padding:0px;" width=50%>
+                                        {% for r in campers %}
+                                        <span class="font-weight-bold" style="font-family:monospace;">{{r.first_name|capfirst}} {{r.last_name}}{% if not forloop.last%},{%endif%}</span>
+                                                {%endfor %}
+
+                                                <tr><td style="padding:0px; font-family:monospace;">{{ registration.address1 }}
+                                                                {% if registration.address2 %}<tr><td style="font-family:monospace; padding:0px;">{{ registration.address2 }}{%endif%}
+                                                <tr><td style="font-family:monospace; padding:0px;">{{ registration.city }},
+                                                                {{ registration.state }}
+                                                {{ registration.zip }} {{ registration.country }}
+                                                </span>
+                                        </tbody>
+                                </table>
+				</div>
+
+
+                {% include "camp/campers_table.html" %}
+
+		</div>
+		</div>
+		</div>
+
+ </body>

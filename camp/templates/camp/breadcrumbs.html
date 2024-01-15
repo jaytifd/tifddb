@@ -1,0 +1,41 @@
+
+{% if registration.registration_source == 1 %}
+    <div class="my_breadcrumb d-print-none">
+          <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="https://tifd.org/">TIFD</a></li>
+	  {% if registration.id %}
+		<li class="breadcrumb-item"><a href="{% url 'membership:create'%}{{registration.id}}">My Membership</a></li>
+          	<li class="breadcrumb-item"><a href="{% url 'camp:confirm' registration.id%}">Confirm</a></li>
+          {% endif %}
+  	{% if registration.agreecheckbox %}
+          	<li class="breadcrumb-item"><a href="{% url 'camp:final' registration.id %}">Final Payment</a></li>
+          {% endif %}
+	{% if not registration.id %}
+          <li class="breadcrumb-item"><a href="{% url 'camp:create'%}">New Membership</a></li>
+          {% endif %}
+
+        </ul>
+   </div>
+  {% else %}
+    <div class="my_breadcrumb d-print-none">
+          <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="https://tifd.org/">TIFD</a></li>
+	  {% if registration.id %}
+		<li class="breadcrumb-item"><a href="{% url 'camp:create'%}{{registration.id}}">Camp Registration</a></li>
+          	<li class="breadcrumb-item"><a href="{% url 'camp:confirm' registration.id%}">Confirm</a></li>
+          {% endif %}
+  	{% if registration.agreecheckbox %}
+          	<li class="breadcrumb-item"><a href="{% url 'camp:final' registration.id %}">Final Payment</a></li>
+          {% endif %}
+	{% if not registration.id %}
+          <li class="breadcrumb-item"><a href="{% url 'camp:create'%}">New Camp Registration</a></li>
+          {% endif %}
+
+        </ul>
+   </div>
+   {%endif%}
+
+
+                {% if 'camp:final' in request.resolver_match.view_name %}
+		{% endif %}
+

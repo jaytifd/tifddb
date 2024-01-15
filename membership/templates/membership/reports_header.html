@@ -1,0 +1,62 @@
+<head>
+{% if not pdf_view %}
+	    {% load static %}
+	    <!-- Prism CSS -->
+	    <link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
+	    <!-- Compiled and minified CSS -->
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
+	    <!-- Compiled and minified JavaScript for Materialize CSS -->
+	    <!-- https://materializecss.com/color.html -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+	</head>
+
+	<body>
+
+	<body>
+	  <nav>
+	    <div class="nav-wrapper blue accent-2">
+
+		    <a href="/" class="brand-logo">{{ page_title|capfirst }}</a>
+
+	      <ul id="nav-mobile" class="right hide-on-med-and-down">
+		<li><a href="/">Home</a></li>
+		{% if user.is_authenticated %}
+		     <li><a href="/logout">Logout</a></li>
+			 {% else %}
+		<li><a href="/login">Login</a></li>
+		<li><a href="/register">Register</a></li>
+			{% endif %}
+		<li><a href="/admin">Admin</a></li>
+	      </ul>
+	    </div>
+	  </nav>
+
+
+	     {% if messages %}
+		{% for message in messages %}
+		    {% if message.tags == 'success'%}
+			<script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength:2000});</script>
+		    {% elif message.tags == 'info'%}
+			<script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+		    {% elif message.tags == 'warning'%}
+			<script>M.toast({html: "{{message}}", classes: 'orange rounded', displayLength:10000});</script>
+		    {% elif message.tags == 'error'%}
+			<script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength:10000});</script>
+		    {% endif %}
+		{% endfor %}
+	    {% endif %}
+
+
+{% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+
+
+<!-- Prism JS -->
+<script src="{% static "tinymce/js/prism.js" %}"></script>
+<script>M.AutoInit();</script>

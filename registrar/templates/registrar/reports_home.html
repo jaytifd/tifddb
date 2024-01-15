@@ -1,0 +1,21 @@
+{% extends 'registrar/reports_header.html' %}
+
+{% block content %}
+
+	  <div class="row">
+    {% for r in reports %}
+        <div class="col s12 m6">
+		<a href="{{ request.path }}/{{r.slug}}">
+          <div class="card blue-grey darken-1 hoverable">
+            <div class="card-content white-text">
+              <span class="card-title">{{r.title}}</span>
+              <p style="font-size:70%">{{r.timestamp}}</p>
+              <p>{{r.description|safe}}</p>
+		</a>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}

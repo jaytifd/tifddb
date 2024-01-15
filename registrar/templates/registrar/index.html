@@ -1,0 +1,115 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+<div class="d-flex" id="wrapper">
+    <div class="container">
+
+	    <div class="row">
+<div class="col-sm-12">
+        <div class="table-responsive">
+
+		<div class="jumbotron m-4 text-center">
+		<h1>TIFD Database</h1>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<p class="h4 mb-2"><a href="{% url "registrar:registrar" %}?year={{thisyear}}">View all {{thisyear}} registrations</a></p>
+                <p><b>{{thisyear}} registration stats</p></b>
+                <table class="table caption-top">
+                    <tr><td>Adult campers registered<td>{{registration_stats.adult_campers}}</tr>
+                    <tr><td>Child campers registered<td>{{registration_stats.child_campers}}</tr>
+                    <tr><td>Registration confirmed<td>{{registration_stats.confirmed_registration}}</tr>
+                    <tr><td>Registration paid<td>{{registration_stats.paid}}</tr>
+                    <tr><td>TIFD memberships<td>{{registration_stats.tifd_memberships}}</tr>
+                </table>
+
+            </div>
+        </div>
+		<div class="row">
+			<div class="col">
+                                <br>
+                                <p class="h5"><b>Camp registrations that have NOT been confirmed</p></b>
+					{%if unconfirmed_campers.items %}
+                        <table class="table responsive">
+                            <th>Actions<th>Name<th>Date<th>Cart<th>Due<th>Paid<th>Status
+                            {% for regid,campers in unconfirmed_campers.items %}
+                            {% if campers.0.registration.registration_source == 0%}
+                                <tr>
+                                    <td>{% include "registrar/camper_actions.html" %}
+                                    <td>{% include "registrar/camper_names.html" %}
+                                    <td>{{campers.0.created_at|date:"SHORT_DATE_FORMAT"}}
+                                    <td>{{campers.0.registration.cart_total|stringformat:".02F"}}
+                                    <td>{{campers.0.due|stringformat:".02F"}}
+                                        <!-- <td>{{campers.0.mypayments_total|stringformat:".02F"}} -->
+
+                                                                        {%comment%}
+                                    <td>
+                                        {%for pmt in campers.0.mypayments%}
+                                        <a href="{% url "registrar:payments_add_edit" pmt.id%}?year={{thisyear}}">{{pmt.gross_amt|stringformat:".02F"}}</a><br>
+                                        {%endfor%}
+                                                                        {%endcomment%}
+
+                                    <td>{% include "registrar/registration_status.html" %}
+                                </tr>
+                            {%endif%}
+                            {%endfor %}
+                        </table>
+					{%endif%}
+                    <p class="h5"><b>TIFD membership registrations that have NOT been confirmed </p></b>
+					{%if unconfirmed_campers.items %}
+                        <table class="table responsive">
+                            <th>Actions<th>Name<th>Date<th>Due<th>Status
+                            {% for regid,campers in unconfirmed_campers.items %}
+                            {% if campers.0.registration.registration_source != 0%}
+                                <tr>
+                                    <td>{% include "registrar/camper_actions.html" %}
+                                    <td>{% include "registrar/camper_names.html" %}
+                                    <td>{{campers.0.created_at|date:"SHORT_DATE_FORMAT"}}
+                                    <td>{{campers.0.registration.cart_total|stringformat:".02F"}}
+                                                                        {%comment%}
+                                    <td>
+                                        {%for pmt in campers.0.mypayments%}
+                                        <a href="{% url "registrar:payments_add_edit" pmt.id%}?year={{thisyear}}">{{pmt.gross_amt|stringformat:".02F"}}</a><br>
+                                        {%endfor%}
+                                                                        {%endcomment%}
+
+                                    <td>{% include "registrar/registration_status.html" %}
+                                </tr>
+                            {%endif%}
+                            {%endfor %}
+                        </table>
+					{%endif%}
+				{% comment %}
+					<ul class="list-group">
+					{% for p in registrations_thisyear_open %}
+					<li class="list-group-item"><a href="{%url "registrar:view" p.id %}">{{p.id}}</a> - {{p.camper_names}} [{{p.registration_status}}]</li>
+				</ul>
+
+				{% endfor %}
+				{% endcomment %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<a href="{% url "registrar:payments" %}?year={{thisyear}}"><p class="h4">Payments waiting for deposit: {{payments_waiting_for_deposit|length}}</a></p>
+				<ul class="list-group">
+					<table class="table responsive border">
+						<th>ID</th>
+						<th>Name</th>
+						<th>Recd</th>
+						<th>Possesion</th>
+					{% for p in payments_waiting_for_deposit %}
+					<tr>
+						<td><a href="{% url "registrar:payments_add_edit" p.pk %}?year={{thisyear}}">{{p.pk}}</a>
+						<td>{{p.registration}}
+						<td>{{p.date_recd|date:"SHORT_DATE_FORMAT"}}
+						<td>{{p.who_has_possession}}
+					</tr>
+				</ul>
+				{% endfor %}
+
+			</div>
+		</div>
+{% endblock %}

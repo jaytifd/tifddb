@@ -1,0 +1,22 @@
+{% include "camp/header.html" %}
+
+	<div class="container">
+<table class="table table-borderd striped">
+	<thead>
+		<th>Registration</th>
+		<th>Name
+	</thead>
+	<tbody>
+	{% for regid,obj in registrations.items %}
+	<tr><td><a href="{% url 'camp:confirm' regid %}">{{ regid}}</a>
+		<td>
+		{% for field  in obj %}
+		{{field.first_name}} {{field.last_name}}<br>
+		{% endfor %}
+		<td>
+		{% for field  in obj %}
+		{{field.first_name}} {{field.last_name}}<br>
+		{% endfor %}
+
+	{% endfor %}
+

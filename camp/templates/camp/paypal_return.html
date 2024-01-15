@@ -1,0 +1,36 @@
+{% include "camp/header.html" %}
+{% include "camp/bootstrap-overrides.html" %}
+
+<style>
+.change-message {
+    display: none;
+}
+
+</style>
+
+
+<div class="container-fluid" style="background-color:#e6e6e6">
+        <div class="container bg-white border border-secondary">
+		<div class="message p-3 m-3">
+			<p class="h1 text-center">Thank you!</p>
+			<p class="h3 text-center">All your information has been successfully saved.</p> 
+			<p class="text-center">You should see a confirmation email soon.
+		</div>
+
+		<!-- <div class="col text-dark p-2 mr-2 text-left">Registration Status: <b>{{registration.status.status}}</b> </div> -->
+				 <hr>
+		<div class=row>
+                   <div class="col-sm-7">
+			{% include "camp/campers_table.html" with read_only=1 %}
+		</div>
+
+        <div class="col-sm-6">
+			   {%comment%}
+			{% include "camp/shopping_cart_table.html" with read_only=1 %}
+			{%endcomment%}
+	</div>
+		</div>
+        {%include "camp/tifdfooter.html" %}
+
+
+	</body>

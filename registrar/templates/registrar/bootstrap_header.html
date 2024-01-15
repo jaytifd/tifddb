@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css"  crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/css/theme.bootstrap_4.css" >
+  <link rel="stylesheet" href="/static/css/theme.blue.css" >
+
+  <!--
+  <script src="/static/js/plugins/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  -->
+  <script src="/static/js/jquery.min.js" ></script>
+
+  <script src="/static/js/plugins/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="/static/js/plugins/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="/static/js/bootstrap-datepicker.min.js"></script>
+  <link rel="stylesheet" href="/static/css/bootstrap-datepicker3.min.css" >
+  <!--
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  -->
+
+  <script type="text/javascript" src="/static/js/jquery.tablesorter.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.tablesorter.widgets.js"></script>
+
+{% include "camp/bootstrap-overrides.html" %}
+{% load bootstrap4 %}
+
+<style>
+
+
+.requiredField { font-weight:bold; text-decoration: underline;}
+.asteriskField { color: red; display:none;}
+
+.peopleform { 
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #eee;
+    border-left-width: 1px;
+    border-left-width: .25rem;
+    border-radius: .25rem;
+    border-left-color: #5bc0de;
+	   
+}
+
+body { color:black; }
+
+
+
+</style>
+</head>
+<body>
+
+{% load mathfilters %}
+
+{% if not pdf_view %}
+	    {% load static %}
+	    <!-- Prism CSS -->
+	    <link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
+	    <!-- Compiled and minified CSS -->
+     	    <link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
+	    <!-- Compiled and minified JavaScript for Materialize CSS -->
+	    <!-- https://materializecss.com/color.html -->
+	    <!--
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+-->
+
+
+<nav class="navbar navbar-expand-lg  navbar-white bg-light">
+
+	<!--
+  <a class="navbar-brand" href="#">Registrar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+-->
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+	<span class="nav-link border bg-info text-light rounded">Logged in as: {{user}}</span>
+	</li>
+      <li class="nav-item ">
+	<a class="nav-link" href=/accounts/logout>Logout</a>
+      </li>
+      <li class="nav-item ">
+	      <a class="nav-link" href="{%url "registrar:homepage"%}?year={{thisyear}}">Home</a>
+	</li>
+
+      <li class="nav-item d-none">
+	      <a class="nav-link" href="{% url "camp:create"%}">Camp Registration Form <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item d-none">
+	      <a class="nav-link" href="{% url "membership:create"%}">Membership Renew Form <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Camp Reports
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		<a class="dropdown-item bg-warning" disabled href="">Year selected: <b>{%if thisyear%}{{thisyear}}{%else%}{%now "Y"%}{%endif%}</b></a>
+		<div class="dropdown-divider"></div>
+                  {% for r in reports %}
+		  	{% if r.category == "camp" %}
+                  <a class="dropdown-item" href="{% url 'registrar:reports_home' %}/{{r.slug}}{% if thisyear %}?year={{thisyear}}{%endif%}" title="{{r.description}}" >{{r.title}}</a>
+		  	{% endif %}
+                   {% endfor %}
+
+	<!--
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+	-->
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Membership Reports
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		<p class="dropdown-item bg-warning" disabled href="">Year selected: <b>{%if thisyear%}{{thisyear}}{%else%}{%now "Y"%}{%endif%}</b></p>
+		<div class="dropdown-divider"></div>
+                  {% for r in reports %}
+		  	{% if r.category == "membership" %}
+                  <a class="dropdown-item" href="{% url 'registrar:reports_home' %}/{{r.slug}}{% if thisyear %}?year={{thisyear}}{%endif%}" title="{{r.description}}" >{{r.title}}</a>
+		  	{% endif %}
+                   {% endfor %}
+		   <a class="dropdown-item" href="{% url "registrar:payments_report" %}?year={{thisyear}}">Payments report {{thisyear}}</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Tools </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <p class="dropdown-item bg-warning" disabled href="">Year selected: <b>{%if thisyear%}{{thisyear}}{%else%}{%now "Y"%}{%endif%}</b></p>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url "registrar:registrar" %}?year={{thisyear}}">Manage camp registrations</a>
+			<a class="dropdown-item" href="{% url "registrar:payments" %}?year={{thisyear}}">Deposit Payments</a>
+			<a class="dropdown-item" href="{% url "membership:create" %}">Add TIFD members</a>
+			<a class="dropdown-item" href="{% url "camp:create"%}">Add new camp registration</a>
+        	<a class="dropdown-item" href="/admin">DB Admin</a>
+            <a class="dropdown-item" href="{% url "password_change" %}">Change your password</a>
+        </div>
+      </li>
+      <li class="nav-item ">
+	      <a class="nav-link" href="{%url "registrar:docs"%}">Docs</a>
+	</li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+	    <label class="mr-2" for=year>Select year</label>
+	<select class="form-control mr-sm-2" id=year value=year name="year" autocomplete=off onchange='this.form.submit()'>
+		{% for year in years %}
+		<option value="{{ year }}"
+			{% if thisyear %}
+				{% if thisyear|slugify == year|slugify %} 
+						selected 
+			{%endif %}
+			{% elif thisyear == year|slugify %}
+						selected 
+			{%endif%}>
+						{{ year }}</option>
+		{% endfor %}
+	</select>
+      <input class="form-control mr-sm-2" type="search" name=q placeholder="Search" value="{{ request.GET.q }}" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+		<script>
+		</script>
+  </div>
+</nav>
+
+
+
+	{% for message in messages %}
+    <div class="{{ message|bootstrap_message_classes }} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&#215;</button>
+       	 {{ message }}
+    </div>
+    {% endfor %} 
+
+    	
+	<script>
+		var d = new Date();
+		var n = d.getFullYear();
+		if ( n != "{{thisyear}}" ) { 
+				$("#year").css("background-color","yellow");
+		}
+	</script>
+
+
+{%endif%} {% comment %} end of PDF IF block {%endcomment%} 
+
+    {% block content %}
+    {% endblock %}
+
+
+
+</body>

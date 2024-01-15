@@ -1,0 +1,41 @@
+
+      <div id="returnpopup" class="row justify-content-md-center collapse show m-3 p-3" >
+         <div class="col-sm-8 rounded align-center text-left bg-warning border">
+                 <div class="row justify-content-md-center">
+                         <div class="col-sm-11 align-self-center d-flex justify-content-center"><p class="h3">Welcome back!</p></div>
+                         <div class="col-sm-1 align-self-center">
+                        	<button type="button" class="close"  data-toggle="collapse"
+                                data-target="#returnpopup" aria-label="close" aria-expanded="false" aria-controls="returnpopup">
+                                <span aria-hidden="true">&times;</span>
+                        	</button>
+                         </div>
+                 </div>
+			 <p>Would you like to resume one of the following <b>saved</b> registrations?</p>
+			 <div class="row" >
+		  		<ul class="list-group bg-warning list-group-flush">
+				{% for regid,obj in current_registrations.items %}
+
+					{%if obj.0.registration.registration_source == 0 %}
+						<li class="list-group-item bg-warning "><a href="{% url 'camp:create' %}{{regid}}">{% for field  in obj %}
+								{{field.first_name}} {{field.last_name}}{% if not forloop.last%},{%endif%}{% if forloop.last %} @ {{field.created_at}} [{{field.registration.status}}]{%endif%} 
+						{% endfor %}
+					</a>
+					{%elif obj.0.registration.registration_source == 1 %}
+						<li class="list-group-item bg-warning "><a href="{% url 'membership:create' %}{{regid}}">{% for field  in obj %}
+								{{field.first_name}} {{field.last_name}}{% if not forloop.last%},{%endif%}{% if forloop.last %} @ {{field.created_at}} [{{field.registration.status}}]{%endif%} 
+						{% endfor %}
+					</a>
+					{%else %}
+						<li class="list-group-item bg-warning "><a href="{% url 'camp:create' %}{{regid}}">{% for field  in obj %}
+								{{field.first_name}} {{field.last_name}}{% if not forloop.last%},{%endif%}{% if forloop.last %} @ {{field.created_at}} [{{field.registration.status}}]{%endif%} 
+						{% endfor %}
+					</a>
+					{%endif%}
+				{% endfor %}
+		  		</ul>
+			</div>
+
+         </div>
+      </div>
+
+
