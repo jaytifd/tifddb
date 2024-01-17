@@ -2,15 +2,14 @@
 
 ## Installing
 
-### Quickstart - using the venv from this repo 
+### Quickstart - using the venv and database stub from this repo 
 I am not sure if this will work on non-linux systems
 
 ```
 source django-venv/bin/activate
- ./sql-init.sh 
 python manage.py runserver
 ```
-Then navigate to http://127.0.0.1:8000/
+Then navigate to http://127.0.0.1:8000/ (user admin password admin)
 
 ### Detailed install instructions
 
@@ -19,6 +18,7 @@ Then navigate to http://127.0.0.1:8000/
 - optional but recommended to walk through the Django tutorial: https://www.djangoproject.com/start/
 - run the database init script sql-init.sh
 - start django `python manage.py runserver`
+- Then navigate to http://127.0.0.1:8000/   (user admin password admin)
 
 ## Main Views
 
