@@ -80,7 +80,7 @@ class CampRegistrationStatus(models.Model):
 
     class Meta:
         ordering = ['-display_order']
-        managed = True
+        managed = False
         db_table = 'camp_registration_status'
         verbose_name = "Registration statuses"
         verbose_name_plural=verbose_name
@@ -97,7 +97,7 @@ class MembershipRegistrationTypes(models.Model):
     active = models.BooleanField("Include on regform?",max_length=1, default=1, blank=False, null=False )
     class Meta:
         ordering = ['-display_order']
-        managed = True
+        managed = False
         db_table = 'membership_registration_types'
     def __str__(self):
         return self.description
@@ -119,7 +119,7 @@ class CampRegistrationTypes(models.Model):
             return str("$" + str(self.price) + " " + self.description)
         
     class Meta:
-        managed = True
+        managed = False
         ordering = ['-slug','-display_order','-active']
         db_table = 'camp_registration_types'
         verbose_name = "registration types"
@@ -134,7 +134,7 @@ class CampRebates(models.Model):
     def __str__(self):
         return str("$" + str(self.price) + " " + str(self.description))
     class Meta:
-        managed = True
+        managed = False
         ordering = ['display_order']
         db_table = 'camp_rebates'
         verbose_name = "Membership rebates"
@@ -197,7 +197,7 @@ class CampRegistration(models.Model):
         pass
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'camp_registration'
         verbose_name=" Camp Registrations - All years"
         verbose_name_plural=verbose_name
@@ -243,7 +243,7 @@ class MembershipAddress(models.Model):
         pass
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'membership_address'
 
     def __str__(self):
@@ -289,7 +289,7 @@ class MembershipPerson(models.Model):
     membership_years = models.IntegerField(blank=True, null=True, default=1)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'membership_person'
         #ordering = ['last_name']
     def __str__(self):
@@ -308,7 +308,7 @@ class CampHousingTypes(models.Model):
     def __str__(self):
         return str("$" + str(self.price) + " " + self.description )
     class Meta:
-        managed = True
+        managed = False
         ordering = ['display_order']
         verbose_name = "housing choices"
         db_table = 'camp_housing_types'
@@ -325,7 +325,7 @@ class CampShirtTypes(models.Model):
         return str("$" + str(self.price) + " " + self.description )
 
     class Meta:
-        managed = True
+        managed = False
         ordering = ['display_order']
         verbose_name = "Shirt options"
         verbose_name_plural=verbose_name
@@ -337,7 +337,7 @@ class CampDates(models.Model):
     slug = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'camp_dates'
         verbose_name = "camp dates"
         verbose_name_plural=verbose_name
@@ -354,7 +354,7 @@ class CampRegistrarInfo(models.Model):
     registration_source = models.IntegerField(blank=False, null=False, default=0, choices=REGISTRATION_SOURCE) ## 0=camp, 1=membership
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'camp_registrar_info'
         verbose_name = "Camp Registrar Address"
         verbose_name_plural=verbose_name
@@ -371,7 +371,7 @@ class CampPrices(models.Model):
     def __str__(self):
         return str(self.description)
     class Meta:
-        managed = True
+        managed = False
         ordering = ['-display_order']
         verbose_name="prices"
         db_table = 'camp_prices'
@@ -454,7 +454,7 @@ class CampCamper(Person):
     #return str( self.first_name + " " + self.last_name + " " + str(self.created_at.year))
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'camp_camper'
         ordering = ['-id'] #this ordering will affect how the form is rendered on the reg form
         verbose_name = "Adult camper"
@@ -476,7 +476,8 @@ class CampCamper_adult(Person):
             self.first_name = ""
         if self.last_name is None:
             self.last_name = ""
-        return str( self.first_name + " " + self.last_name + " " + str(self.created_at.year))
+        return str( self.first_name + " " + self.last_name )
+        #return str( self.first_name + " " + self.last_name + " " + str(self.created_at.year))
 
     class Meta:
         managed = False
@@ -496,6 +497,7 @@ class CampCamper_child(Person):
             self.first_name = ""
         if self.last_name is None:
             self.last_name = ""
+        #return str( self.first_name + " " + self.last_name )
         return str( self.first_name + " " + self.last_name + " " + str(self.created_at.year))
 
     class Meta:
@@ -546,7 +548,7 @@ class MembershipPayments(models.Model):
     history = HistoricalRecords()
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'membership_payments'
         verbose_name = u'Payments'
         verbose_name_plural = u'Payments'
@@ -582,7 +584,7 @@ class MembershipReport(models.Model):
     category = models.CharField(max_length=255, blank=False, null=False, unique=False,choices=REPORT_TYPES, default="camp")
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'membership_report'
         verbose_name_plural = u'Website reports list'
         ordering = ['display_order']
@@ -600,7 +602,7 @@ class CampTemplates(models.Model):
     subject = models.CharField(max_length=255, blank=False, null=False)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'camp_templates'
 
     def __str__(self):
@@ -616,7 +618,7 @@ class CampConstants(models.Model):
     camp_start = models.DateField()
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'camp_constants'
 
     def __str__(self):

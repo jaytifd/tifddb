@@ -10,7 +10,6 @@ settings.py
 my.cnf
 .my.cnf
 *.db
-*.sh
 *.sql
 *.sw?
 *.pyc
