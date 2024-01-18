@@ -30,7 +30,7 @@ source django-venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 DJANGO_SUPERUSER_PASSWORD=admin python manage.py createsuperuser --noinput --username admin --email admin@localhost
-mysql < mysql-init.sql
+mysql --defaults-file=my.cnf < mysql-init.sql
 python manage.py runserver
 
 ```
