@@ -12,3 +12,5 @@ django-mathfilters
 xhtml2pdf
 weasyprint
 html2text
+mysqlclient
+uwsgi
