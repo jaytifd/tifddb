@@ -15,10 +15,10 @@
 - Activate the venv: `source django-venv/bin/activate` or `django-venv\Scripts\activate`
 - Install the required packages from requirements.txt:    `pip install -r requirements.txt`
 - Edit my.cnf and enter the mysql database name, username, and password.
-- Create an admin user: python manage.py createsuperuser
-- python manage.py migrate
+- Create an admin user: `python manage.py createsuperuser`
+- Perform the django migrations `python manage.py migrate`
 - Load the database schema from mysql-init.sql:  `mysql --defaults-file=my.cnf DATABASENAME < mysql-init.sql` 
-- python manage.py runserver
+- start the internal webserver: `python manage.py runserver`
 - App should be available at http://127.0.0.1:8000/
 
 ### Linux install example
