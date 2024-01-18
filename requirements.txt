@@ -13,4 +13,4 @@ xhtml2pdf
 weasyprint
 html2text
 mysqlclient
-uwsgi
+#uwsgi
