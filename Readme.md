@@ -1,29 +1,35 @@
 # TIFD database and registration form
 
+## Prerequisites 
+
+- python
+- MySQL
+
 ## Installing
 
 ### Quickstart
 
-- clone the repo
-- create a python venv
-- activate the venv
-- install the required packages
-- edit my.cnf and enter the mysql database info
-- create an admin user: python manage.py createsuperuser
+- Clone the repo: `https://github.com/jaytifd/tifddb.git`
+- `cd tifddb`
+- Create a python venv:  `python -m venv django-venv`
+- Activate the venv: `source django-venv/bin/activate` or `django-venv\Scripts\activate`
+- Install the required packages from requirements.txt:    `pip install -r requirements.txt`
+- Edit my.cnf and enter the mysql database name, username, and password.
+- Create an admin user: python manage.py createsuperuser
 - python manage.py migrate
-- load the database schema from mysql-init.sql
+- Load the database schema from mysql-init.sql:  `mysql --defaults-file=my.cnf DATABASENAME < mysql-init.sql` 
 - python manage.py runserver
-- app should be available at http://127.0.0.1:8000/
+- App should be available at http://127.0.0.1:8000/
 
-
+### Linux install example
 ```
 git clone https://github.com/jaytifd/tifddb.git
 cd tifddb
 python -m venv django-venv
 source django-venv/bin/activate
 pip install -r requirements.txt
-DJANGO_SUPERUSER_PASSWORD=admin python manage.py createsuperuser --noinput --username admin --email admin@localhost
 python manage.py migrate
+DJANGO_SUPERUSER_PASSWORD=admin python manage.py createsuperuser --noinput --username admin --email admin@localhost
 mysql < mysql-init.sql
 python manage.py runserver
 
