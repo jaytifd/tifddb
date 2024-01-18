@@ -9,6 +9,7 @@ django-ckeditor
 django-debug-toolbar
 django-crispy-forms
 django-mathfilters
+django-tinymce
 xhtml2pdf
 weasyprint
 html2text
