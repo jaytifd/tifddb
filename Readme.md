@@ -35,16 +35,14 @@ python manage.py runserver
 
 ```
 
-### Detailed install instructions
+### Other Docs
 
-- install Django: https://docs.djangoproject.com/en/stable/intro/install/
-- install the local requirements:  pip -r requirements.txt
-- optional but recommended to walk through the Django tutorial: https://www.djangoproject.com/start/
-- load the db schema (currently Django is not managing the database tables).
-- start django `python manage.py runserver`
-- Then navigate to http://127.0.0.1:8000/   (user admin password admin)
+- Django install docs: https://docs.djangoproject.com/en/stable/intro/install/
+- Awesome Django tutorial: https://www.djangoproject.com/start/
 
-## Main Views
+## App docs
+
+### Main Views
 
 | url path     | app     | description |
 |--------------|-----------|------------|
