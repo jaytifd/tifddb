@@ -59,9 +59,11 @@ TIFD's main event is a once a year folk dance camp.  Each camper, when registrin
 
 There main tables in the database are set up to process camp registrations and membership registrations.
 
-- camp_camper: Essentially a "person".  People who sign up for camp or membership are all "campers". 
-- camp_registration
-- membership_payments
+- camp_camper: Essentially a "person".  People who sign up for camp or membership are all essentially "campers" in the database.  They are also **ephemeral** meaning that every year their info is re-entered.  
+- camp_registration: A container that holds multiple campers.  In the past this was called mebership_unit (aka household).  It has the campers' address, shopping cart total, donations and a foreign key to membership_payments.
+- membership_payments: An itemized accounting of the things they paid for - housing_fee, registration_fee, membership_fee are all broken out.  Info taken fomm camp_amper (registration type, housing option) and from camp_registration (donations, paypal_fee) are saved here.
+
+
 
 
 
