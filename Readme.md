@@ -10,7 +10,7 @@ Three main tables in the database are set up to process camp registrations and m
 - **camp_registration**: A container that holds multiple campers.  In the past this was called mebership_unit - aka one or more people living at the same address.  Linked this way because the TIFD newsletter used to be a physical mailer. It has the campers' address, shopping cart total, donations and a foreign key to membership_payments.
 - **membership_payments**: An itemized accounting of the things a member paid for and a link to either a check # or a paypal_ipn entry. categories such as housing_fee, registration_fee, membership_fee are all broken out.  Info taken fomm camp_amper (registration type, housing option) and from camp_registration (donations, paypal_fee) are saved here.
 
-## Database tables
+## Database table schema
 https://github.com/jaytifd/tifddb/blob/master/tables.txt
 
 ## Prerequisites 
