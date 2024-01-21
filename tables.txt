@@ -38,7 +38,7 @@
  | membership_years             |           | postmark                |            | refund_amt           |
  | join_tifd                    |           | registration_source     |            | shipping_fee         |
  | custom_registration_price    |           | shipping_fee            |            | pp_ipn_id            |
- | membership_^alid_from        |           | donation_camp_fund      |            | pp_ipn_txn_id        |
+ | membership_valid_from        |           | donation_camp_fund      |            | pp_ipn_txn_id        |
  | membership_valid_to          |           | donation_chuck          |            | chuck_fund           |
  | custom_registration_discount |           +-------------------------+            | texakolo_fund        |
  | need_linen                   |                                                  | gfc_linens           |
