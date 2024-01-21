@@ -1,11 +1,23 @@
 # TIFD database and registration form
 
+## Database details
+
+TIFD's main event is a once a year folk dance camp.  Each camper, when registring for camp, automatically pays a required $15 membership fee to become a member of the group.  TIFD also offers people not attending camp to sign up for a membership and donate to the group.  There is a back end that provides membership, camp, and payment reports to the administrative staff.
+
+Three main tables in the database are set up to process camp registrations and membership registrations.
+
+- **camp_camper**: Essentially a "person".  Can be adult or child.  People who sign up for camp or membership are all essentially "campers" in the database.  They are also **ephemeral** meaning that every year their info is re-entered.  The membership report searches for campers where now() is between membership_valid_from and membership_valid_to and tries to filter out duplicates.  
+- **camp_registration**: A container that holds multiple campers.  In the past this was called mebership_unit - aka one or more people living at the same address.  Linked this way because the TIFD newsletter used to be a physical mailer. It has the campers' address, shopping cart total, donations and a foreign key to membership_payments.
+- **membership_payments**: An itemized accounting of the things a member paid for and a link to either a check # or a paypal_ipn entry. categories such as housing_fee, registration_fee, membership_fee are all broken out.  Info taken fomm camp_amper (registration type, housing option) and from camp_registration (donations, paypal_fee) are saved here.
+
+## Database tables
+https://github.com/jaytifd/tifddb/blob/master/tables.txt
+
 ## Prerequisites 
 
 - python
 - MySQL
 
-## Installing
 
 ### Quickstart
 
@@ -49,19 +61,6 @@ python manage.py runserver
 | /     | camp       | The default camp registration page
 | /membership     | membership      | The membership registration page
 | /registrar     | registrar    | Registrar / admin functions
-
-## Database tables
-https://github.com/jaytifd/tifddb/blob/master/tables.txt
-
-## Database details
-
-TIFD's main event is a once a year folk dance camp.  Each camper, when registring for camp, automatically pays a required $15 membership fee to become a member of the group.  TIFD also offers people not attending camp to sign up for a membership and donate to the group.
-
-There main tables in the database are set up to process camp registrations and membership registrations.
-
-- camp_camper: Essentially a "person".  People who sign up for camp or membership are all essentially "campers" in the database.  They are also **ephemeral** meaning that every year their info is re-entered.  
-- camp_registration: A container that holds multiple campers.  In the past this was called mebership_unit (aka household).  It has the campers' address, shopping cart total, donations and a foreign key to membership_payments.
-- membership_payments: An itemized accounting of the things they paid for - housing_fee, registration_fee, membership_fee are all broken out.  Info taken fomm camp_amper (registration type, housing option) and from camp_registration (donations, paypal_fee) are saved here.
 
 
 
