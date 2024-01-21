@@ -2,7 +2,7 @@
 
 ## Database details
 
-TIFD's main event is a once a year folk dance camp.  Each camper, when registring for camp, automatically pays a required $15 membership fee to become a member of the group.  TIFD also offers people not attending camp to sign up for a membership and donate to the group.  There is a back end that provides membership, camp, and payment reports to the administrative staff.
+TIFD's main event is a once a year folk dance camp.  Each camper, when registring for camp, automatically pays a required $15 membership fee to become a member of the group.  TIFD also offers people not attending camp to sign up for a membership and donate to the group.  There is a back end that provides membership, camp, and payment reports to the administrative staff.  The camp registration form has many options and things to pay for such as t-shirt, upgraded housing, etc.  It also collects a bunch of information such as dietary restrictions, camp band instruments played, mobility issues.  It also provides the camper the option to donate to TIFD and requires them to acknowledge a safety agreement before completing the form.  Payments can be accepted via PayPal or by mailing a check.  PayPal registrations are handled automatically via PayPal's IPN.  Check registrations are handled as automatically as possible - generally just entering the check number.
 
 Three main tables in the database are set up to process camp registrations and membership registrations.
 
