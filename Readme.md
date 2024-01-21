@@ -53,7 +53,15 @@ python manage.py runserver
 ## Database tables
 https://github.com/jaytifd/tifddb/blob/master/tables.txt
 
+## Database details
 
+TIFD's main event is a once a year folk dance camp.  Each camper, when registring for camp, automatically pays a required $15 membership fee to become a member of the group.  TIFD also offers people not attending camp to sign up for a membership and donate to the group.
+
+There main tables in the database are set up to process camp registrations and membership registrations.
+
+- camp_camper: Essentially a "person".  People who sign up for camp or membership are all "campers". 
+- camp_registration
+- membership_payments
 
 
 
