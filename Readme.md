@@ -1,6 +1,6 @@
 # TIFD database and registration form
 
-TIFD's main event is a once a year folk dance camp.  This is the code for the online registration framework.
+TIFD's main event is a once a year folk dance camp.  This is the code for the online registration framework written in Django.  
 
 The framework supports multiple adult and child campers to register at the same time provided they live at the same address. Each camper, when registering for camp, automatically pays a required $15 membership fee to become a member of the group.  TIFD also offers people not attending camp to sign up for a membership and donate to the group throgh separate registration form on a different URL. The camp registration form has many options and things to pay for such as t-shirt, upgraded housing, etc. There is also a rebate form that will remove the $15 fee if a person has already paid for a lifetime membership, etc. 
 
