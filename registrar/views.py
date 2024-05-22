@@ -697,7 +697,7 @@ def report_by_slug(request, report_by_slug):
         #for example wally changing email address
         for r in result_dict:
             data,member=get_membership_info(r['first_name'],r['last_name'])
-            index_string=r['first_name'].strip().lower()+"|||"+r['last_name'].strip().lower()+"|||"#+str(r['email']).strip().lower()
+            index_string=r['first_name'].strip().lower()+"|||"+r['last_name'].strip().lower()+"|||"+str(r['email']).strip().lower()
             if (index_string not in dupe_check):
                 dupe_check.add(index_string)
                 rs=None
