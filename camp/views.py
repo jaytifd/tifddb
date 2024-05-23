@@ -918,11 +918,10 @@ def create(request,registration_id=None):
     save_success=False
     late_after=CampDates.objects.get(slug='late_date').date
     camp_start=CampDates.objects.get(slug='camp_start').date
-
-    edit_view=False
-
     form_open=CampDates.objects.get(slug='form_open').date
     form_close=CampDates.objects.get(slug='form_close').date
+
+    edit_view=False
  
     if (auth_check(request,500) is False):
         if ((form_open > now.date()) or (form_close < now.date())):

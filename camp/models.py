@@ -337,6 +337,7 @@ class CampDates(models.Model):
     description = models.CharField(max_length=255, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     slug = models.CharField(max_length=255, blank=True, null=True)
+    history = HistoricalRecords()
 
     class Meta:
         managed = False

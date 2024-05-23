@@ -80,6 +80,17 @@ class CampConstantsForm(forms.ModelForm):
                 'camp_start': DateInput(),
                 }
 
+class MyCampDatesFormSet(forms.ModelForm):
+    class Meta:
+        model = CampDates
+        fields='__all__'
+        widgets = {
+                'date': DateInput(),
+                }
+    def __init__(self, *args, **kwargs):
+        self.queryset = CampDates.objects.all()
+        self.prefix="dates"
+
 class MyCampRegistrationTypesFormSet(BaseModelFormSet):
     def __init__(self, *args, **kwargs):
         from camp.views import get_active_registration_options

@@ -11,30 +11,23 @@
         <div class="col-sm-3">
             <form method=POST action="{% url "registrar:campconstants" %}">
                 {% csrf_token %}
-                   {% for field in constants_form %}
-                        {% if field.name == "year" %}
-                        <div class="row">
-
-                                            <div class="col-sm-3"> 
-                                            <label class="text-nowrap">{{field.label}}</label>
-                                            </div>
-                                            <div class="col"> 
-                                            {{ field.value }} 
-                                    </div>
-                        </div>
-                        {%else%}
-
-
-                        <div class="row">
-                                            <div class="col-sm-3"> 
-                                            <label class="text-nowrap">{{field.label}}</label>
-                                            </div>
-                                            <div class="col"> 
-                                            {{ field }} 
-                                    </div>
-                        </div>
-                        {%endif%}
-                {% endfor %}
+       {{ camp_dates_formset.management_form }}
+       {{ camp_dates_formset.management_form }}
+            <table class="table table-sm table-borderless">
+                {% for form in camp_dates_formset %}
+                <tr>
+                    {% for field in form %}
+                       {% if field.name == "description" %}
+                        <td nowrap>
+                           {{field.value}}
+                           {{field.as_hidden}}
+                       {%else%}
+                       <td>
+                         {{field}}
+                       {%endif%}
+                    {%endfor%}
+                {%endfor%}
+            </table>
                 <button type=submit class="btn btn-primary" value=submit>Submit</button>
         </div>
         <div class="col border">

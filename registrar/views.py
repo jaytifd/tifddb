@@ -17,7 +17,7 @@ from camp.custom.mylogger import p
 from camp.custom.tday import tday
 try:
     from camp.constants import dvd_price_decimal,membership_price_decimal,linens_price_decimal
-    from camp.views import get_discount,  emailconfirmation, generate_email_html, get_membership_info, generate_cart_from_registration
+    from camp.views import get_discount,  emailconfirmation, generate_email_html, get_membership_info, generate_cart_from_registration, get_active_housing_options,get_active_registration_options
 except: pass
 
 from paypal.standard.ipn.models import PayPalIPN
@@ -1777,64 +1777,67 @@ def campconstants(request):
     thisyear=get_thisyear(request)
     camp_registration_types_formset = modelformset_factory(CampRegistrationTypes, fields=["description", "price"], formset=MyCampRegistrationTypesFormSet, extra=0)
     camp_housing_types_formset = modelformset_factory(CampHousingTypes, fields=["description", "price"], formset=MyCampHousingTypesFormSet, extra=0)
+    camp_dates_formset = modelformset_factory(CampDates, fields=["description", "date"], extra=0)
+
+
+    late_after=CampDates.objects.get(slug='late_date').date
+    camp_start=CampDates.objects.get(slug='camp_start').date
+    form_open=CampDates.objects.get(slug='form_open').date
+    form_close=CampDates.objects.get(slug='form_close').date
+
 
     if request.method == "POST":
-        constants_form = CampConstantsForm(request.POST, prefix="constants")
-        if constants_form.is_valid():
-            p("form valid!")
-            constants_form.save()
-        else:
-            p(f"error:{constants_form.errors}")
-            #for msg in constants_form.error_messages:
-            #    messages.error(request, f"{msg}: {constants_form.error_messages[msg]}")
-            #return render(request = request,
-            #              template_name = "registrar/campconstants.html",
-            #              context={"constants_form":constants_form})
+        form_open=CampDates.objects.get(slug='form_open').date
+        p("OOOOopen", form_open, datetime.datetime.now().date())
+        #constants_form = CampConstantsForm(request.POST, prefix="constants")
 
+        camp_dates_formset = camp_dates_formset(request.POST)
         registration_formset = camp_registration_types_formset(request.POST, prefix="registration")
         housing_formset = camp_housing_types_formset(request.POST, prefix="housing")
 
-        if registration_formset.is_valid() and housing_formset.is_valid():
-            registration_formset.save()
-            housing_formset.save()
-        else:
-            p(f"registration errors:{registration_formset.errors} housing errors:{housing_formset.errors}")
-            #registration_formset.error_messages
-            #return render(request = request,
-            #              template_name = "registrar/campconstants.html",
-            #              context={"constants_form":constants_form})
+        p(f"constants:{camp_dates_formset.has_changed()} reg:{registration_formset.has_changed()} housing:{housing_formset.has_changed()}")
 
+        if camp_dates_formset.is_valid():
+            p("camp_dates_formset form valid!")
+            camp_dates_formset.save()
+        else:
+            messages.add_message(request, messages.ERROR, camp_dates_formset.errors)
+            p(f"error:{camp_dates_formset.errors}")
+            return redirect("registrar:campconstants")
+
+        if (registration_formset.has_changed() or housing_formset.has_changed()):
+            if (now.date() >= form_open):
+                p(f"Error - tried to edit prices after form opened. open:{form_open} now:{now.date()}")
+                messages.add_message(request, messages.ERROR, "You can't change prices after the form opens!")
+                return redirect("registrar:campconstants")
+
+
+            if registration_formset.is_valid() and housing_formset.is_valid():
+                registration_formset.save()
+                housing_formset.save()
+            else:
+                messages.add_message(request, messages.ERROR, registration_formset.errors, housing_formset.errors)
+                p(f"registration errors:{registration_formset.errors} housing errors:{housing_formset.errors}")
+                return redirect("registrar:campconstants")
 
         return redirect("registrar:campconstants")
 
-    constants_form=CampConstantsForm(prefix="constants")
-    #camp_registration_types_formset = modelformset_factory(CampRegistrationTypes.objects.filter(active=1), fields=["description", "price"])
-    p(camp_registration_types_formset)
-
-    #pull in the most recently added constants object ordered by id.  What could go wrong?
-
-    last_constants=CampConstants.objects.order_by("-id")[0]
-    p("last:",last_constants)
-
-    constants_form.fields['camp_start'].initial = last_constants.camp_start
-    constants_form.fields['form_open'].initial = last_constants.form_open
-    constants_form.fields['form_close'].initial = last_constants.form_close
-    constants_form.fields['form_late'].initial = last_constants.form_late
-
-    p(last_constants.id, last_constants.form_open)
-
+    #constants_form=CampConstantsForm(prefix="constants")
+    #constants_form.fields['camp_start'].initial = camp_start
+    #constants_form.fields['form_open'].initial = form_open
+    #constants_form.fields['form_close'].initial = form_close
+    #constants_form.fields['form_late'].initial = late_after
     thisyear=get_thisyear(request)
     
-    from camp.views import get_active_housing_options,get_active_registration_options
     
     housing_options=get_active_housing_options()
     registration_options_adult=get_active_registration_options("adult")
     registration_options_child=get_active_registration_options("child")
 
     return render(request, 'registrar/campconstants.html', {
-        "constants_form":constants_form,
         "camp_registration_types_formset":camp_registration_types_formset,
         "camp_housing_types_formset":camp_housing_types_formset,
+        "camp_dates_formset":camp_dates_formset,
         'thisyear':thisyear,
         "reports": MembershipReport.objects.all,
         "registration_options_adult":registration_options_adult,
