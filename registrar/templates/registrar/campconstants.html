@@ -37,7 +37,6 @@
                 {% endfor %}
                 <button type=submit class="btn btn-primary" value=submit>Submit</button>
         </div>
-        <!--
         <div class="col border">
                 {% for r in registration_options_adult %}
                 {{r}}<br>
@@ -58,11 +57,12 @@
         </table>
         </div>
     </div>
-        -->
+
+   <div class=row>
        {{ camp_registration_types_formset.management_form }}
        {{ camp_housing_types_formset.management_form }}
 
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <table class="table table-sm table-borderless">
                 {% for form in camp_registration_types_formset %}
                 <tr>
@@ -80,7 +80,7 @@
             </table>
         </div>
 
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <table class="table table-sm table-borderless">
                 {% for form in camp_housing_types_formset %}
                 <tr>
@@ -99,6 +99,7 @@
         </div>
     </div>
 
+</div>
 </div>
 
 {%endblock%}
