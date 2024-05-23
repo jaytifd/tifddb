@@ -1775,30 +1775,51 @@ def payments_quick(request,registration_id):
 @login_required
 def campconstants(request):
     thisyear=get_thisyear(request)
+    camp_registration_types_formset = modelformset_factory(CampRegistrationTypes, fields=["description", "price"], formset=MyCampRegistrationTypesFormSet, extra=0)
+    camp_housing_types_formset = modelformset_factory(CampHousingTypes, fields=["description", "price"], formset=MyCampHousingTypesFormSet, extra=0)
+
     if request.method == "POST":
-        form = CampConstantsForm(request.POST)
-        if form.is_valid():
+        constants_form = CampConstantsForm(request.POST, prefix="constants")
+        if constants_form.is_valid():
             p("form valid!")
-            form.save()
-            return redirect("registrar:campconstants")
-
+            constants_form.save()
         else:
-            for msg in form.error_messages:
-                messages.error(request, f"{msg}: {form.error_messages[msg]}")
-            return render(request = request,
-                          template_name = "registrar/campconstants.html",
-                          context={"form":form})
+            p(f"error:{constants_form.errors}")
+            #for msg in constants_form.error_messages:
+            #    messages.error(request, f"{msg}: {constants_form.error_messages[msg]}")
+            #return render(request = request,
+            #              template_name = "registrar/campconstants.html",
+            #              context={"constants_form":constants_form})
 
-    form=CampConstantsForm()
+        registration_formset = camp_registration_types_formset(request.POST, prefix="registration")
+        housing_formset = camp_housing_types_formset(request.POST, prefix="housing")
+
+        if registration_formset.is_valid() and housing_formset.is_valid():
+            registration_formset.save()
+            housing_formset.save()
+        else:
+            p(f"registration errors:{registration_formset.errors} housing errors:{housing_formset.errors}")
+            #registration_formset.error_messages
+            #return render(request = request,
+            #              template_name = "registrar/campconstants.html",
+            #              context={"constants_form":constants_form})
+
+
+        return redirect("registrar:campconstants")
+
+    constants_form=CampConstantsForm(prefix="constants")
+    #camp_registration_types_formset = modelformset_factory(CampRegistrationTypes.objects.filter(active=1), fields=["description", "price"])
+    p(camp_registration_types_formset)
+
     #pull in the most recently added constants object ordered by id.  What could go wrong?
 
     last_constants=CampConstants.objects.order_by("-id")[0]
     p("last:",last_constants)
 
-    form.fields['camp_start'].initial = last_constants.camp_start
-    form.fields['form_open'].initial = last_constants.form_open
-    form.fields['form_close'].initial = last_constants.form_close
-    form.fields['form_late'].initial = last_constants.form_late
+    constants_form.fields['camp_start'].initial = last_constants.camp_start
+    constants_form.fields['form_open'].initial = last_constants.form_open
+    constants_form.fields['form_close'].initial = last_constants.form_close
+    constants_form.fields['form_late'].initial = last_constants.form_late
 
     p(last_constants.id, last_constants.form_open)
 
@@ -1811,7 +1832,9 @@ def campconstants(request):
     registration_options_child=get_active_registration_options("child")
 
     return render(request, 'registrar/campconstants.html', {
-        "form":form,
+        "constants_form":constants_form,
+        "camp_registration_types_formset":camp_registration_types_formset,
+        "camp_housing_types_formset":camp_housing_types_formset,
         'thisyear':thisyear,
         "reports": MembershipReport.objects.all,
         "registration_options_adult":registration_options_adult,

@@ -882,8 +882,9 @@ def get_active_housing_options():
     return housing_options
 
 def get_active_registration_options(adultorchild):
-    registration_options=CampRegistrationTypes.objects.filter(adult_or_child__iexact=adultorchild).filter(active=True).filter(slug__exact="registration")
-    return registration_options
+    if adultorchild is None or adultorchild == "both".lower():
+       return CampRegistrationTypes.objects.filter(active=True).filter(slug__exact="registration")
+    return CampRegistrationTypes.objects.filter(adult_or_child__iexact=adultorchild).filter(active=True).filter(slug__exact="registration")
 
 #this is hit fix ajax when the paypal link is clicked
 def status(request,registration_id):

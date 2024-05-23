@@ -142,6 +142,7 @@ body { color:black; }
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <p class="dropdown-item bg-warning" disabled href="">Year selected: <b>{%if thisyear%}{{thisyear}}{%else%}{%now "Y"%}{%endif%}</b></p>
             <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url "registrar:campconstants" %}?year={{thisyear}}">Camp setup</a>
             <a class="dropdown-item" href="{% url "registrar:registrar" %}?year={{thisyear}}">Manage camp registrations</a>
 			<a class="dropdown-item" href="{% url "registrar:payments" %}?year={{thisyear}}">Deposit Payments</a>
 			<a class="dropdown-item" href="{% url "membership:create" %}">Add TIFD members</a>

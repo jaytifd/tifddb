@@ -3,48 +3,102 @@
 {% block content %}
 
 <h2>
-    Camp Constants
+   Camp Setup
 </h2>
-<div class=row>
-<div class=col-sm-4>
-    <form method=POST action="{% url "registrar:campconstants" %}">
+<p>Fill out the fields below and click submit to change the camp pricing, etc.</p>
+<div class="container-fluid">
+    <div class=row>
+        <div class="col-sm-3">
+            <form method=POST action="{% url "registrar:campconstants" %}">
+                {% csrf_token %}
+                   {% for field in constants_form %}
+                        {% if field.name == "year" %}
+                        <div class="row">
 
-        {% csrf_token %}
-           {% for field in form %}
-                <div class="row">
-                                    <div class="col-sm-3"> 
-                                    <label>{{field.label}}</label>
+                                            <div class="col-sm-3"> 
+                                            <label class="text-nowrap">{{field.label}}</label>
+                                            </div>
+                                            <div class="col"> 
+                                            {{ field.value }} 
                                     </div>
-                                    <div class="col"> 
-                                    {{ field }} 
-                            </div>
-                </div>
-        {% endfor %}
-        <button type=submit class="btn btn-primary" value=submit>Submit</button>
+                        </div>
+                        {%else%}
+
+
+                        <div class="row">
+                                            <div class="col-sm-3"> 
+                                            <label class="text-nowrap">{{field.label}}</label>
+                                            </div>
+                                            <div class="col"> 
+                                            {{ field }} 
+                                    </div>
+                        </div>
+                        {%endif%}
+                {% endfor %}
+                <button type=submit class="btn btn-primary" value=submit>Submit</button>
+        </div>
+        <!--
+        <div class="col border">
+                {% for r in registration_options_adult %}
+                {{r}}<br>
+                    {%endfor%}
+                {% for r in registration_options_child %}
+                {{r}}<br>
+                    {%endfor%}
+        </div>
+        <div class="col border">
+                {% for r in housing_options %}
+                {{r}}<br>
+                    {%endfor%}
+
+        <table class="table table-borderless">
+            <tr>
+                <td>{{form_open}}
+                <td>{{form_open.date}}
+        </table>
+        </div>
+    </div>
+        -->
+       {{ camp_registration_types_formset.management_form }}
+       {{ camp_housing_types_formset.management_form }}
+
+        <div class="col-sm-3">
+            <table class="table table-sm table-borderless">
+                {% for form in camp_registration_types_formset %}
+                <tr>
+                    {% for field in form %}
+                       {% if field.name == "description" %}
+                        <td>
+                           {{field.value}}
+                           {{field.as_hidden}}
+                       {%else%}
+                       <td>
+                         {{field}}
+                       {%endif%}
+                    {%endfor%}
+                {%endfor%}
+            </table>
+        </div>
+
+        <div class="col-sm-3">
+            <table class="table table-sm table-borderless">
+                {% for form in camp_housing_types_formset %}
+                <tr>
+                    {% for field in form %}
+                       {% if field.name == "description" %}
+                        <td>
+                           {{field.value}}
+                           {{field.as_hidden}}
+                       {%else%}
+                       <td>
+                         {{field}}
+                       {%endif%}
+                    {%endfor%}
+                {%endfor%}
+            </table>
+        </div>
+    </div>
+
 </div>
-<div class=col>
-        {% for r in registration_options_adult %}
-        {{r}}<br>
-            {%endfor%}
-        {% for r in registration_options_child %}
-        {{r}}<br>
-            {%endfor%}
-</div>
-<div class="col">
-        {% for r in housing_options %}
-        {{r}}<br>
-            {%endfor%}
-
-
-
-
-
-
-<table class=table>
-    <tr>
-        <td>{{form_open}}
-        <td>{{form_open.date}}
-</table>
-</div></div>
 
 {%endblock%}

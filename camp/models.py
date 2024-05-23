@@ -110,6 +110,7 @@ class CampRegistrationTypes(models.Model):
     cart_description = models.CharField(max_length=255, blank=False, null=False)
     adult_or_child = models.CharField(max_length=255,blank=False, null=False)
     active = models.BooleanField("Include on regform?",max_length=1, default=1, blank=False, null=False )
+    history = HistoricalRecords()
 
     def __str__(self):
         #more cusom stuff for the virtual camp
@@ -305,6 +306,7 @@ class CampHousingTypes(models.Model):
     cart_description = models.CharField(max_length=255, blank=False, null=False)
     short_description = models.CharField(max_length=20, blank=False, null=False)
     active = models.BooleanField("Include on regform?",max_length=1, default=1, blank=False, null=False )
+    history = HistoricalRecords()
     def __str__(self):
         return str("$" + str(self.price) + " " + self.description )
     class Meta:
@@ -616,6 +618,7 @@ class CampConstants(models.Model):
     form_close = models.DateField()
     form_late = models.DateField()
     camp_start = models.DateField()
+    history = HistoricalRecords()
 
     class Meta:
         managed = False

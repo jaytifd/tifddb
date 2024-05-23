@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from .models import *
-from django.forms import modelformset_factory, Textarea, TextInput, DateInput, RadioSelect, CheckboxInput, NumberInput
+from django.forms import modelformset_factory, Textarea, TextInput, DateInput, RadioSelect, CheckboxInput, NumberInput, BaseModelFormSet
 
 from ckeditor.widgets import CKEditorWidget
 
@@ -79,6 +79,27 @@ class CampConstantsForm(forms.ModelForm):
                 'form_late': DateInput(),
                 'camp_start': DateInput(),
                 }
+
+class MyCampRegistrationTypesFormSet(BaseModelFormSet):
+    def __init__(self, *args, **kwargs):
+        from camp.views import get_active_registration_options
+        super().__init__(*args, **kwargs)
+        self.queryset = get_active_registration_options("both")
+        self.prefix="registration"
+        #self.queryset = CampRegistrationTypes.objects.filter(active="1").filter(slug="registration")
+
+class MyCampHousingTypesFormSet(BaseModelFormSet):
+    def __init__(self, *args, **kwargs):
+        from camp.views import get_active_housing_options
+        super().__init__(*args, **kwargs)
+        self.queryset = get_active_housing_options()
+        self.prefix="housing"
+        #self.queryset = CampRegistrationTypes.objects.filter(active="1").filter(slug="registration")
+
+#class CampRegistrationTypesForm(forms.ModelForm):
+#    class Meta:
+#        model = CampRegistrationTypes
+#        fields='__all__'
 
 class MembershipPersonForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
