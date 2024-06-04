@@ -594,8 +594,8 @@ def report_by_slug(request, report_by_slug):
         if report_by_slug == "members_expiring":
             now=datetime.datetime.strptime(str(thisyear), '%Y')
         else:
-            #now=datetime.datetime.now() #shouldnt the datepicker work?
-            now=datetime.datetime.strptime(str(thisyear), '%Y') 
+            now=datetime.datetime.now() #shouldnt the datepicker work?
+            #now=datetime.datetime.strptime(str(thisyear), '%Y')
 
         fields=[
                 {'membership_address':'id'},
