@@ -581,8 +581,8 @@ def report_by_slug(request, report_by_slug):
     
         if search=='': search="ASDASDASDADS"
         for f in fields: searchfields+=f
-        result_dict=CampCamper.objects.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).values(*searchfields).order_by('-registration__year')
-        result_dict=CampCamper.objects.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).values(*searchfields).order_by('-registration__year')
+        #result_dict=CampCamper.objects.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).values(*searchfields).order_by('-registration__year')
+        result_dict=CampCamper.objects.filter(Q(first_name__icontains=search) | Q(email__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).values(*searchfields).order_by('-registration__year')
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
 
 
