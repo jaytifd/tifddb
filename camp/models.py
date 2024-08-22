@@ -170,7 +170,7 @@ class CampRegistration(models.Model):
     auction_items = models.TextField(blank=True, null=True)
     session = models.TextField(blank=True, null=True)
     payment_type = models.CharField(max_length=255, blank=True, null=True)
-    cart_total=models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=True)
+    cart_total=models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=False, default=0)
     membership_fee_gross=models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=True)
     late_fee=models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=True)
     adjustment=models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=True)
