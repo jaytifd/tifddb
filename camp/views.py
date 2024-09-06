@@ -741,7 +741,7 @@ def generate_email_html(registration,template_slug):
 
     now=datetime.datetime.now()
     campers=CampCamper.objects.filter(registration=registration).order_by('adult_or_child','id')
-    registrar_info=get_registrar_info
+    registrar_info=get_registrar_info()
     cart,cart_total=generate_cart_from_registration(registration.id)
     discount_list,discount_total=get_discount(registration.id)
     email_header_template=CampTemplates.objects.get(slug__exact=template_slug).template_text
@@ -756,6 +756,11 @@ def generate_email_html(registration,template_slug):
         intro_message=registration.registrar_approval_note
     else:
         intro_message=header_tpl.render(Context(dict(now=now, registrar_info=registrar_info)))
+        try:
+            if registration.payment_type == "check":
+                intro_message = intro_message + "\n<p>Check or money order for camp fees can be mailed to:</p>\n<pre>\n" + str(registrar_info.name) + "\n" + str(registrar_info.mailing_address) + "\n</pre>\n"
+        except:
+            pass
 
     #intro_message=header_tpl.render(Context(dict(now=now, registrar_info=registrar_info)))
     subject=subject_tpl.render(Context(dict(now=now, registrar_info=registrar_info)))
@@ -775,10 +780,10 @@ def generate_email_html(registration,template_slug):
     email_content={'everything':everything,
             'intro_message':intro_message,
             'html_body':html_body,
-            'subject':subject
+            'subject':subject,
+            'registrar_info':registrar_info,
             }
 
-    #p("Email generated for regid:",email_content)
     return (email_content)
 
 
