@@ -157,7 +157,7 @@ class CampRegistration(models.Model):
     city = models.CharField(max_length=255, blank=False, null=True)
     state = models.CharField(max_length=255, blank=False, null=True, default="", choices=YOUR_STATE_CHOICES)
     zip = models.CharField(max_length=255, blank=False, null=True)
-    country = models.CharField('Country',max_length=255, blank=True, null=True)
+    country = models.CharField('Country',max_length=255, blank=True, null=True, default = "USA")
     donation_bobbi_gillotti = models.DecimalField("Bobbi Gillotti fund donation", validators=[MinValueValidator(Decimal('0.00'))], max_digits=7, decimal_places=2, blank=True, null=True, default='')
     donation_floor_fund = models.DecimalField("Floor fund donation", max_digits=7, validators=[MinValueValidator(Decimal('0.00'))], decimal_places=2, blank=True, null=True, default='')
     donation_camp_fund = models.DecimalField("Floor fund donation", max_digits=7, validators=[MinValueValidator(Decimal('0.00'))], decimal_places=2, blank=True, null=True, default='')
