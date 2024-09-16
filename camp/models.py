@@ -143,7 +143,7 @@ class CampRebates(models.Model):
 
 class CampRegistration(models.Model):
     YOUR_STATE_CHOICES = list(STATE_CHOICES) + list(PROVINCE_CHOICES)
-    YOUR_STATE_CHOICES.sort()
+    #YOUR_STATE_CHOICES.sort()
     YOUR_STATE_CHOICES.insert(0, (' ', 'None'))
     YOUR_STATE_CHOICES.insert(0, (' ', '-----'))
     YOUR_STATE_CHOICES.append((' ', '------'))
@@ -154,7 +154,7 @@ class CampRegistration(models.Model):
     address1 = models.CharField('Mailing address - street', max_length=255, blank=False, null=True)
     address2 = models.CharField('Mailing address - apt/unit', max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=False, null=True)
-    state = models.CharField(max_length=255, blank=False, null=True, default="Texas", choices=YOUR_STATE_CHOICES)
+    state = models.CharField(max_length=255, blank=False, null=True, default="", choices=YOUR_STATE_CHOICES)
     zip = models.CharField(max_length=255, blank=False, null=True)
     country = models.CharField('Country',max_length=255, blank=True, null=True)
     donation_bobbi_gillotti = models.DecimalField("Bobbi Gillotti fund donation", validators=[MinValueValidator(Decimal('0.00'))], max_digits=7, decimal_places=2, blank=True, null=True, default='')
