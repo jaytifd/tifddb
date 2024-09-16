@@ -2,7 +2,6 @@
 
 {% block content %}
 
-
 {% if pdf_view %}
         <!-- STYLE FOR THE PDF VIEW ONLY -->
         <style>
@@ -19,7 +18,7 @@
         </style>
 
 {% endif %}
-<div class="container">
+<div class="container-fluid">
 <div class="row">
 <div class="col-sm-12">
         <div class="table-responsive">
@@ -95,18 +94,20 @@ $('.dataTables_length').addClass('bs-select');
 			{% if forloop.counter > 3 %}
 				<td>
 						{% if value is True %}Yes{% elif value is False %}No{% else %}
-						{% if "ostmark" in key or "date" in key or "ed_at" in key or "valid_to" in key%}
-                            {% if value.year > 2900 %} 
-                                LIFE
-                            {% else %}
-							    {{value|date:'Y-m-d'}}
-                            {% endif %}
+                            {% if "ostmark" in key or "date" in key or "ed_at" in key or "valid_to" in key%}
+                                {% if value.year > 2900 %} 
+                                    LIFE
+                                {% else %}
+                                    {{value|date:'Y-m-d'}}
+                                {% endif %}
 
-							{% elif "note" in key %}
-							<small>{{value|default_if_none:""}}</small>
-							{% else %}
-							{{value|default_if_none:""}}
-						{%endif%}
+                                {% elif "note" in key %}
+                                <small>{{value|default_if_none:""}}</small>
+                                {% elif "phone" in key %}
+                                <span style="white-space: nowrap;">{{value.as_national}}</span>
+                                {% else %}
+                                {{value|default_if_none:""}}
+                            {%endif%}
 						{%endif%}
 				</td>
 			{% endif %}

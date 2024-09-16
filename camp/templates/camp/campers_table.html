@@ -36,7 +36,7 @@
 
                         {% if r.gender %}       <tr>            <td width=50%>{% get_verbose_field_name r 'gender' %}<td width=50%>{{r.gender}}{%endif%}
                         {% if r.email %}<tr>            <td width=50%>{% get_verbose_field_name r 'email' %}<td width=50%>{{r.email}}{%endif%}
-                        {% if r.phone %}<tr>            <td width=50%>{% get_verbose_field_name r 'phone' %}<td width=50%>{{r.phone}}{%endif%}
+                        {% if r.phone %}<tr>            <td width=50%>{% get_verbose_field_name r 'phone' %}<td width=50%>{{r.phone.as_national}}{%endif%}
                                         <tr>          <td width=50%>Consent to publish?<td width=50%>{{r.publish|yesno:"Yes,No" }}
                         {% if r.diet_details %}<tr>     <td width=50%>Dietary restrictions<td width=50%>{{r.diet_details.strip}}{%endif%}
                         {% if r.share_housing %}<tr>    <td width=50%>Share housing with<td width=50%>{{r.share_housing}}{%endif%}

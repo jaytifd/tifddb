@@ -59,7 +59,7 @@
 			{{result.registration__city}},&nbsp;{{result.registration__state}}&nbsp;{{result.registration__zip}}
 			{% if result.registration__country %}<br>{{result.registration__country}} {%endif%}
 		</td>
-		<td>{{result.phone}}</td>
+		<td>{{result.phone.as_national}}</td>
 		<td width=20% nowrap>{{result.email}}</td>
 		<td>{{result.t_shirt_type__description}}</td>
 		<td width=5% nowrap>{{result.free_t_shirt|yesno:"Yes,No" }}</td>

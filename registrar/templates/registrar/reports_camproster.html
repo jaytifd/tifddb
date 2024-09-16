@@ -57,7 +57,7 @@
 			{% if result.registration__country %}&nbsp;{{result.registration__country}} {%endif%}
             {%endif%}
 		</td>
-		<td nowrap>{{result.phone}}</td>
+		<td nowrap>{{result.phone.as_national}}</td>
 		<td nowrap>{{result.email}}</td>
 </tr>
 {% endfor %}

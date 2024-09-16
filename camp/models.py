@@ -5,6 +5,7 @@ from localflavor.us.forms import USStateSelect, USZipCodeField, USStateField
 from localflavor.us.us_states import STATE_CHOICES
 from localflavor.ca.ca_provinces import PROVINCE_CHOICES 
 
+from phonenumber_field.modelfields import PhoneNumberField
 from ckeditor.fields import RichTextField
 from simple_history.models import HistoricalRecords
 from decimal import Decimal
@@ -266,7 +267,8 @@ class MembershipPerson(models.Model):
     membership_type= models.ForeignKey(MembershipType, on_delete=models.DO_NOTHING, blank=False, null=False)  ### this is the legacy field
     email = models.CharField("email address", max_length=255, blank=True, null=True)
     email2 = models.CharField(max_length=255, blank=True, null=True)
-    phone = models.CharField("Phone Number",validators=[MinLengthValidator(limit_value=10,message="Phone number should have at least 10 numbers.  Missing area code?")],max_length=30, blank=True, null=True)
+    #phone = models.CharField("Phone Number",validators=[MinLengthValidator(limit_value=10,message="Phone number should have at least 10 numbers.  Missing area code?")],max_length=30, blank=True, null=True)
+    phone = PhoneNumberField(blank=False, null=False)
     #these are legacy
     work_phone = models.CharField(max_length=255, blank=True, null=True)
     cell_phone = models.CharField(max_length=255, blank=True, null=True)
@@ -400,7 +402,8 @@ class Person(models.Model):
     last_name = models.CharField(max_length=255, blank=False, null=True)
     membership_valid_from = models.DateField(blank=True, null=True)
     membership_valid_to = models.DateField(blank=True, null=True)
-    phone = models.CharField("Phone number",validators=[MinLengthValidator(limit_value=10,message="Phone number should have at least 10 numbers.  Missing area code?")],max_length=255, blank=False, null=False)
+    #phone = models.CharField("Phone number",validators=[MinLengthValidator(limit_value=10,message="Phone number should have at least 10 numbers.  Missing area code?")],max_length=255, blank=False, null=False)
+    phone = PhoneNumberField(blank=False, null=False)
     email = models.EmailField("Email address",max_length=255, blank=False, null=True)
     gender = models.CharField(max_length=255, blank=True, null=True)
     mobility = models.BooleanField('I use a mobility device such as wheelchair, walker, crutches, or cane.', blank=True, null=False, default=False,  )

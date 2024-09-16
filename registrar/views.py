@@ -465,7 +465,7 @@ def report_by_slug(request, report_by_slug):
                 {'registration':'id'},
                 {'first_name':"firstname"},
                 {'last_name':"lastname"},
-                {'phone':'homephone'},
+                {'phone':'phone'},
                 {'registration__city':'city'},
                 {'housing_assigned':'Assigned'},
                 {'housing_type__short_description':'housing preference'},
