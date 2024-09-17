@@ -155,7 +155,7 @@ body { color:black; }
 	      <a class="nav-link" href="{%url "registrar:docs"%}">Docs</a>
 	</li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
+    <form class="{% if not years %}d-none {% endif %} form-inline my-2 my-lg-0"> 
 	    <label class="mr-2" for=year>Select year</label>
 	<select class="form-control mr-sm-2" id=year value=year name="year" autocomplete=off onchange='this.form.submit()'>
 		{% for year in years %}

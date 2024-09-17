@@ -494,7 +494,6 @@ def report_by_slug(request, report_by_slug):
 
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,hidden_fields=hidden_fields)
 
-
 #################MUSICIANS ################
     elif report_by_slug == "musicians":
 
@@ -739,8 +738,13 @@ def report_by_slug(request, report_by_slug):
 
         return report_by_slug_render(request, report_by_slug,fields,result_dict_no_dupes,thisyear)
 
+#################CAMP COUNTS ################
+    elif report_by_slug == "counts":
+        return campcounts(request)
+
     else:
         raise Http404("report does not exist")
+
 
 ##############END REPORTS##############
 
@@ -1868,3 +1872,81 @@ def refund(request,registration_id):
 
     rev=reverse('registrar:registrar')+"?year="+str(thisyear)+"&ts="+str(now.microsecond)
     return HttpResponseRedirect(rev)
+
+
+def get_shirt_counts(thisyear):
+        group_dict=CampCamper.objects.filter( Q(free_t_shirt=1) | Q(t_shirt_type_id__gt=1)).\
+                        filter(registration__year__icontains=thisyear).\
+                        filter(registration__registration_source=0).\
+                        filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).\
+                        values('t_shirt_type__description').\
+                        annotate(dcount=Count('t_shirt_type__description'))\
+                        .order_by()
+        p("GD", group_dict)
+        total = group_dict_total(group_dict)
+        return group_dict, total
+
+def get_registration_counts(thisyear):
+        group_dict=CampCamper.objects.\
+                        filter(registration__year__icontains=thisyear).\
+                        filter(registration__registration_source=0).\
+                        filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).\
+                        values('registration_type__description').\
+                        annotate(dcount=Count('registration_type__description'))\
+                        .order_by()
+        p("GD", group_dict)
+        total = group_dict_total(group_dict)
+        return group_dict, total
+
+def get_housing_counts(thisyear):
+        group_dict=CampCamper.objects.\
+                        filter(registration__year__icontains=thisyear).\
+                        filter(registration__registration_source=0).\
+                        filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).\
+                        values('housing_type__description').\
+                        annotate(dcount=Count('housing_type__description'))\
+                        .order_by()
+        p("GD", group_dict)
+        total = group_dict_total(group_dict)
+        return group_dict, total
+
+def get_adult_child_counts(thisyear):
+        group_dict=CampCamper.objects.\
+                        filter(registration__year__icontains=thisyear).\
+                        filter(registration__registration_source=0).\
+                        filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).\
+                        values('adult_or_child').\
+                        annotate(dcount=Count('adult_or_child'))\
+                        .order_by()
+        p("GD", group_dict)
+        total = group_dict_total(group_dict)
+        return group_dict, total
+
+def group_dict_total(group_dict):
+    i=0
+    for g in group_dict:
+        i=i+g['dcount']
+    return i
+
+def campcounts(request):
+    #reached via camp reports slug
+    thisyear=get_thisyear(request)
+
+    shirt_group, shirt_total = get_shirt_counts(thisyear)
+    registration_group, registration_total = get_registration_counts(thisyear)
+    housing_group, housing_total = get_housing_counts(thisyear)
+    adult_child_group, adult_child_total = get_adult_child_counts(thisyear)
+    
+    return render(request, 'registrar/reports_campcounts.html', {
+        'shirt_group':shirt_group,
+        'shirt_total':shirt_total,
+        'housing_group':housing_group,
+        'housing_total':housing_total,
+        'registration_group':registration_group,
+        'registration_total':registration_total,
+        'adult_child_group':adult_child_group,
+        'adult_child_total':adult_child_total,
+        'years':years,
+        'thisyear':thisyear,
+        "reports": MembershipReport.objects.all,
+        })
