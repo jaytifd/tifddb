@@ -1,0 +1,96 @@
+{% extends 'registrar/bootstrap_header.html' %}
+
+{% block content %}
+
+{% if pdf_view %}
+        <!-- STYLE FOR THE PDF VIEW ONLY -->
+        <style>
+        th, td {
+        border-bottom: 1px solid #ddd;
+        padding-top: 3px;
+	font-size:12px;
+        }
+        a {
+          color: black;
+          text-decoration:none;
+        }
+        .email { display:noe;}
+        </style>
+
+{% endif %}
+<div class="container">
+<div class="row d-none">
+<div class="col-sm-12">
+        <div class="table-responsive">
+		{% if request.GET.q %}
+		<!-- FILTER applied: "{{request.GET.q}}" -->
+	{% endif %}
+	{% if not pdf_view %}
+          <a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">PDF</button></a> 
+          <a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">CSV</button></a>
+	  {% endif %}
+
+{% if request.GET.q and pdf_view %}
+<p class="h3 bg-warning">Filter applied: "{{ request.GET.q }}"</p>
+{%endif%}
+        </div>
+        </div>
+        </div>
+
+        Related reports: 
+        <ul>
+            <li><a href="{% url 'registrar:reports_by_slug' report_by_slug='t-shirt' %}?year={{thisyear}}">t-shirt full report</a>
+            <li><a href="{% url 'registrar:reports_by_slug' report_by_slug='housingreport' %}?year={{thisyear}}">housing full report</a>
+        </ul>
+<div class=row>
+    <div class="col-sm-2 mt-3">
+    <table class="table table-bordered  table-sm">
+        <th colspan=2>Shirt size summary table</th>
+            {% for r in shirt_group %}
+                <tr><td>{{r.t_shirt_type__description}}
+                        <td>{{r.dcount}}
+            {% endfor %}
+    </table>
+            Total Shirts: {{ shirt_total }}
+    </div>
+
+    <div class="col-sm-3 mt-3">
+    <table class="table table-bordered  table-sm">
+        <th colspan=2>Registration type table</th>
+            {% for r in registration_group %}
+                <tr><td>{{r.registration_type__description}}
+                        <td>{{r.dcount}}
+            {% endfor %}
+    </table>
+            Total Campers: {{ registration_total }}
+    </div>
+
+    <div class="col-sm-4 mt-3">
+    <table class="table table-bordered  table-sm">
+        <th colspan=2>Housing type table</th>
+            {% for r in housing_group %}
+                <tr><td>{{r.housing_type__description}}
+                        <td>{{r.dcount}}
+            {% endfor %}
+    </table>
+            Total Campers: {{ housing_total }}
+    </div>
+
+    <div class="col-sm-4 mt-3">
+    <table class="table table-bordered  table-sm">
+        <th colspan=2>Adult / Child table</th>
+            {% for r in adult_child_group %}
+                <tr><td>{{r.adult_or_child}}
+                        <td>{{r.dcount}}
+            {% endfor %}
+    </table>
+            Total Campers: {{ adult_child_total }}
+    </div>
+
+</div>
+
+	{% include "registrar/tablesort.html" %}
+{% endblock %}
+
+
+</div></div>
