@@ -4,7 +4,7 @@ from django.template import loader
 from django.http import Http404, HttpResponseRedirect
 from django.contrib import messages
 from django.template.loader import render_to_string
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.forms import modelformset_factory, Textarea, TextInput, DateInput
 from django.forms import inlineformset_factory
 from django.contrib.auth.decorators import login_required
@@ -163,7 +163,7 @@ def refund_report(request):
 
 @user_passes_test(readonly_check)
 @login_required
-def report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,page_title='',template='registrar/reports_generic.html',hidden_fields=('registration',)):
+def report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,page_title='',template='registrar/reports_generic.html',hidden_fields=('registration',), extra={}):
 
         thisyear=get_thisyear(request)
         headers=[]
@@ -198,6 +198,7 @@ def report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,pa
                     'thisyear':thisyear,
                     'hidden_fields':hidden_fields,
                     "page_title": page_title,
+                    "extra": extra,
                     "reports": MembershipReport.objects.all(),
                     }
                 
@@ -270,8 +271,7 @@ def report_by_slug(request, report_by_slug):
                     Q(last_name__icontains=search)).filter(registration__year__icontains=thisyear).filter(adult_or_child__iexact="adult").values(*searchfields).order_by('last_name').filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
 
         for result in result_dict:
-            #p(result)
-            if result['publish'] is True or result['registration__year'] == 2020:
+            if result['publish'] is True:
                 pass
             else:
                 result['email']='<>'
@@ -312,9 +312,15 @@ def report_by_slug(request, report_by_slug):
                     Q(free_t_shirt=1) | 
                     Q(t_shirt_type_id__gt=1)
                 ).filter(registration__year__icontains=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
+
+        group_dict=CampCamper.objects.filter(
+                    Q(free_t_shirt=1) | 
+                    Q(t_shirt_type_id__gt=1)
+                ).filter(registration__year__icontains=thisyear).values('t_shirt_type__description').filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).annotate(dcount=Count('t_shirt_type__description')).order_by()
+        p("GD", group_dict)
     
         hidden_fields=['first_name','last_name','year','registration__address1','registration__address2','registration__city','registration__state','registration__country','publish','registration']
-        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,hidden_fields=hidden_fields,template="registrar/reports_tshirt.html")
+        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,hidden_fields=hidden_fields,template="registrar/reports_tshirt.html", extra=group_dict)
 
 #################DVD ################
     elif report_by_slug == "dvd":
@@ -467,11 +473,12 @@ def report_by_slug(request, report_by_slug):
                 {'last_name':"lastname"},
                 {'phone':'phone'},
                 {'registration__city':'city'},
-                {'housing_assigned':'Assigned'},
+                #{'housing_assigned':'Assigned'},
                 {'housing_type__short_description':'housing preference'},
                 {'share_housing':'sharewith'},
                 {'adult_or_child':'age category'},
                 {'need_linen':'Linen'},
+                {'registration_type__description':'registration type'},
                 {'registration__camper_note':'camper_note'},
                 {'registration__postmark':'postmark'},
                 {'registration__created_at':'created_at'},

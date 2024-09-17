@@ -27,7 +27,6 @@
 		<!-- FILTER applied: "{{request.GET.q}}" -->
 	{% endif %}
 	{% if not pdf_view %}
-		Results: {{ result_list|length }}
           <a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">PDF</button></a> 
           <a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">CSV</button></a>
 	  {% endif %}
@@ -35,6 +34,21 @@
 {% if request.GET.q and pdf_view %}
 <p class="h3 bg-warning">Filter applied: "{{ request.GET.q }}"</p>
 {%endif%}
+
+
+<div class=row>
+<div class="col-sm-3 mt-3">
+<table class="table table-bordered  table-sm">
+    <th colspan=2>Shirt size summary table</th>
+{% for result in extra %}
+    <tr><td>{{result.t_shirt_type__description}}
+            <td>{{result.dcount}}
+{% endfor %}
+</table>
+		Total Shirts: {{ result_list|length }}
+</div>
+</div>
+
 
 <table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
         <thead><tr>
@@ -48,6 +62,7 @@
 				<th align= "left">Registration Status?</th>
                 </tr></thead>
                 <tbody>
+
 
 {% for result in result_dict %}
 
