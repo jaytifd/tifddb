@@ -24,7 +24,7 @@
                           <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						  <!--  <a class="bg-primary text-light btn btn-group rounded-left text-nowrap" href="{% url "registrar:payments_add" %}?registration_id={{regid}}">Add Payment</a> -->
 					{%else %}
-						  <a class="bg-primary text-light btn btn-group rounded-left text-nowrap" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}"><b>Itemize Payment</b></a>
+						  <a class="bg-primary text-light btn btn-group rounded-left text-nowrap" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}"><b>Add Itemized Payment</b></a>
                           <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					{%endif%}
 
@@ -32,7 +32,7 @@
 		  </button>
 				  <div class="dropdown-menu">
 					  <div class="list-group">
-						  <a class="dropdown-item" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}">Itemize Payment</a>
+						  <a class="dropdown-item" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}">Add Itemized Payment</a>
 						  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#qk-mymodal-{{regid}}"><b>Quick Payment</b></a>
 						  <a class="dropdown-item" href="{% url "registrar:approve" regid %}?year={{thisyear}}">Send Conf Email</a>
 						  <a class="dropdown-item" href="#"><hr></a>
@@ -41,7 +41,7 @@
 						  <a class="dropdown-item" href="{% url "registrar:donationletter" regid %}?year={{thisyear}}">Create Donation Letter</a>
 						  <a class="dropdown-item" href="{% url "camp:create_edit" regid %}">Edit registration form page1</a>
 						  <a class="dropdown-item" href="{% url "camp:confirm" regid %}">Edit registration form page2</a>
-						  <a class="dropdown-item" href="{% url "registrar:refund" regid %}?year={{thisyear}}">Refund</a>
+						  <a class="dropdown-item d-none" href="{% url "registrar:refund" regid %}?year={{thisyear}}">Refund</a>
 						  <a class="dropdown-item d-none" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}">Add Payment - custom itemization</a>
                               {% comment %}
                                 There could be more than one payment 
@@ -49,6 +49,7 @@
 						  {%for payment in campers.0.mypayments %}
 						  	{% if payment.pp_ipn_id %}
 						  		<a class="dropdown-item" id="delete_{{forloop.counter0}}"href="{% url "registrar:ipn_view" payment.pp_ipn_id %}">View PayPal IPN debug info</a>
+                                <a class="dropdown-item" href="{% url "registrar:payments_add_edit" payment.id %}?registration_id={{regid}}&return=registrar&year={{thisyear}}">Edit Payment {{payment.id}}</a>
 						  	{%endif%}
 						  {%endfor %}
 
