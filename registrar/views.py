@@ -1507,7 +1507,7 @@ def generate_mycampers_dict(campers):
             mycampers[camper.registration_id]=[]
         mycampers[camper.registration_id].append(camper)
 
-    p("generate_campers_dict returned:",mycampers)
+    #p("generate_campers_dict returned:",mycampers)
     return mycampers,registration_stats
 
 

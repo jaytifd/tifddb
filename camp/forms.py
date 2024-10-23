@@ -120,12 +120,13 @@ class DonationForm(ModelForm):
                 'donation_chuck',
                 ]
         widgets = {
-                'donation_tifd': NumberInput(attrs={'style': 'width: 4em;','step':'any','placeholder':'0.00','min':0}),
-                'donation_floor_fund': NumberInput(attrs={'style': 'width: 4em;','step':'any','placeholder':'0.00','min':0}),
-                'donation_camp_fund': NumberInput(attrs={'style': 'width: 4em;','step':'any','placeholder':'0.00','min':0}),
-                'donation_live_music': NumberInput(attrs={'style': 'width: 4em;','step':'any','placeholder':'0.00','min':0}),
-                'donation_bobbi_gillotti': NumberInput(attrs={'style': 'width: 4em;','step':'any','placeholder':'0.00','min':0}),
-                'donation_chuck': NumberInput(attrs={'style': 'width: 4em;','step':'any','placeholder':'0.00','min':0}),
+                'donation_tifd':            NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00','min':0}),
+                #TIFD consolidated all the categories into one.. in 2022?
+                #'donation_floor_fund':      NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00','min':0}),
+                #'donation_camp_fund':       NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00','min':0}),
+                #'donation_live_music':      NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00','min':0}),
+                #'donation_bobbi_gillotti':  NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00','min':0}),
+                #'donation_chuck':           NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00','min':0}),
         }
         prefix="donation"
 

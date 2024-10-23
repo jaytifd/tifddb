@@ -246,15 +246,10 @@ def donaterebate(request,registration_id):
                 for c in donationform.changed_data:
                     p("DEBUG: [%s] donate form field %s went from \"%s\" to \"%s\"" % (str(registration_id),c,donationform[c].initial, donationform[c].data))
                 donationform.save()
-
-                #save the cart once we change something
-                generate_cart_from_registration(registration_id,save=True)
             if rebateform.has_changed():
                 for c in rebateform.changed_data:
                     p("DEBUG: [%s] rebate form field %s went from \"%s\" to \"%s\"" % (str(registration_id),c,rebateform[c].initial, rebateform[c].data))
                 rebateform.save()
-                #save the cart once we change something
-                generate_cart_from_registration(registration_id,save=True)
             if campernotesform.has_changed():
                 for c in campernotesform.changed_data:
                     p("DEBUG: [%s] campernotesform form field %s went from \"%s\" to \"%s\"" % (str(registration_id),c,campernotesform[c].initial, campernotesform[c].data))
@@ -267,6 +262,9 @@ def donaterebate(request,registration_id):
                 #change registration status
                 registration.registration_status_id=2
                 registration.save()
+
+            #regenerate the shopping cart.
+            generate_cart_from_registration(registration_id,save=True)
 
             if request.POST.get('finalreview')=='yes':
                 return HttpResponseRedirect(reverse('camp:final',args=[registration_id]))
@@ -295,7 +293,7 @@ def donaterebate(request,registration_id):
                 messages.error(request, "Safety policy form error! Please agree to the Safety Policy.")
                 p("rebateform form error",safetypolicyform.errors)
 
-                for field,message in safetypolicyform.errors:
+                for field, message in safetypolicyform.errors.items():
                     messages.error(request, message)
             return HttpResponseRedirect(reverse('camp:confirm',args=[registration_id]))
 
@@ -715,7 +713,6 @@ def confirm(request,registration_id):
         safety_agreement=CampTemplates.objects.get(slug__exact='safety_agreement_virtual_camp').template_text
     else:
         safety_agreement=CampTemplates.objects.get(slug__exact='safety_agreement').template_text
-        p("DELETE",safety_agreement)
 
     nextyear=now.year+1
     return render(request,'camp/confirm_registration.html',{
