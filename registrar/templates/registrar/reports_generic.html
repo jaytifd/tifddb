@@ -117,7 +117,13 @@ $('.dataTables_length').addClass('bs-select');
 </tr>
 {% endfor %}
 
-		</tbody></table>
+{% if result_dict.0.donations_report %}
+    <td>TOTAL<td>
+	{% for key,value in extra.items %}
+        <td>{{value}}</td>
+    {% endfor %}
+{%endif%}
+	</tbody></table>
 	</div>
 
 	{% include "registrar/tablesort.html" %}

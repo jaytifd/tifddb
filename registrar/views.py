@@ -538,6 +538,13 @@ def report_by_slug(request, report_by_slug):
                 Q(music_fund__gt=0) 
                 ).filter(created_at__year=thisyear).filter(registration_id__gte=1).values(*searchfields)
         i=0
+        general_fund_total = 0
+        camp_fund_total = 0
+        bobbi_fund_total = 0
+        chuck_fund_total = 0
+        texakolo_fund_total = 0
+        floor_fund_total = 0
+        music_fund_total = 0
         for r in result_dict:
             if r['pp_ipn_name']:
                 e=r.pop('pp_ipn_email')
@@ -560,15 +567,33 @@ def report_by_slug(request, report_by_slug):
                 pmt=MembershipPayments.objects.get(pk=r['id']) 
                 items=itemize_payment(None,pmt)
                 
+
             for key,val in items.items():
                 if "fund" in key:
                     r[key]=val
                     if i == 0:
                         fields.append({val:key})
             i+=1
+            general_fund_total +=   r['general_fund']
+            camp_fund_total +=      r['camp_fund']
+            bobbi_fund_total +=     r['bobbi_fund']
+            chuck_fund_total +=     r['chuck_fund']
+            texakolo_fund_total +=  r['texakolo_fund']
+            floor_fund_total +=     r['floor_fund']
+            music_fund_total +=     r['music_fund']
+
             r['donations_report']=True
+        extra = {
+                 "general_fund_total":  general_fund_total,
+                 "camp_fund_total":     camp_fund_total,
+                 "bobbi_fund_total":    bobbi_fund_total,
+                 "chuck_fund_total":    chuck_fund_total,
+                 "texakolo_fund_total": texakolo_fund_total,
+                 "floor_fund_total":    floor_fund_total,
+                 "music_fund_total":    music_fund_total,
+                 }
         hidden_fields=('registrationid','donations_report')
-        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,hidden_fields=hidden_fields)
+        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,hidden_fields=hidden_fields, extra=extra)
 
 #################MEMBER SEARCH ################
     elif report_by_slug == "member_search":
