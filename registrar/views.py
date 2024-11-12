@@ -524,6 +524,7 @@ def report_by_slug(request, report_by_slug):
                 {'pp_ipn_name':"pp_ipn_name"},
                 {'pp_ipn_email':"PP email"},
                 {'registration_id':'registrationid'},
+                {'registration__registration_source':'registration_source'}, # this gets removed later
                 ]
     
         for f in fields: searchfields+=f
@@ -574,25 +575,48 @@ def report_by_slug(request, report_by_slug):
                     if i == 0:
                         fields.append({val:key})
             i+=1
-            general_fund_total +=   r['general_fund']
-            camp_fund_total +=      r['camp_fund']
-            bobbi_fund_total +=     r['bobbi_fund']
-            chuck_fund_total +=     r['chuck_fund']
-            texakolo_fund_total +=  r['texakolo_fund']
-            floor_fund_total +=     r['floor_fund']
-            music_fund_total +=     r['music_fund']
+            if "general_fund" in r:    general_fund_total +=   r['general_fund']
+            if "camp_fund" in r:       camp_fund_total +=      r['camp_fund']
+            if "bobbi_fund" in r:      bobbi_fund_total +=     r['bobbi_fund']
+            if "chuck_fund" in r:      chuck_fund_total +=     r['chuck_fund']
+            if "texakolo_fund" in r:   texakolo_fund_total +=  r['texakolo_fund']
+            if "floor_fund" in r:      floor_fund_total +=     r['floor_fund']
+            if "music_fund" in r:      music_fund_total +=     r['music_fund']
+
+            #add donation source
+            if reg == 1:
+                r['source'] = "PP direct donation"
+            else:
+                if r['registration__registration_source'] == 0:
+                    r['source'] = "camp registration"
+                elif r['registration__registration_source'] == 1:
+                    r['source'] = "membership renew"
+                else:
+                    r['source'] = "unknown"
+            r.pop('registration__registration_source')
 
             r['donations_report']=True
         extra = {
-                 "general_fund_total":  general_fund_total,
-                 "camp_fund_total":     camp_fund_total,
-                 "bobbi_fund_total":    bobbi_fund_total,
-                 "chuck_fund_total":    chuck_fund_total,
-                 "texakolo_fund_total": texakolo_fund_total,
-                 "floor_fund_total":    floor_fund_total,
-                 "music_fund_total":    music_fund_total,
+                 "general_fund":  general_fund_total,
+                 "camp_fund":     camp_fund_total,
+                 "bobbi_fund":    bobbi_fund_total,
+                 "chuck_fund":    chuck_fund_total,
+                 "texakolo_fund": texakolo_fund_total,
+                 "floor_fund":    floor_fund_total,
+                 "music_fund":    music_fund_total,
+                 "":    "", # padding
                  }
-        hidden_fields=('registrationid','donations_report')
+
+        #only show what is > 0
+        keys_to_remove = [key for key, value in extra.items() if value == 0]
+        for k in keys_to_remove:
+            del(extra[k])
+            for r in result_dict:
+                if k in r:
+                    del(r[k])
+                    print(f"removing{k} from {r}")
+        if fields: fields.append({'':'donation source'})
+        hidden_fields=['registrationid','donations_report','registration__registration_source'] + keys_to_remove
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,hidden_fields=hidden_fields, extra=extra)
 
 #################MEMBER SEARCH ################
