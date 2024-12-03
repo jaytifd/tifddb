@@ -715,6 +715,7 @@ def report_by_slug(request, report_by_slug):
         result_dict_camper_valid=CampCamper.objects.\
                 filter(membership_valid_to__gt=now).\
                 filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).\
+                exclude(adult_or_child__exact="child").\
                 values(*searchfields)
 
         result_dict_camper_expired=CampCamper.objects.\
