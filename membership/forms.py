@@ -85,6 +85,7 @@ class PersonForm(ModelForm):
             field.widget.attrs['class']='form-control'
 
         self.fields['registration_type'].queryset = CampRegistrationTypes.objects.filter(active=True).filter(slug__exact="membership")
+        self.fields['publish'].widget.attrs['class']='checkboxinput form-check-input'
 
         #THIS NEEDS TO BE THE DEFAULT CHOICE OR ALL THE HIDDEN FORMS WILL FAIL VALIDATION
         #
@@ -101,7 +102,7 @@ PersonFormset = inlineformset_factory(CampRegistration, CampCamper_adult,
                                             extra=7,
                                             widgets = {
                                             },
-                                            fields=['first_name','last_name','email','phone','registration_type','membership_years',],
+                                            fields=['first_name','last_name','email','phone','registration_type','membership_years','publish'],
                                             exclude=[
                                                 ],
                                             )

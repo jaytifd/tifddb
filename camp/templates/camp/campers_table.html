@@ -45,7 +45,7 @@
 			{% if r.mobility or r.mobility_details %}<tr>         <td width=50%>Mobility device?<td width=50%>Yes, {{r.mobility_details}}{%endif%}
 			{% if r.medical or r.medical_details %}<tr>          <td width=50%>Has Medical/Allergy?<td width=50%>Yes, {{r.medical_details}}{%endif%}
 			{% if r.certification or r.certification_details %}<tr>            <td width=50%>CPR certification?<td width=50%>Yes, {{r.certification_details}}{%endif%}
-                        {% if r.t_shirt_type %}<tr>          <td width=50%>T-Shirt<td width=50%>{{r.t_shirt_type.description}}{%endif%}
+                        {% if r.t_shirt_type and registration.registration_source == 0 %}<tr>          <td width=50%>T-Shirt<td width=50%>{{r.t_shirt_type.description}}{%endif%}
                         {% if r.dvd %}<tr>              <td width=50%>Dance review video<td width=50%>Yes{%endif%}
 						{% if r.membership_valid_to %}<tr>              <td width=50%><b>Membership valid until</b><td width=50%><b>{{r.membership_valid_to}}</b>{%endif%}
 
