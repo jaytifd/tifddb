@@ -669,7 +669,7 @@ class Person(models.Model):
     instruments = models.CharField(max_length=255, blank=True, null=True)
     diet = models.BooleanField("Dietary restrictions",      blank=True, null=False, default=False)
     diet_details = models.TextField("Dietary restrictions",blank=True, null=True)
-    publish = models.BooleanField("I consent to having my contact information published in the roster.",        blank=True, null=False, default=False)
+    publish = models.BooleanField("I consent to having my name, email address, and phone number published in TIFD\'s membership and Texas Camp rosters (we do not publish physical addresses for security reasons).",        blank=True, null=False, default=False)
     staff = models.BooleanField("I am a member of TIFD's administrative staff (camp committee volunteer).",        blank=True, null=False, default=False)
     need_linen = models.BooleanField("Check here to rent linens (sheets/towels) provided by GFC",  blank=True, null=False, default=False)
     staff_position = models.CharField("Staff position(s)",max_length=255, blank=True, null=True)
