@@ -106,6 +106,10 @@ def get_membership_info(first_name,last_name):
 
         #if we have a legacy member and there is no modern member, return the legacy member
         #if we have both, only recturn legacy if membership_valid_to is greater than the modern member (should be rare)
+        if not modern_member: p("no modern record found for", first_name, last_name)
+        if modern_member and legacy_member[0].membership_valid_to > modern_member[0].membership_valid_to:
+            p("older legacy record found for", first_name, last_name, "modern_valid", modern_member[0].membership_valid_to, "legacy valid", legacy_member[0].membership_valid_to)
+
         if (not modern_member) or (modern_member and legacy_member[0].membership_valid_to > modern_member[0].membership_valid_to):
             data['first_name']=legacy_member[0].first_name
             data['last_name']=legacy_member[0].last_name

@@ -649,6 +649,8 @@ def report_by_slug(request, report_by_slug):
 
         if report_by_slug == "members_expiring":
             now=datetime.datetime.strptime(str(thisyear), '%Y')
+        if report_by_slug == "members_all":
+            now=datetime.datetime.strptime(str(1900), '%Y')
         else:
             now=datetime.datetime.now() #shouldnt the datepicker work?
             #now=datetime.datetime.strptime(str(thisyear), '%Y')
@@ -662,7 +664,6 @@ def report_by_slug(request, report_by_slug):
                 {'membership_type__membertype':'source'},
                 {'membership_valid_to':'membership_valid_to'},
                 ]
-    
         ####LEGACY MEMBERS##############3
         for f in fields: searchfields+=f
 
@@ -673,8 +674,10 @@ def report_by_slug(request, report_by_slug):
                             Q(last_name__icontains=search) | 
                             Q(membership_address__city__icontains=search)
                             ).\
-                exclude(membership_type=4).\
+                exclude(membership_type__in=(4,2,7)).\
                 filter(legacy_agecategory="Adult").\
+                exclude(last_name__exact=None).\
+                exclude(first_name__exact=None).\
                 values(*searchfields)
 
         result_dict_lifetime_expired=MembershipPerson.objects.\
@@ -682,11 +685,12 @@ def report_by_slug(request, report_by_slug):
                 filter(Q(membership_valid_to__year__gte=thisyear)).\
                 filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(membership_address__city__icontains=search)).\
                 filter(legacy_agecategory="Adult").\
+                filter(last_name=None).\
                 filter( Q(first_name__icontains=search) |
                             Q(last_name__icontains=search) |
                             Q(membership_address__city__icontains=search)
                             ).\
-                exclude(membership_type=4).\
+                exclude(membership_type__in=(4,2,7)).\
                 exclude(last_name__exact=None).\
                 exclude(first_name__exact=None).\
                 values(*searchfields)
@@ -721,7 +725,8 @@ def report_by_slug(request, report_by_slug):
         result_dict_camper_expired=CampCamper.objects.\
                 filter(membership_valid_to__year__lte=now.year).\
                 filter(membership_valid_to__year__gte=thisyear).\
-                filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).exclude(adult_or_child__exact="child").\
+                filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).\
+                exclude(adult_or_child__exact="child").\
                 values(*searchfields)
 
         for r in result_dict_camper_valid:
@@ -737,25 +742,33 @@ def report_by_slug(request, report_by_slug):
                 r['registration__registration_source']="camp"
 
         result_dict_valid=(list(result_dict_camper_valid)+(list(result_dict_lifetime_valid)))
-        result_dict_valid=sorted(result_dict_valid, key = lambda x: x['last_name'])
+        result_dict_valid=sorted(result_dict_valid, key = lambda x: x['last_name'] or '')
 
         result_dict_expired=(list(result_dict_camper_expired)+(list(result_dict_lifetime_expired)))
-        result_dict_expired=sorted(result_dict_expired, key = lambda x: x['last_name'])
-
-        if report_by_slug == "members_in_good_standing":
+        result_dict_expired=sorted(result_dict_expired, key = lambda x: x['last_name'] or '')
+ 
+        if report_by_slug in ("members_in_good_standing"):
             result_dict=result_dict_valid
         else:
             result_dict=result_dict_expired
+        if report_by_slug in ("members_all"):
+            result_dict=result_dict_valid+result_dict_expired
+            result_dict=[entry for entry in result_dict if entry['email']]
 
         result_dict_no_dupes=list()
         dupe_check=set()
 
-        #should I de-dupe AFTER getting membership info.. wally changed his email address... maybe not.. they will bubble out eventually
+
+        #### DE-DUPE AND FIX ####
+        ## this takes every record found and looks for the most recent record and fixes up the record.  So if people change their email address there are not a bunch of
+        ## duplicates
+        # should I de-dupe AFTER getting membership info.. wally changed his email address... maybe not.. they will bubble out eventually
         #for example wally changing email address
         for r in result_dict:
             data,member=get_membership_info(r['first_name'],r['last_name'])
-            index_string=r['first_name'].strip().lower()+"|||"+r['last_name'].strip().lower()+"|||"+str(r['email']).strip().lower()
+            index_string=r['first_name'].strip().lower()+"|||"+r['last_name'].strip().lower()+"|||"+str(r['email']).strip().lower()+"|||"
             if (index_string not in dupe_check):
+                print("index", index_string)
                 dupe_check.add(index_string)
                 rs=None
                 rid=0
@@ -777,12 +790,16 @@ def report_by_slug(request, report_by_slug):
                         p("pass:",member[0],"valid_to:",member[0].membership_valid_to.year,"search",datetime.datetime.strptime(str(thisyear),'%Y').year)
                         pass
                     else:
+                        if member[0].email:
+                            email=member[0].email
+                        else:
+                            email=r['email']
                         result_dict_no_dupes.append({
                             'registration_id':rid,
                             'first_name':member[0].first_name,
                             'last_name':member[0].last_name,
                             'phone':member[0].phone,
-                            'email':member[0].email,
+                            'email':email,
                             'registration_source':rs,
                             'membership_valid_to':member[0].membership_valid_to,
                             })
