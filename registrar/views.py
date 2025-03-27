@@ -28,7 +28,6 @@ from .models import *
 from decimal import Decimal
 from io import BytesIO
 from xhtml2pdf import pisa
-from weasyprint import HTML
 
 import re
 import csv
@@ -645,6 +644,7 @@ def report_by_slug(request, report_by_slug):
 ###################TIFD MEMBERS#########
 
     elif (report_by_slug == "members_in_good_standing") or \
+          report_by_slug == "members_all" or \
          (report_by_slug == "members_expiring"):
 
         if report_by_slug == "members_expiring":

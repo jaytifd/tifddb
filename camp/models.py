@@ -27,6 +27,7 @@ REGISTRATION_SOURCE = (
 REPORT_TYPES = (
             ('camp', 'Camp'),
             ('membership', 'Membership'), 
+            ('unlisted', 'unlisted'),
             )
 
 ADULT_OR_CHILD = (
