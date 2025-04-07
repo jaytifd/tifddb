@@ -1678,7 +1678,7 @@ def donationletter(request,registration,pdf_only=False,trigger=1):
             #return an HTTP response
             context['pdf_view']=True
             response = HttpResponse(content_type='application/pdf;')
-            response['Content-Disposition'] = 'inline; filename=list_people.pdf'
+            response['Content-Disposition'] = f'inline; filename={registration.year}{registration.id}.pdf'
             response['Content-Transfer-Encoding'] = 'binary'
 
             pdf=render_to_pdf(template, request, context,pdf_only=True)
