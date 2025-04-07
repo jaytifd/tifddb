@@ -82,7 +82,7 @@
         <caption>Donation summary for {{registration.year}}:</caption>
 	<table class="table w-50">
 		{%for key,val in donations.items %} <tr> {% if val %}<td>{{key}}<td>${{val}}</tr>{%endif%} {%endfor%}
-				<tr><td><b>Total donations for {%now "Y"%}	</b><td><b>${{donations_total}}</b></tr>
+                <tr><td><b>Total donations for {{registration.year}}	</b><td><b>${{donations_total}}</b></tr>
 				<tr><td><td>
 	</table>
 
