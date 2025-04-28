@@ -100,10 +100,13 @@ $('.dataTables_length').addClass('bs-select');
                                 {% else %}
                                     {{value|date:'Y-m-d'}}
                                 {% endif %}
-
-                                {% elif "note" in key %}
+                            {% elif "note" in key %}
                                 <small>{{value|default_if_none:""}}</small>
-                                {% elif "phone" in key %}
+                            {% elif "source" in key %}
+                                {% if value == 0  %}Camp
+                                {% else %}Membership
+                                {% endif%}
+                            {% elif "phone" in key %}
                                 <span style="white-space: nowrap;">{{value.as_national}}</span>
                                 {% else %}
                                 {{value|default_if_none:""}}

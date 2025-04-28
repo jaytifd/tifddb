@@ -657,7 +657,6 @@ def report_by_slug(request, report_by_slug):
                 {'registration__country':'country'},
                 {'registration__year':'year'},
                 {'registration__registration_source':'source'},
-                {'registration__registration_status':'status'},
                 ]
     
         for f in fields: searchfields+=f
