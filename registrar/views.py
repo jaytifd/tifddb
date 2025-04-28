@@ -641,11 +641,71 @@ def report_by_slug(request, report_by_slug):
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
 
 
+#################POSTCARD REPORT ################
+    elif report_by_slug == "postcard_report":
+        fields=[
+                {'registration':'id'},
+                {'first_name':"firstname"},
+                {'last_name':"lastname"},
+                {'email':"email"},
+                {'phone':"phone"},
+                {'registration__address1':'address1'},
+                {'registration__address2':'address2'},
+                {'registration__city':'city'},
+                {'registration__state':'state'},
+                {'registration__zip':'zip'},
+                {'registration__country':'country'},
+                {'registration__year':'year'},
+                {'registration__registration_source':'source'},
+                {'registration__registration_status':'status'},
+                ]
+    
+        for f in fields: searchfields+=f
+        #result_dict=CampCamper.objects.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).values(*searchfields).order_by('-registration__year')
+        result_dict=CampCamper.objects.\
+                filter(Q(membership_valid_to__year__gte=thisyear)).\
+                exclude(adult_or_child__exact="child").\
+                filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).\
+                values(*searchfields).order_by('-registration__year')
+        result_dict=remove_duplicate_members(result_dict);
+        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+
+#################LIFETIME MEMBERS ################
+    elif report_by_slug == "lifetime_members":
+        fields=[
+                {'registration':'id'},
+                {'first_name':"firstname"},
+                {'last_name':"lastname"},
+                {'email':"email"},
+                {'phone':"phone"},
+                {'membership_address__address1':"membership_address__address1"},
+                {'membership_address__address2':"membership_address__address2"},
+                {'membership_address__city':"membership_address__city"},
+                {'membership_address__state':"membership_address__state"},
+                {'membership_address__zip':"membership_address__zip"},
+                {'membership_valid_to':'membership_valid_to'},
+                ]
+    
+        for f in fields: searchfields+=f
+        #result_dict=CampCamper.objects.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).values(*searchfields).order_by('-registration__year')
+
+        result_dict=MembershipPerson.objects.\
+                filter(Q(membership_valid_to__gte=now)).\
+                filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(membership_address__city__icontains=search)).\
+                exclude(membership_type__in=(4,2,7)).\
+                filter(legacy_agecategory="Adult").\
+                exclude(last_name__exact=None).\
+                exclude(first_name__exact=None).\
+                values(*searchfields)
+        #result_dict=remove_duplicate_members(result_dict);
+        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+
+
 ###################TIFD MEMBERS#########
 
-    elif (report_by_slug == "members_in_good_standing") or \
-          report_by_slug == "members_all" or \
-         (report_by_slug == "members_expiring"):
+    elif report_by_slug == "members_in_good_standing" or \
+         report_by_slug == "members_all" or \
+         report_by_slug == "members_expiring":
 
         if report_by_slug == "members_expiring":
             now=datetime.datetime.strptime(str(thisyear), '%Y')
@@ -1995,6 +2055,24 @@ def group_dict_total(group_dict):
     for g in group_dict:
         i=i+g['dcount']
     return i
+
+def remove_duplicate_members(result_dict):
+    new_list=list()
+    members=set()
+    for r in result_dict:
+        name=f"{r['first_name']}...{r['last_name']}...{r['registration__city']}"
+        name=name.lower()
+        if name not in members:
+            members.add(name)
+            new_list.append(r)
+        else:
+            p("duplicate member", name)
+
+    return new_list
+
+
+    
+
 
 def campcounts(request):
     #reached via camp reports slug
