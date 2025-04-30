@@ -667,7 +667,10 @@ def report_by_slug(request, report_by_slug):
                 filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).\
                 values(*searchfields).order_by('-registration__year')
         result_dict=remove_duplicate_members(result_dict);
-        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+        if request.GET.get('table'):
+            return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+        else:
+            return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear, template='registrar/reports_addresslabels.html')
 
 #################LIFETIME MEMBERS ################
     elif report_by_slug == "lifetime_members":
