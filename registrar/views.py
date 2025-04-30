@@ -670,22 +670,23 @@ def report_by_slug(request, report_by_slug):
 
         addresses={}
         for r in result_dict:
-            address=r['registration__address1'].upper()
-            name=f"{r['first_name']} {r['last_name']}"
-            country_exclude=("us","usa","united states","l")
-            if address in addresses:
-                addresses[address]['name'].add(name)
-            else:
-                addresses[address]={}
-                addresses[address]['name']=set()
-                addresses[address]['name'].add(name)
-                addresses[address]['registration__address1']=address
-                addresses[address]['registration__address2']=r['registration__address2']
-                addresses[address]['registration__city']=r['registration__city']
-                addresses[address]['registration__state']=r['registration__state']
-                addresses[address]['registration__zip']=r['registration__zip']
-                if r['registration__country'] and r['registration__country'].lower() not in country_exclude:
-                    addresses[address]['registration__country']=r['registration__country']
+            if r['registration__address1']:
+                address=r['registration__address1'].upper()
+                name=f"{r['first_name']} {r['last_name']}"
+                country_exclude=("us","usa","united states","l")
+                if address in addresses:
+                    addresses[address]['name'].add(name)
+                else:
+                    addresses[address]={}
+                    addresses[address]['name']=set()
+                    addresses[address]['name'].add(name)
+                    addresses[address]['registration__address1']=address
+                    addresses[address]['registration__address2']=r['registration__address2']
+                    addresses[address]['registration__city']=r['registration__city']
+                    addresses[address]['registration__state']=r['registration__state']
+                    addresses[address]['registration__zip']=r['registration__zip']
+                    if r['registration__country'] and r['registration__country'].lower() not in country_exclude:
+                        addresses[address]['registration__country']=r['registration__country']
     
         if request.GET.get('table'):
             return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
