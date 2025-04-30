@@ -665,12 +665,12 @@ def report_by_slug(request, report_by_slug):
                 filter(Q(membership_valid_to__year__gte=thisyear)).\
                 exclude(adult_or_child__exact="child").\
                 filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).\
-                values(*searchfields).order_by('-registration__year').order_by('-registration__id')
+                values(*searchfields).order_by('-registration__id')
         result_dict=remove_duplicate_members(result_dict);
 
         addresses={}
         for r in result_dict:
-            address=r['registration__address1']
+            address=r['registration__address1'].upper()
             name=f"{r['first_name']} {r['last_name']}"
             country_exclude=("us","usa","united states","l")
             if address in addresses:
@@ -686,7 +686,7 @@ def report_by_slug(request, report_by_slug):
                 addresses[address]['registration__zip']=r['registration__zip']
                 if r['registration__country'] and r['registration__country'].lower() not in country_exclude:
                     addresses[address]['registration__country']=r['registration__country']
-
+    
         if request.GET.get('table'):
             return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
         else:
@@ -2081,13 +2081,14 @@ def remove_duplicate_members(result_dict):
     new_list=list()
     members=set()
     for r in result_dict:
+        #sorted by reg id desc
         name=f"{r['first_name']}...{r['last_name']}...{r['registration__city']}"
         name=name.lower()
         if name not in members:
             members.add(name)
             new_list.append(r)
         else:
-            p("duplicate member", name)
+            p("duplicate member", name,r['registration__address1'], r['registration'], r['registration__year'])
 
     return new_list
 
