@@ -10,6 +10,7 @@
 
 {% if not pdf_view %}
           <a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">PDF</button></a>
+          <a href="?year={{thisyear}}&q={{ request.GET.q }}&table=yes"><button class="btn btn-success my-sm-0" type="submit">TABLE</button></a>
           <a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">CSV</button></a>
           {% endif %}
 
@@ -45,11 +46,13 @@
 <!------- PDF VIEW-------->
 
 <table class="outer">
-	{% for result in result_dict %}
+	{% for address, result in extra.items %}
 	{% if forloop.counter0|divisibleby:2 %}<tr class="outer">{%endif%}
 	<td class="outer" valign="top">
 		<table class="addresslabel">
-			<tr><td class=addresslabel nowrap>{{result.first_name|capfirst}}&nbsp;{{result.last_name}}</td>
+            {% for n in result.name %}
+			    <tr><td class=addresslabel nowrap>{{n|capfirst}}</td>
+            {%endfor%}
 			<tr><td class=addresslabel nowrap>{{result.registration__address1|default_if_none:"&nbsp;"}}</td>
 			 {% if result.registration__address2 %}
 			 <tr><td class=addresslabel nowrap>{{result.registration__address2|default_if_none:"&nbsp;"}}
@@ -66,9 +69,11 @@
 <!------- NOT PDF VIEW-------->
 <div class="row">
 
-{% for result in result_dict %}
+{% for address, result in extra.items %}
 	 		<div class="col-md-4 mb-5 ml-5">
-				{{result.first_name|capfirst}}&nbsp{{result.last_name}}<br>
+                {% for n in result.name %}
+				    {{n|capfirst}}<br>
+                {%endfor%}
 				{{result.registration__address1|default_if_none:"&nbsp;"}}<br>
 					 {% if result.registration__address2 %}
 					{{result.registration__address2|default_if_none:"&nbsp;"}}
