@@ -504,8 +504,7 @@ def report_by_slug(request, report_by_slug):
                 {'phone':'phone'},
                 {'email':'email'},
                 {'registration__city':'city'},
-                {'band':'band'},
-                {'instruments':'instruments'},
+                {'singing':'singing'},
                 ]
     
         for f in fields: searchfields+=f
