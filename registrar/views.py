@@ -494,7 +494,30 @@ def report_by_slug(request, report_by_slug):
 
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear,hidden_fields=hidden_fields)
 
-#################MUSICIANS ################
+################# SINGING  ################
+    elif report_by_slug == "singing":
+
+        fields=[
+                {'registration':'id'},
+                {'first_name':"firstname"},
+                {'last_name':"lastname"},
+                {'phone':'phone'},
+                {'email':'email'},
+                {'registration__city':'city'},
+                {'band':'band'},
+                {'instruments':'instruments'},
+                ]
+    
+        for f in fields: searchfields+=f
+        result_dict=CampCamper.objects.filter(
+                    Q(singing__exact=1) | 
+                    Q(instruments__isnull=False)
+                ).filter(registration__year__icontains=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
+        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+
+#################DONATIONS ################
+
+#################MUSICIANS  /  BAND ################
     elif report_by_slug == "musicians":
 
         fields=[

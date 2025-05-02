@@ -72,6 +72,7 @@ class RegistrationForm_adult(ModelForm):
 
         self.fields['publish'].widget.attrs['class']='checkboxinput form-check-input'
         self.fields['band'].widget.attrs['class']='checkboxinput form-check-input'
+        self.fields['singing'].widget.attrs['class']='checkboxinput form-check-input'
         self.fields['mobility'].widget.attrs['class']='checkboxinput form-check-input'
         self.fields['certification'].widget.attrs['class']='checkboxinput form-check-input'
         self.fields['medical'].widget.attrs['class']='checkboxinput form-check-input'
@@ -98,6 +99,7 @@ class RegistrationForm_child(ModelForm):
                 field.widget.attrs['class']='form-control'
 
         self.fields['band'].widget.attrs['class']='checkboxinput form-check-input'
+        self.fields['singing'].widget.attrs['class']='checkboxinput form-check-input'
         self.fields['family_program'].widget.attrs['class']='checkboxinput form-check-input'
         self.fields['need_linen'].widget.attrs['class']='checkboxinput form-check-input'
 
@@ -217,6 +219,7 @@ RegistrationFormset_child = inlineformset_factory(CampRegistration, CampCamper_c
                                                 'age',
                                                 'gender',
                                                 'band',
+                                                'singing',
                                                 'instruments',
                                                 'diet',
                                                 'registration_type',
