@@ -53,7 +53,7 @@
 			{% if r.adult_or_child == "child" %}
 			{% if r.age %}<tr>              <td width=50%>Age<td width=50%>{{r.age}}{%endif%}
 				{% if not virtual_camp %}
-			<tr><td width=50%>Family Program?<td width=50%>{% if r.family_program %}Yes{%else%}No{%endif%}
+			        <tr class="d-none"><td width=50%>Family Program?<td width=50%>{% if r.family_program %}Yes{%else%}No{%endif%}
 				{% endif %}
 			{% endif %}
                 </table>
