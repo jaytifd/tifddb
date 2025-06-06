@@ -94,7 +94,7 @@ $('.dataTables_length').addClass('bs-select');
 			{% if forloop.counter > 3 %}
 				<td>
 						{% if value is True %}Yes{% elif value is False %}No{% else %}
-                            {% if "ostmark" in key or "date" in key or "ed_at" in key or "valid_to" in key%}
+                            {% if "ostmark" in key or "date" in key or "ed_at" in key or "valid_" in key%}
                                 {% if value.year > 2900 %} 
                                     LIFE
                                 {% else %}
@@ -104,7 +104,8 @@ $('.dataTables_length').addClass('bs-select');
                                 <small>{{value|default_if_none:""}}</small>
                             {% elif "source" in key %}
                                 {% if value == 0  %}Camp
-                                {% else %}Membership
+                                {% elif value == 1 %}Membership
+                                {% else %}{{value}}
                                 {% endif%}
                             {% elif "phone" in key %}
                                 <span style="white-space: nowrap;">{{value.as_national}}</span>

@@ -728,6 +728,7 @@ def report_by_slug(request, report_by_slug):
                 {'membership_address__city':"membership_address__city"},
                 {'membership_address__state':"membership_address__state"},
                 {'membership_address__zip':"membership_address__zip"},
+                {'membership_valid_from':'membership_valid_from'},
                 {'membership_valid_to':'membership_valid_to'},
                 ]
     
@@ -766,6 +767,7 @@ def report_by_slug(request, report_by_slug):
                 {'phone':'phone'},
                 {'email':'email'},
                 {'membership_type__membertype':'source'},
+                {'membership_valid_from':'membership_valid_from'},
                 {'membership_valid_to':'membership_valid_to'},
                 ]
         ####LEGACY MEMBERS##############3
@@ -815,6 +817,7 @@ def report_by_slug(request, report_by_slug):
                 {'phone':'phone'},
                 {'email':'email'},
                 {'registration__registration_source':'source'},
+                {'membership_valid_from':'membership_valid_from'},
                 {'membership_valid_to':'membership_valid_to'},
                 ]
         searchfields=[]
@@ -833,17 +836,16 @@ def report_by_slug(request, report_by_slug):
                 exclude(adult_or_child__exact="child").\
                 values(*searchfields)
 
-        for r in result_dict_camper_valid:
-            if r['registration__registration_source']: 
-                r['registration__registration_source']="mem"
-            else:
-                r['registration__registration_source']="camp"
+        #handled in the template
+        ##for r in result_dict_camper_valid:
+        #    r['registration__registration_source']=REGISTRATION_SOURCE[r['registration__registration_source']]
+        #    p("registration__registration_source...", r, r['registration__registration_source'])
 
-        for r in result_dict_camper_expired:
-            if r['registration__registration_source']: 
-                r['registration__registration_source']="mem"
-            else:
-                r['registration__registration_source']="camp"
+        #for r in result_dict_camper_expired:
+        #    if r['registration__registration_source']: 
+        #        r['registration__registration_source']="mem"
+        #    else:
+        #        r['registration__registration_source']="camp"
 
         result_dict_valid=(list(result_dict_camper_valid)+(list(result_dict_lifetime_valid)))
         result_dict_valid=sorted(result_dict_valid, key = lambda x: x['last_name'] or '')
@@ -905,6 +907,7 @@ def report_by_slug(request, report_by_slug):
                             'phone':member[0].phone,
                             'email':email,
                             'registration_source':rs,
+                            'membership_valid_from':member[0].membership_valid_from,
                             'membership_valid_to':member[0].membership_valid_to,
                             })
 

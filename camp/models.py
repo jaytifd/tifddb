@@ -19,10 +19,10 @@ BOOL_CHOICES = (
             (1, 'Yes'), 
             )
 
-REGISTRATION_SOURCE = (
-            (0, 'Camp'),
-            (1, 'Membership'), 
-            )
+REGISTRATION_SOURCE = {
+            0: 'Camp',
+            1: 'Membership', 
+            }
 
 REPORT_TYPES = (
             ('camp', 'Camp'),
