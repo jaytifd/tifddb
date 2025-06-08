@@ -537,6 +537,24 @@ def report_by_slug(request, report_by_slug):
                 ).filter(registration__year__icontains=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
 
+#################LIKELY CAMPERS  ################
+    elif report_by_slug == "campers_by_year":
+
+        fields=[
+                {'registration':'id'},
+                {'first_name':"firstname"},
+                {'last_name':"lastname"},
+                {'registration__year':'year'},
+                {'phone':'phone'},
+                {'email':'email'},
+                {'registration__city':'city'},
+                {'band':'camp band'},
+                ]
+    
+        for f in fields: searchfields+=f
+        result_dict=CampCamper.objects.filter(registration__year=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
+        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+
 #################DONATIONS ################
     elif report_by_slug == "donations_report":
 
