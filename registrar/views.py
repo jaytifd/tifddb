@@ -552,7 +552,7 @@ def report_by_slug(request, report_by_slug):
                 ]
     
         for f in fields: searchfields+=f
-        result_dict=CampCamper.objects.filter(registration__year=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
+        result_dict=CampCamper.objects.filter(registration__year=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).exclude(adult_or_child__exact="child")
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
 
 #################DONATIONS ################
