@@ -35,8 +35,27 @@ ADULT_OR_CHILD = (
             ('child', 'child'), 
             )
 
-REGISTRATION_PAID_STATUS=(5,6,8,)
-REGISTRATION_OPEN_STATUS=(1,2,3,4,7,9,11)
+REGISTRATION_PAID_STATUS=(5,6,8,9)
+REGISTRATION_OPEN_STATUS=(1,2,3,4,7,11)
+
+"""
+| id | status               | description                                                                             | display_order |
++----+----------------------+-----------------------------------------------------------------------------------------+---------------+
+|  1 | Incomplete           | User has saved the first page, not the second (no agree checkbox)                       |            10 |
+|  2 | NotPaid              | User has saved the 2nd page (confirmed alcohol policy), not selected a payment type yet |            20 |
+|  3 | Waiting for PayPal   | User pushed the PayPal button and we have not yet confirmed their paypal payment        |            30 |
+|  4 | Waiting for check    | User pressed the check payment button and we have not yet approved their payment        |            40 |
+|  5 | Registrar Approved   | Registrar confirmed payment                                                             |           100 |
+|  6 | Paypal IPN confirmed | We received a successful IPN response from PayPal                                       |            60 |
+|  7 | Paypal IPN error     | Error code when something went wrong with paypal IPN (set in camp/signals.py)           |          NULL |
+|  8 | PAID via registrar   | Registrar has processed payment and the registration is paid in full                    |            50 |
+|  9 | Imported from old DB |                                                                                         |          NULL |
+| 10 | Invalid              | A generic status to put registrations that would otherwise be deleted                   |             5 |
+| 11 | Refunded             | A refund was issued from paypal                                                         |             4 |
++----+----------------------+-----------------------------------------------------------------------------------------+---------------+
+"""
+
+
 
 COUNTRIES=(
 ("AF","Afghanistan"),
