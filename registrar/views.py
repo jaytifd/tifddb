@@ -733,6 +733,7 @@ def report_by_slug(request, report_by_slug):
                 exclude(adult_or_child__exact="child").\
                 filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).\
                 exclude(registration__address1__icontains="2400 roehampton").\
+                exclude(registration__address1__icontains="PO BOX 2264").\
                 values(*searchfields).order_by('-registration__id')
         result_dict=remove_duplicate_members(result_dict);
 
