@@ -547,12 +547,39 @@ def report_by_slug(request, report_by_slug):
                 {'registration__year':'year'},
                 {'phone':'phone'},
                 {'email':'email'},
+                {'registration__address1':'address1'},
+                {'registration__address2':'address2'},
                 {'registration__city':'city'},
+                {'registration__state':'state'},
+                {'registration__zip':'zip'},
+                {'registration__country':'country'},
+                {'registration__year':'year'},
                 {'band':'camp band'},
                 ]
     
         for f in fields: searchfields+=f
         result_dict=CampCamper.objects.filter(registration__year=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).exclude(adult_or_child__exact="child")
+        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+
+    elif report_by_slug == "campers_by_year_gte":
+        fields=[
+                {'registration':'id'},
+                {'first_name':"firstname"},
+                {'last_name':"lastname"},
+                {'registration__year':'year'},
+                {'phone':'phone'},
+                {'email':'email'},
+                {'registration__address1':'address1'},
+                {'registration__address2':'address2'},
+                {'registration__city':'city'},
+                {'registration__state':'state'},
+                {'registration__zip':'zip'},
+                {'registration__country':'country'},
+                {'band':'camp band'},
+                ]
+        for f in fields: searchfields+=f
+        result_dict=CampCamper.objects.filter(registration__year__gte=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).exclude(adult_or_child__exact="child").exclude(registration__address1__icontains="2400 roehampton")
+        result_dict=remove_duplicate_members(result_dict);
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
 
 #################DONATIONS ################
@@ -705,28 +732,12 @@ def report_by_slug(request, report_by_slug):
                 filter(Q(membership_valid_to__year__gte=thisyear)).\
                 exclude(adult_or_child__exact="child").\
                 filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).\
+                exclude(registration__address1__icontains="2400 roehampton").\
                 values(*searchfields).order_by('-registration__id')
         result_dict=remove_duplicate_members(result_dict);
 
-        addresses={}
-        for r in result_dict:
-            if r['registration__address1']:
-                address=r['registration__address1'].upper()
-                name=f"{r['first_name']} {r['last_name']}"
-                country_exclude=("us","usa","united states","l")
-                if address in addresses:
-                    addresses[address]['name'].add(name)
-                else:
-                    addresses[address]={}
-                    addresses[address]['name']=set()
-                    addresses[address]['name'].add(name)
-                    addresses[address]['registration__address1']=address
-                    addresses[address]['registration__address2']=r['registration__address2']
-                    if r['registration__city']:  addresses[address]['registration__city']=r['registration__city'].title()
-                    if r['registration__state']: addresses[address]['registration__state']=r['registration__state'].upper()
-                    addresses[address]['registration__zip']=r['registration__zip']
-                    if r['registration__country'] and r['registration__country'].lower() not in country_exclude:
-                        addresses[address]['registration__country']=r['registration__country']
+        #collate
+        addresses=collate_addresses(result_dict)
     
         if request.GET.get('table'):
             return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
@@ -2137,6 +2148,27 @@ def remove_duplicate_members(result_dict):
     return new_list
 
 
+def collate_addresses(result_dict):
+    addresses={}
+    for r in result_dict:
+        if r['registration__address1']:
+            address=r['registration__address1'].upper()
+            name=f"{r['first_name']} {r['last_name']}"
+            country_exclude=("us","usa","united states","l")
+            if address in addresses:
+                addresses[address]['name'].add(name)
+            else:
+                addresses[address]={}
+                addresses[address]['name']=set()
+                addresses[address]['name'].add(name)
+                addresses[address]['registration__address1']=address
+                addresses[address]['registration__address2']=r['registration__address2']
+                if r['registration__city']:  addresses[address]['registration__city']=r['registration__city'].title()
+                if r['registration__state']: addresses[address]['registration__state']=r['registration__state'].upper()
+                addresses[address]['registration__zip']=r['registration__zip']
+                if r['registration__country'] and r['registration__country'].lower() not in country_exclude:
+                    addresses[address]['registration__country']=r['registration__country']
+    return(addresses)
     
 
 
