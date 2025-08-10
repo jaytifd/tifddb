@@ -10,6 +10,9 @@ def p(*item):
     except:
         print ("ERROR PRINTING")
     logfile = open('debuglog.txt', 'a')
-    print ("DEBUG: ", str(datetime.datetime.now()), " - ", frame, *item, file=logfile)
+    try:
+        print ("DEBUG: ", str(datetime.datetime.now()), " - ", frame, *item, file=logfile)
+    except:
+        print ("ERROR PRINTING")
     logfile.close()
 
