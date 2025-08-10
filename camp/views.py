@@ -993,7 +993,10 @@ def create(request,registration_id=None):
                 if form.has_changed():
                     i=0
                     for c in form.changed_data:
-                        p("[%s] adult #%d form field %s went from \"%s\" to \"%s\"" % (str(registration_id),i,c,form[c].initial, form[c].data))
+                        try:
+                            p("[%s] adult #%d form field %s went from \"%s\" to \"%s\"" % (str(registration_id),i,c,form[c].initial, form[c].data))
+                        except:
+                            pass
                     i=i+1
 
 
