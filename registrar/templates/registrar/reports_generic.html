@@ -77,7 +77,7 @@ $('.dataTables_length').addClass('bs-select');
                     {%else%}
 					    <a href="{% url "registrar:view" result.registration %}?year={% if result.campyear %}{{result.campyear}}{%else%}{{thisyear}}{%endif%}">
                     {%endif%}
-                        {{result.last_name}},&nbsp;{{result.first_name}}
+                    {{result.last_name}}{{result.registration__campcamper__first_name}},&nbsp;{{result.first_name}}{{result.registration__campcamper__last_name}}
                 {%elif result.donations_report %} {% comment %}  -- a donation -- {%endcomment%}
 					    <a href="{% url "registrar:payments_add_edit" result.id %}?year={% if result.campyear %}{{result.campyear}}{%else%}{{thisyear}}{%endif%}">
                         {{result.last_name}},&nbsp;{{result.first_name}}

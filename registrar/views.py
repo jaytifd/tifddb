@@ -144,6 +144,7 @@ def reports_home(request):
 @user_passes_test(readonly_check)
 @login_required
 def refund_report(request):
+    ##this is no longer used
     thisyear=get_thisyear(request)
     payments=MembershipPayments.objects.filter(created_at__year=thisyear).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS).filter(registration__registration_source=0).filter(registration__payment_type="paypal").filter(registration__id__gt=10664)
 
@@ -514,7 +515,6 @@ def report_by_slug(request, report_by_slug):
                 ).filter(registration__year__icontains=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
 
-#################DONATIONS ################
 
 #################MUSICIANS  /  BAND ################
     elif report_by_slug == "musicians":
@@ -535,6 +535,24 @@ def report_by_slug(request, report_by_slug):
                     Q(band__exact=1) | 
                     Q(instruments__isnull=False)
                 ).filter(registration__year__icontains=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
+        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+
+#################REFUND REPORT ################
+    elif report_by_slug == "refund":
+
+        fields=[
+                {'registration':'id'},
+                {'registration__campcamper__first_name':"firstname"},
+                {'registration__campcamper__last_name':"lastname"},
+                {'registration__campcamper__phone':'phone'},
+                {'registration__campcamper__email':'email'},
+                {'registration__city':'city'},
+                ]
+        for f in fields: searchfields+=f
+
+        result_dict=MembershipPayments.objects.filter(
+                Q(refund_amt__gt=0)).filter(registration__year__icontains=thisyear).values(*searchfields)
+                #).filter(registration__year__icontains=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
         return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
 
 #################LIKELY CAMPERS  ################
