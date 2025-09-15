@@ -547,6 +547,7 @@ def report_by_slug(request, report_by_slug):
                 {'registration__campcamper__phone':'phone'},
                 {'registration__campcamper__email':'email'},
                 {'registration__city':'city'},
+                {'refund_amt':'refund_amt'},
                 ]
         for f in fields: searchfields+=f
 
