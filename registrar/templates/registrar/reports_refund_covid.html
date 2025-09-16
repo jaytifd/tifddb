@@ -19,7 +19,7 @@
         </style>
 
 {% endif %}
-<div class="container">
+<div class="container-fluid">
 <div class="row">
 <div class="col-sm-12">
         <div class="table-responsive">
@@ -27,7 +27,8 @@
 		<!-- FILTER applied: "{{request.GET.q}}" -->
 	{% endif %}
 	{% if not pdf_view %}
-		Results: {{ result_dict|length }}
+		Results: {{ payments|length }}
+		Gross total: {{ total_gross }}
           <a href="?pdf=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">PDF</button></a> 
           <a href="?csv=1&year={{thisyear}}&q={{ request.GET.q }}"><button class="btn btn-success my-sm-0" type="submit">CSV</button></a>
 	  {% endif %}
@@ -39,22 +40,30 @@
 <table class="table table-hover table-responsive-md table-striped bordered tablesorter" id=reporttable>
         <thead><tr>
 				<th align= "left">Registration</th>
-				<th align= "left">amt</th>
-				<th align= "left">Payment note</th>
+				<th align= "left">PP IPN</th>
+				<th align= "left">pmt.Gross</th>
+				<th align= "left">pmt.mem</th>
+				<th align= "left">pmt.PPfee</th>
+				<th align= "left">pmt.refund</th>
+				<th align= "left">cart_total</th>
                 </tr></thead>
                 <tbody>
 
-{% for result in result_dict %}
+{% for result in payments %}
 
 <tr>
-		<td nowrap>
-             <a href="{% url "registrar:payments_add_edit" result.id %}?year={% if result.registration.campyear %}{{result.registration.campyear}}{%else%}{{thisyear}}{%endif%}">
-            {{result.registration}}
-             </a>
-        </td>
-		<td nowrap>
-            {{result.refund_amt}}
-		<td nowrap> {{result.notes}}
+	<td nowrap>
+		<a href="{% url "registrar:payments_add_edit" result.pk%}">{{result.registration}}</a>
+	</td>
+	<td nowrap>
+		&nbsp;[<a href="https://www.paypal.com/activity/payment/{{result.pp_ipn_txn_id}}">{{result.pp_ipn_txn_id}}</a>]
+	</td>
+
+	<td nowrap>{{result.gross_amt}} </td>
+	<td nowrap>{{result.membership_fee}} </td>
+	<td nowrap>{{result.paypal_fee}} </td>
+	<td nowrap>{{result.refund_amt}} </td>
+	<td nowrap>{{result.registration.cart_total}} </td>
 </tr>
 {% endfor %}
 

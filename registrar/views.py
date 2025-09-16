@@ -153,7 +153,7 @@ def refund_report(request):
         total_gross+=pp.gross_amt
 
     return render(request=request,
-              template_name='registrar/reports_refund.html',
+              template_name='registrar/reports_refund_covid.html',
               context={
                   "payments":payments,
                   "thisyear":thisyear,
@@ -540,21 +540,45 @@ def report_by_slug(request, report_by_slug):
 #################REFUND REPORT ################
     elif report_by_slug == "refund":
 
-        fields=[
-                {'registration':'id'},
-                {'registration__campcamper__first_name':"firstname"},
-                {'registration__campcamper__last_name':"lastname"},
-                {'registration__campcamper__phone':'phone'},
-                {'registration__campcamper__email':'email'},
-                {'registration__city':'city'},
-                {'refund_amt':'refund_amt'},
-                ]
-        for f in fields: searchfields+=f
-
         result_dict=MembershipPayments.objects.filter(
-                Q(refund_amt__gt=0)).filter(registration__year__icontains=thisyear).values(*searchfields)
+                Q(refund_amt__gt=0)).filter(registration__year__icontains=thisyear)
                 #).filter(registration__year__icontains=thisyear).values(*searchfields).filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(registration__city__icontains=search)).filter(registration__registration_source=0).filter(registration__registration_status_id__in=REGISTRATION_PAID_STATUS)
-        return report_by_slug_render(request, report_by_slug,fields,result_dict,thisyear)
+
+
+        if request.GET.get('csv'):
+            filename="camp_refund.csv"
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="'+filename+'"'
+            writer = csv.writer(response)
+
+            fields=['registration_id','name','amt','payment_note']
+            writer.writerow(fields)
+
+            for r in result_dict:
+                mylist=[
+                        r.registration.id,
+                        r.registration,
+                        r.refund_amt,
+                        r.notes
+                        ]
+                writer.writerow(mylist)
+            return response
+
+        #if request.GET.get('pdf'):
+        #        #careful with print'ing stuff here, non-ascii chars break dreamhost
+        #        pdf = render_to_pdf('registrar/reports_refund.html', request, context)
+        #        return HttpResponse(pdf, content_type='application/pdf')
+#
+#        return render(request=request,
+#                      template_name=template,
+#                      context=context
+#                            )
+
+        return render(request, 'registrar/reports_refund.html', {
+            'thisyear':thisyear,
+            'result_dict':result_dict,
+        })
+
 
 #################LIKELY CAMPERS  ################
     elif report_by_slug == "campers_by_year":

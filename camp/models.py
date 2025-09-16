@@ -490,7 +490,7 @@ class CampRegistration(models.Model):
         except:
             personstring=".."
 
-        return str( str(self.pk) +  " " + str(personstring) + " @" + str(self.address1) )
+        return str(str(personstring) + " @" + str(self.address1) )
 
 class MembershipAddress(models.Model):
     #this contains legacy membership address info migrated from the old database
