@@ -430,7 +430,7 @@ class CampRegistration(models.Model):
     state = models.CharField(max_length=255, blank=False, null=True, default="", choices=YOUR_STATE_CHOICES)
     zip = models.CharField(max_length=255, blank=False, null=True)
     country = models.CharField('Country',max_length=255, blank=True, null=True, choices = COUNTRIES, default="US")
-    donation_bobbi_gillotti = models.DecimalField("Bobbi Gillotti fund donation", validators=[MinValueValidator(Decimal('0.00'))], max_digits=7, decimal_places=2, blank=True, null=True, default=-0.0)
+    donation_bobbi_gillotti = models.DecimalField("Bobbi Gillotti fund donation", validators=[MinValueValidator(Decimal('0.00'))], max_digits=7, decimal_places=2, blank=True, null=True, default=0.0)
     donation_floor_fund = models.DecimalField("Floor fund donation", max_digits=7, validators=[MinValueValidator(Decimal('0.00'))], decimal_places=2, blank=True, null=True, default=0.0)
     donation_camp_fund = models.DecimalField("Floor fund donation", max_digits=7, validators=[MinValueValidator(Decimal('0.00'))], decimal_places=2, blank=True, null=True, default=0.0)
     donation_live_music = models.DecimalField("Live music donation", max_digits=7, validators=[MinValueValidator(Decimal('0.00'))], decimal_places=2, blank=True, null=True, default=0.0)
