@@ -19,10 +19,11 @@ BOOL_CHOICES = (
             (1, 'Yes'), 
             )
 
-REGISTRATION_SOURCE = {
-            0: 'Camp',
-            1: 'Membership', 
-            }
+REGISTRATION_SOURCE = [
+    (0, 'Camp'),
+    (1, 'Membership'),
+]
+
 
 REPORT_TYPES = (
             ('camp', 'Camp'),
@@ -450,7 +451,7 @@ class CampRegistration(models.Model):
     paypal_fee=models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=True)
     shipping_fee=models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=True)
     paypal_gross=models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=True)
-    agreecheckbox = models.BooleanField("Safety policy checkbox",max_length=255, blank=False, null=False)
+    agreecheckbox = models.BooleanField("Safety policy checkbox", blank=False, null=False)
     registrar_approval_note = models.TextField("Registrar confirmation email",blank=True, null=True)
     rebate= models.ForeignKey(CampRebates, on_delete=models.DO_NOTHING, related_name="rebate_from_registration", blank=True, null=True)
     registration_status= models.ForeignKey(CampRegistrationStatus, on_delete=models.DO_NOTHING, blank=True, null=True, default=1)
