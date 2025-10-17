@@ -116,9 +116,11 @@ def create(request,registration_id=None):
                         p("[%s] adult form field %s went from \"%s\" to \"%s\"" % (str(registration.pk),c,form[c].initial, form[c].data))
 
 
-
-        if ( registrationform.is_valid() and regformform_person.is_valid()):
+        try:
+          if ( registrationform.is_valid() and regformform_person.is_valid()):
             p ("DEBUG: all forms valid!\n")
+        except:
+            pass
 
             #check to see if either the base (address) form, of the first camper is empty.  If so, fail.
             #but DON'T fail if this is a user editing their existing form.
