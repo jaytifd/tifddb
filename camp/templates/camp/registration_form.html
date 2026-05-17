@@ -1,5 +1,7 @@
 {% include "camp/header.html" %}
 {% include "camp/bootstrap-overrides.html" %}
+{% load static %}
+
 
 <style>
 .border-3 {
@@ -48,16 +50,19 @@
 
 	<div class="row justify-content-md-center ">
                 <div class="t-shirt-container col-sm-3 text-center align-self-center ">
-                    <a href="https://tifd.org/camp{% now "Y" %}/shirt{% now "Y" %}.jpg"><img width=200 class="img-fluid" src="https://tifd.org/camp{% now "Y" %}/shirt{% now "Y" %}.jpg" alt="t-shirt image">
+                    {% now "y" as shortyear %}
+                    <a href="{% static 'shirt'|add:shortyear|add:'.png' %}">
+                        <img width="300" class="img-fluid" src="{% static 'shirt'|add:shortyear|add:'.png' %}" alt="t-shirt image">
+                    </a>
+
                 <!--
 			<a href="https://tifd.org/shirt-blank.jpg"><img width=200 class="img-fluid" src="https://tifd.org/shirt-blank.jpg" alt="t-shirt image">
                 -->
-                          <div class="row">
-                                  <div class="col">
-                                      Camp {% now "Y" %} T-shirt design<br><!-- (COMING SOON!) -->
-			</a>
-                          </div>
-                          </div>
+                  <div class="row">
+                    <div class="col">
+                       Camp {% now "Y" %} T-shirt design<br>
+                    </div>
+                  </div>
                 </div>
 
 	<div class="addressbox bg-light col-sm-8 mt-1 mb-3 border">
