@@ -145,6 +145,15 @@ class RebateForm(ModelForm):
         super(RebateForm, self).__init__(*args, **kwargs)
         self.fields['rebate'].queryset = CampRebates.objects.all().exclude(slug='legacy')
 
+class PayPalReimburseForm(ModelForm):
+    class Meta:
+        model = CampRegistration
+        fields = ['paypal_fee_reimburse',]
+        widgets = {
+            #'donation_bobbi_gillotti': NumberInput(attrs={'style': 'width: 4em;'}),
+        }
+        #prefix="pp_fee"
+
 
 class CamperNotesForm(ModelForm):
     def __init__(self, *args, **kwargs):

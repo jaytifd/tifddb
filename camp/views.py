@@ -216,12 +216,18 @@ def donaterebate(request,registration_id):
 
     if request.method == "POST":
 
+        for key, value in request.POST.items():
+            print(f"POST --- {key} = {value}")
+
         registration=CampRegistration.objects.get(pk=registration_id)
         donationform = DonationForm(request.POST, instance=registration)
         rebateform = RebateForm(request.POST, instance=registration)
+        paypal_reimburseform = PayPalReimburseForm(request.POST, instance=registration)
         campernotesform = CamperNotesForm(request.POST, instance=registration)
         safetypolicyform = SafetypolicyForm(request.POST, instance=registration)
 
+        for c in paypal_reimburseform.changed_data:
+            p("DEBUG: [%s] paypal_reimburse form field %s went from \"%s\" to \"%s\"" % (str(registration_id),c,paypal_reimburseform[c].initial, paypal_reimburseform[c].data))
 
         ##########################membership registration#######################
         if registration.registration_source==1: #0=camp, 1=membership
@@ -244,7 +250,7 @@ def donaterebate(request,registration_id):
         #########################################################################
 
         #######################camp registration#################################
-        if ( donationform.is_valid() and rebateform.is_valid() and safetypolicyform.is_valid() and campernotesform.is_valid() ):
+        if ( donationform.is_valid() and rebateform.is_valid() and safetypolicyform.is_valid() and campernotesform.is_valid() and paypal_reimburseform.is_valid() ):
             p("All donation forms valid")
             if donationform.has_changed():
                 for c in donationform.changed_data:
@@ -262,6 +268,10 @@ def donaterebate(request,registration_id):
                 for c in safetypolicyform.changed_data:
                     p("DEBUG: [%s] safetypolicy form field %s went from \"%s\" to \"%s\"" % (str(registration_id),c,safetypolicyform[c].initial, safetypolicyform[c].data))
                 safetypolicyform.save()
+            if paypal_reimburseform.has_changed():
+                for c in paypal_reimburseform.changed_data:
+                    p("DEBUG: [%s] paypal_reimburse form field %s went from \"%s\" to \"%s\"" % (str(registration_id),c,paypal_reimburseform[c].initial, paypal_reimburseform[c].data))
+                paypal_reimburseform.save()
 
                 #change registration status
                 registration.registration_status_id=2
@@ -298,6 +308,13 @@ def donaterebate(request,registration_id):
                 p("rebateform form error",safetypolicyform.errors)
 
                 for field, message in safetypolicyform.errors.items():
+                    messages.error(request, message)
+
+            if not paypal_reimburseform.is_valid():
+                messages.error(request, "Safety policy form error! Please agree to the Safety Policy.")
+                p("rebateform form error",paypal_reimburseform.errors)
+
+                for field, message in paypal_reimburseform.errors.items():
                     messages.error(request, message)
             return HttpResponseRedirect(reverse('camp:confirm',args=[registration_id]))
 
@@ -642,15 +659,23 @@ def generate_cart_from_registration(registration_id,save=True):
                     if val is None: val=0
                     cart_total+=val
 
+            if registration.paypal_fee_reimburse:
+                paypal_fee=calculate_paypal_fee(cart_total)
+                p("CART TOTAL", cart_total, "paypal fee", paypal_fee)
+                cart['Processing fee']={'Processing fee':paypal_fee}
+                cart_total+=paypal_fee
+
             discount_list,discount_total=get_discount(registration_id)
+
+
 
             #discount_total should be a negative number
             p(registration.id,"cart total before discounts",cart_total,'discount_list',discount_list,'discount_total',discount_total, "cart:",cart, "save:",save)
             cart_total=cart_total+discount_total
             p(registration.id,"cart total after discounts",cart_total,'discount_list',discount_list,'discount_total',discount_total, "cart:",cart, "save:",save)
-
             registration.cart_total=cart_total
             registration.membership_fee_gross=membership_fee_gross
+
 
             ##don't save under... what conditions?  When looking at an old regustration probably
             if (registration.year==now.year) and save is True:
@@ -694,6 +719,21 @@ def generate_paypal_form(registration_id,request):
             paypal_form = PayPalPaymentsForm(initial=paypal_dict)
             return paypal_form
 
+
+
+def calculate_paypal_fee(subtotal):
+    """
+    Gross-up formula: solve for total where total - (total * 0.029 + 0.30) = subtotal
+    Rearranges to: total = (subtotal + 0.30) / (1 - 0.029)
+    Fee to charge customer = total - subtotal
+    """
+    subtotal = Decimal(str(subtotal))
+    grossed_up = (subtotal + Decimal('0.30')) / Decimal('0.971')
+    fee = grossed_up - subtotal
+    return fee.quantize(Decimal('0.01'))
+
+
+
 def confirm(request,registration_id):
     now=datetime.datetime.now()
     if auth_check(request,registration_id) is not True:
@@ -710,6 +750,7 @@ def confirm(request,registration_id):
     p(registration_id,"drawing registration confirm page. registration_id: ", registration_id)
     donationform=DonationForm(instance=registration)
     rebateform=RebateForm(instance=registration)
+    paypal_reimburse=PayPalReimburseForm(instance=registration)
     safetypolicyform=SafetypolicyForm(instance=registration)
     campernotesform=CamperNotesForm(instance=registration)
 
@@ -729,6 +770,7 @@ def confirm(request,registration_id):
         'camp_end':camp_start+datetime.timedelta(days=3),
         'safetypolicyform':safetypolicyform,
         'rebateform':rebateform,
+        'paypal_reimburse':paypal_reimburse,
         'nextyear':nextyear,
         'campernotesform':campernotesform,
         #'paypal_form':paypal_form,
@@ -916,6 +958,8 @@ def status(request,registration_id):
 def create(request,registration_id=None):
     now=datetime.datetime.now()
 
+    import django
+    p(django.VERSION) 
     ################################  DANGER ############################################
     ##  membership:create and camp:create are MOSTLY the same.  If you make a change here
     ## it should probably be made in both places!

@@ -31,7 +31,9 @@
 <div class="col-sm-12">
 	<div class="row">
 		<div class="small col">
-				Total campers (paid and unpaid): {{ number_of_campers }}
+				Adult campers: {{ registration_stats.adult_campers }}
+				Child campers: {{ registration_stats.child_campers }}
+                TIFD memberships: {{ registration_stats.tifd_memberships }}<br>
 				Total owed: {{registration_header_info.total_owed}}
 				Total revcd: {{registration_header_info.total_gross}}
 				Total PayPal fees: {{registration_header_info.total_pp_fees}}

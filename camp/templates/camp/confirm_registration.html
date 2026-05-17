@@ -134,6 +134,17 @@ Remember: TIFD is a 501(c)(3) educational organization, and all donations to TIF
 
 		{%endif%}
 		<!-- SHOW THE ABOVE DIVS ONLY FOR CAMP REGISTRATIONS -->
+		<div class=row>
+			<div class="rebateform w-100 m-3 border">
+				<p class="bg-info text-black font-weight-bold "><b>Optional request to cover the PayPal processing fee</b></p>
+                Click the box below to add the cost of the credit card processing fee to your registration and allow TIFD to receive the full registration amount.
+				<div id="pp_fee" class="pp_fee" style="display:one;">
+						{%csrf_token%}
+						{{paypal_reimburse.management_form }}
+						{{paypal_reimburse}}
+				</div>
+			</div>
+		</div>
 
 		<div class=row>
 			<div class="finalreview w-100 m-3">

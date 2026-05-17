@@ -16,3 +16,5 @@ html2text
 mysqlclient
 setuptools
 #uwsgi
+django-phonenumber_field
+django-phonenumbers

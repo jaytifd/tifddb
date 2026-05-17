@@ -1693,6 +1693,7 @@ def registrar(request):
 
     return render(request,'registrar/registrar.html',{
             'mycampers':mycampers,
+            'registration_stats':registration_stats,
             'registration_status_options':registration_status_options,
             "reports": MembershipReport.objects.all,
             "years": years,
@@ -1755,7 +1756,7 @@ def generate_mycampers_dict(campers):
             mycampers[camper.registration_id]=[]
         mycampers[camper.registration_id].append(camper)
 
-    #p("generate_campers_dict returned:",mycampers)
+    p("registration_stats:",registration_stats)
     return mycampers,registration_stats
 
 
@@ -1891,45 +1892,33 @@ def renew_tifd_membership(camper,save=True,thisyear=int(datetime.datetime.now().
 
         returns two datetime objects describing how long the membership is good from and until.
 
-        According to the TIFD board, membership is good from Thanksgiving day - Thanksgiving day
-        If a membership is renewed is Jan-Oct, then "pro-rate" the membership so that it starts from the previous year.
+        ##According to the TIFD board, membership is good from Thanksgiving day - Thanksgiving day
+        ##If a membership is renewed is Jan-Oct, then "pro-rate" the membership so that it starts from the previous year.
+        ## 2025 change ##
+        membership is valid from when a user is confirmed (paid) + 366 days
 
     """
     now = datetime.datetime.now()
-    form_open=CampDates.objects.get(slug='form_open').date
-    p("form_open:",form_open,now.month)
 
-    #if camp registration is open for the year, or camp has ended and it's still the same year (December) then registrations are for thisyear. Otherwise it's year-1
-    if now.year!=form_open.year:
-        startyear=thisyear-1
-    elif (now.date() >= form_open):
-        startyear=thisyear  # if month is 11 or 12 then start this year regardless of the form_open 
-    elif (now.date()<form_open):  #if form_open is in the future, and it's early in the year, startyear is the previous year
-        startyear=thisyear-1
-    else:
-        startyear=thisyear-1
-    #(now,form_open,(now.date()>=form_open))
-    camper_valid_to=None
+    valid_from = now
+    valid_to = (now + datetime.timedelta(days=366))
+
+    form_open=CampDates.objects.get(slug='form_open').date
 
     if not camper:
         #the membership sign up page needs to display the current renewal dates, so just spit them out
-        valid_from=tday(startyear)
-        valid_to=tday(startyear+1)
         return(valid_from,valid_to)
 
 
-    p("inside renew_tifd_membership. save:",save, "startyear:",startyear," camper:",camper," years:",camper.membership_years," join tifd:",camper.join_tifd," regid", camper.registration_id, "join_tifd",camper.join_tifd,"regtype desc",camper.registration_type.description)
+    p("inside renew_tifd_membership. save:",save, "camper:",camper," years:",camper.membership_years," join tifd:",camper.join_tifd," regid", camper.registration_id, "join_tifd",camper.join_tifd,"regtype desc",camper.registration_type.description)
     if camper.join_tifd==1:
         if camper.membership_years is None:
             p("join TIFD is 1 but membership years is null or zero - this is probably a bug",camper.membership_years)
             raise Exception("join TIFD is 1 but membership years is null or zero")
-            #c.membership_years=1
 
-        valid_from=tday(startyear)
-        valid_to=tday(startyear+camper.membership_years)
         p(f"valid_from:{valid_from} valid_to:{valid_to}")
         if "ifetime" in str(camper.registration_type.description):
-            valid_to=tday(startyear+100)
+            valid_to = (now + datetime.timedelta(days=36525))
 
         camper_valid_from=camper.membership_valid_from
         camper_valid_to=camper.membership_valid_to
