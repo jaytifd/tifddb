@@ -236,16 +236,33 @@ def donaterebate(request,registration_id):
                 if donationform.has_changed():
                     for c in donationform.changed_data:
                         p("[%s] DEBUG: donate form (membership) field %s went from \"%s\" to \"%s\"" % (str(registration_id),c,donationform[c].initial, donationform[c].data))
-                donationform.save()
-                generate_cart_from_registration(registration_id,save=True)
+                    donationform.save()
             else:
-                if not donationform.is_valid():
-                    messages.error(request, "Donation form error!")
-                    p("donation form error (membership)",donationform.errors)
+                p("donation form error (membership)",donationform.errors)
 
-                    for field,message in donationform.errors.items():
-                        messages.error(request, message)
-                return HttpResponsePermanentRedirect(reverse('camp:confirm',args=[registration_id]))
+                for field,errors in donationform.errors.items():
+                    for error in errors:
+                        messages.error(request, f"{field}: {error}")
+                messages.error(request, "Donation form error!")
+                return HttpResponseRedirect(reverse('camp:confirm',args=[registration_id]))
+
+            if paypal_reimburseform.is_valid():
+                if paypal_reimburseform.has_changed():
+                    for c in paypal_reimburseform.changed_data:
+                        p("[%s] DEBUG: paypal reimburse form (membership) field %s went from \"%s\" to \"%s\"" % (str(registration_id),c,paypal_reimburseform[c].initial, paypal_reimburseform[c].data))
+                    paypal_reimburseform.save()
+            else:
+                p("paypal_reimburseform form error (membership)",paypal_reimburseform.errors)
+
+                for field,errors in paypal_reimburseform.errors.items():
+                    for error in errors:
+                        messages.error(request, f"{field}: {error}")
+                messages.error(request, "PayPal reimburse form error!")
+                return HttpResponseRedirect(reverse('camp:confirm',args=[registration_id]))
+
+            if donationform.has_changed() or paypal_reimburseform.has_changed():
+                generate_cart_from_registration(registration_id,save=True)
+
             return HttpResponseRedirect(reverse('camp:final',args=[registration_id]))
         #########################################################################
 
