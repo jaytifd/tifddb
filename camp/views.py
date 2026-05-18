@@ -676,11 +676,14 @@ def generate_cart_from_registration(registration_id,save=True):
                     if val is None: val=0
                     cart_total+=val
 
-            if registration.paypal_fee_reimburse:
+            if registration.paypal_fee_reimburse_flag:
                 paypal_fee=calculate_paypal_fee(cart_total)
                 p("CART TOTAL", cart_total, "paypal fee", paypal_fee)
                 cart['Processing fee']={'Processing fee':paypal_fee}
                 cart_total+=paypal_fee
+                registration.paypal_fee_reimburse_fee=paypal_fee
+            else:
+                registration.paypal_fee_reimburse_fee=0
 
             discount_list,discount_total=get_discount(registration_id)
 

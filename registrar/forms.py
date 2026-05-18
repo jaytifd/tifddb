@@ -42,7 +42,7 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model=MembershipPayments
         #anything new here needs a field in the db too, and in camp_historicalmembershippayments
-        fields=['date_recd','who_has_possession','payment_type','housing_fee','late_fee','t_shirt_fee','other_fee','chuck_fund','bobbi_fund','floor_fund','general_fund','camp_fund','music_fund','notes','gfc_linens'
+        fields=['date_recd','who_has_possession','payment_type','housing_fee','late_fee','t_shirt_fee','other_fee','chuck_fund','bobbi_fund','floor_fund','general_fund','camp_fund','music_fund','notes','gfc_linens','paypal_fee_reimburse_fee'
                 ]
         widgets = {
                 'date_recd': DateInput(attrs={'type':'date'}),
@@ -57,6 +57,7 @@ class PaymentForm(forms.ModelForm):
                 't_shirt_fee': NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00'}),
                 'camp_fund': NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00'}),
                 'gfc_linens': NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00'}),
+                'paypal_fee_reimburse_fee': NumberInput(attrs={'style': 'width: 5em;','step':'any','placeholder':'0.00'}),
         }
 
 class ApproveRegistrationForm(forms.ModelForm):

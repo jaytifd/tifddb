@@ -1141,6 +1141,7 @@ def itemize_payment(registration,payment=None):
             'floor_fund':0,
             'music_fund':0,
             'camp_fund':0,
+            'paypal_fee_reimburse_fee':0,
             }
 
     if registration is None and payment is None: 
@@ -1205,6 +1206,8 @@ def itemize_payment(registration,payment=None):
             payment_fields['music_fund']+=registration.donation_live_music
         if registration.late_fee:
             payment_fields['late_fee']+=registration.late_fee
+        if registration.paypal_fee_reimburse_flag:
+            payment_fields['paypal_fee_reimburse_fee']+=registration.paypal_fee_reimburse_fee
         if registration.rebate:
             payment_fields['membership_fee']=payment_fields['membership_fee']+registration.rebate.price
             p("applied rebate",registration.rebate.price, "membership fee:",payment_fields['membership_fee'])

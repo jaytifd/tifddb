@@ -460,7 +460,9 @@ class CampRegistration(models.Model):
     registration_source = models.IntegerField(blank=False, null=False, default=0, choices=REGISTRATION_SOURCE) ## 0=camp, 1=membership
     history = HistoricalRecords()
     campers=CampRegistrationStatus.objects.raw('SELECT * FROM camp_camper')
-    paypal_fee_reimburse = models.BooleanField("I would like to compensate TIFD for the paypal fees associated with my registration.", default=False)
+    paypal_fee_reimburse_flag = models.BooleanField("I would like to compensate TIFD for the paypal fees associated with my registration.", default=False)
+    paypal_fee_reimburse_fee = models.DecimalField(max_digits=7, decimal_places=2, blank=True,null=True, default=0.00)
+
 
     persons={}
     try:
@@ -825,6 +827,7 @@ class MembershipPayments(models.Model):
     camp_fund = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     chuck_fund = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     texakolo_fund = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    paypal_fee_reimburse_fee = models.DecimalField("PayPal fee reimburse", max_digits=10, decimal_places=2, blank=True, null=True)
     notes = models.TextField("Payment Note",blank=True, null=True)
     history = HistoricalRecords()
 

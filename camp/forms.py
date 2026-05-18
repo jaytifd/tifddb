@@ -148,7 +148,7 @@ class RebateForm(ModelForm):
 class PayPalReimburseForm(ModelForm):
     class Meta:
         model = CampRegistration
-        fields = ['paypal_fee_reimburse',]
+        fields = ['paypal_fee_reimburse_flag',]
         widgets = {
             #'donation_bobbi_gillotti': NumberInput(attrs={'style': 'width: 4em;'}),
         }
