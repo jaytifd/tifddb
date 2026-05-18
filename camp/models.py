@@ -827,7 +827,7 @@ class MembershipPayments(models.Model):
     camp_fund = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     chuck_fund = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     texakolo_fund = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    paypal_fee_reimburse_fee = models.DecimalField("PayPal fee reimburse", max_digits=10, decimal_places=2, blank=True, null=True)
+    paypal_fee_reimburse_fee = models.DecimalField("PayPal fee reimburse", max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     notes = models.TextField("Payment Note",blank=True, null=True)
     history = HistoricalRecords()
 
