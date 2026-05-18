@@ -1906,8 +1906,6 @@ def renew_tifd_membership(camper,save=True,thisyear=int(datetime.datetime.now().
     valid_from = now
     valid_to = (now + datetime.timedelta(days=366))
 
-    form_open=CampDates.objects.get(slug='form_open').date
-
     if not camper:
         #the membership sign up page needs to display the current renewal dates, so just spit them out
         return(valid_from,valid_to)
