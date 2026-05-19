@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.template import Context, Template
 
+from registrar.views import renew_tifd_membership
 from paypal.standard.forms import PayPalPaymentsForm
 
 from .forms import *
@@ -596,6 +597,9 @@ def generate_cart_from_registration(registration_id,save=True):
 
                 if c.registration_id:
                     #when this is a "membership" registration, the tifd membership fee is here because it's a "registration" type
+                    membership_start_date=datetime.datetime.now()
+                    membership_end_date = datetime.datetime.now() + datetime.timedelta(days=366)
+
                     if c.registration.registration_source == 1:  # 0=camp, 1=membership
                         if "ifetime" in c.registration_type.description:
                             desc=c.registration_type.cart_description
@@ -618,8 +622,13 @@ def generate_cart_from_registration(registration_id,save=True):
                             desc=c.registration_type.cart_description
                             price=c.registration_type.price
 
+                    membbership_start_date,membership_end_date = renew_tifd_membership(c, False)
+                    membership_end_date_str = membership_end_date.strftime('%b %-d, %Y')
+                    membership_start_date_str = membership_start_date.strftime('%b %-d, %Y')
+                    membership_str=f"<br>{membership_start_date_str} - {membership_end_date_str}"
 
-                    registration_dict={desc:price}
+                    registration_dict={f'{desc} {membership_str} ':price}
+
 
                     ###don't show the free virtual camp option
                     #if c.registration_type.id == 110:
@@ -740,18 +749,18 @@ def generate_paypal_form(registration_id,request):
             return paypal_form
 
 
-
 def calculate_paypal_fee(subtotal):
     """
-    Gross-up formula: solve for total where total - (total * 0.029 + 0.30) = subtotal
-    Rearranges to: total = (subtotal + 0.30) / (1 - 0.029)
+    Gross-up formula: solve for total where total - (total * 0.0349 + 0.49) = subtotal
+    Rearranges to: total = (subtotal + 0.49) / (1 - 0.0349)
     Fee to charge customer = total - subtotal
+    
+    PayPal rate: 3.49% + $0.49 (updated from legacy 2.9% + $0.30)
     """
     subtotal = Decimal(str(subtotal))
-    grossed_up = (subtotal + Decimal('0.30')) / Decimal('0.971')
+    grossed_up = (subtotal + Decimal('0.49')) / Decimal('0.9651')
     fee = grossed_up - subtotal
     return fee.quantize(Decimal('0.01'))
-
 
 
 def confirm(request,registration_id):

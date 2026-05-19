@@ -30,7 +30,7 @@ The shopping cart is designed to be included in:
                                 {% for person,mycart in cart.items %}
                                 <tr class="table-primary font-weight-bold checkview_cart_person"><td colspan=2 class="p-2 checkview_person" >{{person}} {% if email_view %}<br><br>{%endif%}
                                         {% for description,price in mycart.items %}
-                                        <tr><td>{{description}}
+                                        <tr><td>{{description|safe}}
                                                                 <td class=" text-right">{{price|stringformat:".02F"}} {% if email_view %}<br><br>{%endif%}
 
                                         {% endfor %}
