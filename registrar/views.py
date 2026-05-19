@@ -1227,6 +1227,7 @@ def payment_view(request,payment_id):
 @user_passes_test(registrar_check)
 @login_required
 def payments_add(request,payment_id=False):
+    from camp.views import generate_cart_from_registration, get_discount
     #NOTE: the payments function needs to handle paymes with and without registration_ids.
     #SEE ALSO: signals.py for the paypal IPN code.
     now=datetime.datetime.now()
@@ -1524,7 +1525,6 @@ def approve(request,registration_id):
     cart,cart_total=generate_cart_from_registration(registration.id,save=False)
     previous_payments=MembershipPayments.objects.filter(registration=registration)
 
-    membership_dict={}
     if request.method == 'POST':
         f=ApproveRegistrationForm(request.POST,instance=registration)
         if f.is_valid():
