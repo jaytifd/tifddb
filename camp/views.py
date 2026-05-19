@@ -600,41 +600,11 @@ def generate_cart_from_registration(registration_id,save=True):
                     membership_start_date=datetime.datetime.now()
                     membership_end_date = datetime.datetime.now() + datetime.timedelta(days=366)
 
-                    if c.registration.registration_source == 1:  # 0=camp, 1=membership
-                        if "ifetime" in c.registration_type.description:
-                            desc=c.registration_type.cart_description
-                            price=c.registration_type.price
-                            c.membership_years=9999
-                            p(registration_id,"setting member years to 9999")
-                            membership_fee_gross+=price
-                        else:
-                            desc=c.registration_type.cart_description+" ("+str(c.membership_years)+" years)"
-                            price=c.registration_type.price*c.membership_years
-                            membership_fee_gross+=price
-
-                    else:  #if tegistration source is not 1 (this is a camp registration)
-                        #if c.custom_registration_price is not None and type (c.custom_registration_price) is Decimal:
-                        if c.registration_type.id == 113:
-                            p(registration_id,"custom registration price decimal",c.custom_registration_price)
-                            desc=c.registration_type.cart_description
-                            price=c.custom_registration_price
-                        else:
-                            desc=c.registration_type.cart_description
-                            price=c.registration_type.price
-
-                    membbership_start_date,membership_end_date = renew_tifd_membership(c, False)
-                    membership_end_date_str = membership_end_date.strftime('%b %-d, %Y')
-                    membership_start_date_str = membership_start_date.strftime('%b %-d, %Y')
-                    membership_str=f"<br>{membership_start_date_str} - {membership_end_date_str}"
-
-                    registration_dict={f'{desc} {membership_str} ':price}
-
-
-                    ###don't show the free virtual camp option
-                    #if c.registration_type.id == 110:
-                    #    registration_dict={}
-
-                    cart[name].update(registration_dict)
+                    if c.registration.registration_source == 0:  # 0=camp, 1=membership
+                    #add the camp registration type to the shopping cart
+                        desc=c.registration_type.cart_description
+                        price=c.registration_type.price
+                        cart[name].update({desc:price})
 
                 if c.t_shirt_type_id:
                     if c.t_shirt_type_id != 1:   #1 is the "no shirt" option
@@ -658,10 +628,37 @@ def generate_cart_from_registration(registration_id,save=True):
                     cart[name].update(linendict)
 
                 #automatically add the membership to the cart unless...
-                if (c.adult_or_child=="adult" and c.join_tifd != 0 and c.registration.registration_source != 1):
-                    membershipdict={membership_price[0]['cart_description']:membership_price_decimal}
-                    cart[name].update(membershipdict)
-                    membership_fee_gross+=membership_price_decimal
+                if c.registration.registration_source == 0:
+                    #CAMP
+                    if c.adult_or_child=="adult" and c.join_tifd != 0:
+                        membbership_start_date,membership_end_date = renew_tifd_membership(c, False)
+                        membership_end_date_str = membership_end_date.strftime('%b %-d, %Y')
+                        membership_start_date_str = membership_start_date.strftime('%b %-d, %Y')
+                        membership_str=f"<br>({membership_start_date_str} - {membership_end_date_str})"
+                        registration_dict={f'{desc} {membership_str} ':price}
+
+                        membershipdict={f"{membership_price[0]['cart_description']} {membership_str}":membership_price_decimal}
+                        cart[name].update(membershipdict)
+                        membership_fee_gross+=membership_price_decimal
+                else:
+                    #MEMBERSHIP
+                    if "ifetime" in c.registration_type.description:
+                        desc=c.registration_type.cart_description
+                        price=c.registration_type.price
+                        c.membership_years=9999
+                        p(registration_id,"setting member years to 9999")
+                        membership_fee_gross+=price
+                    else:
+                        desc=c.registration_type.cart_description+" ("+str(c.membership_years)+" years)"
+                        price=c.registration_type.price*c.membership_years
+                        membership_fee_gross+=price
+
+                    membbership_start_date,membership_end_date = renew_tifd_membership(c, False)
+                    membership_end_date_str = membership_end_date.strftime('%b %-d, %Y')
+                    membership_start_date_str = membership_start_date.strftime('%b %-d, %Y')
+                    membership_str=f"<br>({membership_start_date_str} - {membership_end_date_str})"
+                    registration_dict={f'{desc} {membership_str} ':price}
+                    cart[name].update(registration_dict)
 
             late_date=CampDates.objects.get(slug='late_date').date
             late_fee=CampPrices.objects.get(slug='late_fee')
@@ -679,7 +676,6 @@ def generate_cart_from_registration(registration_id,save=True):
             if c.registration.late_fee and c.registration.late_fee > 0:
                 cart[late_fee.cart_description]={late_fee.cart_description:c.registration.late_fee}
 
-
             for person,cart_items in cart.items():
                 for item,val in cart_items.items():
                     if val is None: val=0
@@ -695,8 +691,6 @@ def generate_cart_from_registration(registration_id,save=True):
                 registration.paypal_fee_reimburse_fee=0
 
             discount_list,discount_total=get_discount(registration_id)
-
-
 
             #discount_total should be a negative number
             p(registration.id,"cart total before discounts",cart_total,'discount_list',discount_list,'discount_total',discount_total, "cart:",cart, "save:",save)
