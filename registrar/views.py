@@ -17,7 +17,7 @@ from camp.custom.mylogger import p
 from camp.custom.tday import tday
 try:
     from camp.constants import dvd_price_decimal,membership_price_decimal,linens_price_decimal
-    from camp.views import get_discount,  emailconfirmation, generate_email_html, get_membership_info, generate_cart_from_registration, get_active_housing_options,get_active_registration_options
+    from camp.views import get_discount,  emailconfirmation, generate_email_html, get_membership_info, generate_cart_from_registration
 except: pass
 
 from paypal.standard.ipn.models import PayPalIPN
@@ -2023,6 +2023,7 @@ def payments_quick(request,registration_id):
 @user_passes_test(registrar_check)
 @login_required
 def campconstants(request):
+    from camp.views import get_active_housing_options, get_active_registration_options
     thisyear=get_thisyear(request)
     camp_registration_types_formset = modelformset_factory(CampRegistrationTypes, fields=["description", "price"], formset=MyCampRegistrationTypesFormSet, extra=0)
     camp_housing_types_formset = modelformset_factory(CampHousingTypes, fields=["description", "price"], formset=MyCampHousingTypesFormSet, extra=0)
