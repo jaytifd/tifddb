@@ -14,20 +14,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import include, path, re_path
 
-handler500 = 'camp.views.my500'
+handler500 = "camp.views.my500"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
-    path("", include('camp.urls')),
-    path('registrar/', include('registrar.urls')),
-    path('membership/', include('membership.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('nested_admin/', include('nested_admin.urls')),
-    re_path(r'^paypal_notify/', include('paypal.standard.ipn.urls')),
-
-
+    path("", include("camp.urls")),
+    path("registrar/", include("registrar.urls")),
+    path("membership/", include("membership.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("nested_admin/", include("nested_admin.urls")),
+    re_path(r"^paypal_notify/", include("paypal.standard.ipn.urls")),
 ]

@@ -1,5 +1,6 @@
 import datetime
 def tday(year):
+    day = 0 
     if year:
         time=12
         first_day=datetime.datetime(year,11,1).weekday()
