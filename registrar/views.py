@@ -2556,32 +2556,18 @@ def renew_tifd_membership(
         if "ifetime" in str(camper.registration_type.description):
             valid_to = now + datetime.timedelta(days=36525)
 
-        else:
-            p(
-                "renew membership for camper:",
-                camper,
-                "years:",
-                camper.membership_years,
-                "from:",
-                valid_from,
-                "until:",
-                valid_to,
-                "before from",
-                camper.membership_valid_from,
-                "before to:",
-                camper.membership_valid_to,
-            )
-            camper.membership_valid_from = valid_from
-            camper.membership_valid_to = valid_to
-            if save is True:
-                if "No membership" not in camper.registration_type.description:
-                    camper.save()
-                else:
-                    p(
-                        'NOT SAVING - "no membership" not in camper.registration_type.description:',
-                        camper.registration_type.description,
-                        camper,
-                    )
+        p("renew membership for camper:", camper, "years:", camper.membership_years, "from:", valid_from, "until:", valid_to, "before from", camper.membership_valid_from, "before to:", camper.membership_valid_to)
+        camper.membership_valid_from = valid_from
+        camper.membership_valid_to = valid_to
+        if save is True:
+            if "No membership" not in camper.registration_type.description:
+                camper.save()
+            else:
+                p(
+                    'NOT SAVING - "no membership" not in camper.registration_type.description:',
+                    camper.registration_type.description,
+                    camper,
+                )
 
         # is this the correct thing to return here?  should camper.membership_valid_to be the source of truth?
     return camper.membership_valid_from, camper.membership_valid_to
