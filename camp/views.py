@@ -66,15 +66,12 @@ def randomString(stringLength=10):
 
 
 def get_client_ip(request):
-    ip = ""
-    try:
-        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(",")[0]
-        else:
-            ip = request.META.get("REMOTE_ADDR")
-    except:
-        pass
+    ip = "FAILED_TO_FIND_IP!"
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0]
+    else:
+        ip = request.META.get("REMOTE_ADDR")
     return ip
 
 
@@ -304,10 +301,7 @@ def delete_entire_registration(request, registration_id):
     )
     for c in mycampers:
         p("Deleted camper:", c.__dict__)
-        try:
-            c.delete()
-        except:
-            p("Camper delete dailed for ", c)
+        c.delete()
 
     p("Deleted registration:", myregistration.__dict__)
     myregistration.delete()
@@ -1167,21 +1161,16 @@ def generate_email_html(registration, template_slug):
     if registration.registrar_approval_note and now.year > 2020:
         intro_message = registration.registrar_approval_note
     else:
-        intro_message = header_tpl.render(
-            Context(dict(now=now, registrar_info=registrar_info))
-        )
-        try:
-            if registration.payment_type == "check":
-                intro_message = (
-                    intro_message
-                    + "\n<p>Check or money order for camp fees can be mailed to:</p>\n<pre>\n"
-                    + str(registrar_info.name)
-                    + "\n"
-                    + str(registrar_info.mailing_address)
-                    + "\n</pre>\n"
-                )
-        except:
-            pass
+        intro_message = header_tpl.render( Context(dict(now=now, registrar_info=registrar_info)))
+        if registration.payment_type == "check":
+            intro_message = (
+                intro_message
+                + "\n<p>Check or money order for camp fees can be mailed to:</p>\n<pre>\n"
+                + str(registrar_info.name)
+                + "\n"
+                + str(registrar_info.mailing_address)
+                + "\n</pre>\n"
+            )
 
     # intro_message=header_tpl.render(Context(dict(now=now, registrar_info=registrar_info)))
     subject = subject_tpl.render(Context(dict(now=now, registrar_info=registrar_info)))

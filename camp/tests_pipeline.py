@@ -442,9 +442,11 @@ def _run_stage3_ipn(mock_reg, mock_camper):
     with patch('camp.signals.CampRegistration.objects.get', return_value=mock_reg), \
          patch('camp.signals.MembershipPayments', side_effect=fake_membership_payments), \
          patch('camp.signals.CampCamper.objects.filter') as mock_camper_filter, \
+         patch('camp.signals.CampRegistration.objects.filter') as mock_reg_filter, \
          patch('camp.signals.itemize_payment', return_value=itemized), \
          patch('camp.signals.emailconfirmation', mock_email):
 
+        mock_reg_filter.return_value.first.return_value = mock_reg
         mock_camper_filter.return_value.filter.return_value = [mock_camper]
         result = show_me_the_money(ipn)
 
@@ -1194,7 +1196,9 @@ class IPNEdgeCasesTest(TestCase):
 
         with patch('camp.signals.CampRegistration.objects.get', return_value=self.mock_reg), \
              patch('camp.signals.MembershipPayments') as MockPayment, \
+             patch('camp.signals.CampRegistration.objects.filter') as mock_reg_filter, \
              patch('camp.signals.emailconfirmation') as mock_email:
+            mock_reg_filter.return_value.first.return_value = self.mock_reg
             MockPayment.return_value = mock_payment
             show_me_the_money(ipn)
 
@@ -1210,7 +1214,9 @@ class IPNEdgeCasesTest(TestCase):
 
         with patch('camp.signals.CampRegistration.objects.get', return_value=self.mock_reg), \
              patch('camp.signals.MembershipPayments') as MockPayment, \
+             patch('camp.signals.CampRegistration.objects.filter') as mock_reg_filter, \
              patch('camp.signals.emailconfirmation'):
+            mock_reg_filter.return_value.first.return_value = self.mock_reg
             MockPayment.return_value = mock_payment
             show_me_the_money(ipn)
 

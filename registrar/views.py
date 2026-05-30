@@ -1447,18 +1447,16 @@ def ipn_view(request, ipn_id):
 
 def generate_ipn_dict(ipn_id):
     remove = ("_state",)
+    ipn = None
+
     try:
         ipn = PayPalIPN.objects.get(id=ipn_id)
-    except:
-        ipn = None
-    if ipn:
-        p("generated ipn view for ", ipn)
         ipn = ipn.__dict__
         for r in remove:
             ipn.pop(r)
-        return ipn
-    else:
-        return None
+    except:
+        p("ERROR - no ipn found with id:", ipn_id)
+    return ipn
 
 
 @user_passes_test(registrar_check)

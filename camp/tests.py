@@ -508,40 +508,20 @@ class PaypalIPNTests(TestCase):
         mock_reg.id = 42
         mock_reg.cart_total = Decimal("366.00")
         mock_reg.registration_source = 0
-
         mock_payment = MagicMock()
         ipn = self._mock_ipn(mc_gross=Decimal("366.00"))
-
-        with patch('camp.signals.CampRegistration.objects.get', return_value=mock_reg), \
+        with patch('camp.signals.CampRegistration.objects.filter') as mock_reg_filter, \
              patch('camp.signals.MembershipPayments') as MockPayment, \
              patch('camp.signals.itemize_payment', return_value={}), \
-             patch('camp.signals.CampCamper.objects.filter') as mock_filter, \
+             patch('camp.signals.CampCamper.objects.filter') as mock_camper_filter, \
              patch('camp.signals.renew_tifd_membership', return_value=True), \
              patch('camp.signals.emailconfirmation', return_value=True):
+            mock_reg_filter.return_value.first.return_value = mock_reg
             MockPayment.return_value = mock_payment
-            mock_filter.return_value.filter.return_value = []
+            mock_camper_filter.return_value.filter.return_value = []
             result = show_me_the_money(ipn)
-
         mock_payment.save.assert_called()
         self.assertTrue(result)
-
-    def test_cart_total_mismatch_sets_status_7(self):
-        from camp.signals import show_me_the_money
-        mock_reg = MagicMock()
-        mock_reg.pk = 42
-        mock_reg.id = 42
-        mock_reg.cart_total = Decimal("500.00")
-
-        mock_payment = MagicMock()
-        ipn = self._mock_ipn(mc_gross=Decimal("366.00"))
-
-        with patch('camp.signals.CampRegistration.objects.get', return_value=mock_reg), \
-             patch('camp.signals.MembershipPayments') as MockPayment:
-            MockPayment.return_value = mock_payment
-            result = show_me_the_money(ipn)
-
-        self.assertFalse(result)
-        self.assertEqual(mock_reg.registration_status_id, 7)
 
     def test_refund_updates_refund_amt_and_status_11(self):
         from camp.signals import show_me_the_money
@@ -568,6 +548,24 @@ class PaypalIPNTests(TestCase):
         ipn = self._mock_ipn(status_key="pending")
         self.assertFalse(show_me_the_money(ipn))
 
+
+
+    def test_cart_total_mismatch_sets_status_7(self):
+        from camp.signals import show_me_the_money
+        mock_reg = MagicMock()
+        mock_reg.pk = 42
+        mock_reg.id = 42
+        mock_reg.cart_total = Decimal("500.00")
+        mock_payment = MagicMock()
+        ipn = self._mock_ipn(mc_gross=Decimal("366.00"))
+        with patch('camp.signals.CampRegistration.objects.filter') as mock_reg_filter, \
+             patch('camp.signals.MembershipPayments') as MockPayment:
+            mock_reg_filter.return_value.first.return_value = mock_reg
+            MockPayment.return_value = mock_payment
+            result = show_me_the_money(ipn)
+        self.assertFalse(result)
+        self.assertEqual(mock_reg.registration_status_id, 7)
+
     def test_completed_sets_status_6_on_match(self):
         from camp.signals import show_me_the_money
         mock_reg = MagicMock()
@@ -575,21 +573,55 @@ class PaypalIPNTests(TestCase):
         mock_reg.id = 42
         mock_reg.cart_total = Decimal("366.00")
         mock_reg.registration_source = 0
-
         ipn = self._mock_ipn(mc_gross=Decimal("366.00"))
         mock_payment = MagicMock()
-
-        with patch('camp.signals.CampRegistration.objects.get', return_value=mock_reg), \
+        with patch('camp.signals.CampRegistration.objects.filter') as mock_reg_filter, \
              patch('camp.signals.MembershipPayments') as MockPayment, \
              patch('camp.signals.itemize_payment', return_value={}), \
-             patch('camp.signals.CampCamper.objects.filter') as mock_filter, \
+             patch('camp.signals.CampCamper.objects.filter') as mock_camper_filter, \
              patch('camp.signals.renew_tifd_membership', return_value=True), \
              patch('camp.signals.emailconfirmation', return_value=True):
+            mock_reg_filter.return_value.first.return_value = mock_reg
             MockPayment.return_value = mock_payment
-            mock_filter.return_value.filter.return_value = []
+            mock_camper_filter.return_value.filter.return_value = []
             show_me_the_money(ipn)
-
         self.assertEqual(mock_reg.registration_status_id, 6)
+
+
+    def test_invalid_ipn_logs_and_raises(self):
+        """
+        () should log all IPN fields and raise an Exception.
+        covers the case where PayPal itself says the IPN was forged/tampered.
+        """
+        from camp.signals import invalid_ipn
+
+        mock_ipn = MagicMock()
+        mock_ipn.payment_status = "INVALID"
+        mock_ipn.invoice = "FORGED-123"
+        mock_ipn.mc_gross = Decimal("999.00")
+        mock_ipn.receiver_email = "attacker@evil.com"
+        mock_ipn.payer_email = "victim@example.com"
+        mock_ipn.txn_id = "FAKE-TXN-001"
+        mock_ipn.id = 1234
+        
+        with self.assertRaises(Exception) as ctx:
+            invalid_ipn(mock_ipn)
+
+        self.assertIn("FORGED-123", str(ctx.exception))
+
+    def test_invalid_ipn_signal_connected_to_correct_handler(self):
+        """
+        invalid_ipn_received should be wired to invalid_ipn, NOT show_me_the_money.
+        If this fails it means a forged IPN would go through full payment processing.
+        """
+        from paypal.standard.ipn.signals import invalid_ipn_received
+        from camp.signals import invalid_ipn, show_me_the_money
+        
+        receivers = [r[1]() for r in invalid_ipn_received.receivers]
+        self.assertIn(invalid_ipn, receivers,
+            "invalid_ipn_received must be connected to invalid_ipn")
+        self.assertNotIn(show_me_the_money, receivers,
+						 "invalid_ipn_received must NOT be connected to show_me_the_money")
 
 
 # ---------------------------------------------------------------------------

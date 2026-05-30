@@ -41,7 +41,6 @@
 						  <a class="dropdown-item" href="{% url "registrar:donationletter" regid %}?year={{thisyear}}">Create Donation Letter</a>
 						  <a class="dropdown-item" href="{% url "camp:create_edit" regid %}">Edit registration form page1</a>
 						  <a class="dropdown-item" href="{% url "camp:confirm" regid %}">Edit registration form page2</a>
-						  <a class="dropdown-item d-none" href="{% url "registrar:refund" regid %}?year={{thisyear}}">Refund</a>
 						  <a class="dropdown-item d-none" href="{% url "registrar:payments_add" %}?registration_id={{regid}}&return=registrar&year={{thisyear}}">Add Payment - custom itemization</a>
                               {% comment %}
                                 There could be more than one payment 
