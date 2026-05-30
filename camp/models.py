@@ -582,7 +582,7 @@ class CampRegistration(models.Model):
     history = HistoricalRecords()
     campers = CampRegistrationStatus.objects.raw("SELECT * FROM camp_camper")
     paypal_fee_reimburse_flag = models.BooleanField(
-        "I would like to compensate TIFD for the paypal fees associated with my registration.",
+        "Compensate TIFD for the paypal fees associated with my registration.",
         default=False,
     )
     paypal_fee_reimburse_fee = models.DecimalField(

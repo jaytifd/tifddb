@@ -2520,7 +2520,6 @@ def renew_tifd_membership(
     now = datetime.datetime.now()
 
     valid_from = now
-    valid_to = now + datetime.timedelta(days=366)
 
     if not camper:
         # the membership sign up page needs to display the current renewal dates, so just spit them out
@@ -2550,9 +2549,12 @@ def renew_tifd_membership(
             )
             raise Exception("join TIFD is 1 but membership years is null or zero")
 
-        p(f"valid_from:{valid_from} valid_to:{valid_to}")
         if "ifetime" in str(camper.registration_type.description):
             valid_to = now + datetime.timedelta(days=36525)
+        else:
+            valid_to = now + datetime.timedelta(days=366*camper.membership_years)
+
+        p(f"valid_from:{valid_from} valid_to:{valid_to}")
 
         p("renew membership for camper:", camper, "years:", camper.membership_years, "from:", valid_from, "until:", valid_to, "before from", camper.membership_valid_from, "before to:", camper.membership_valid_to)
         camper.membership_valid_from = valid_from
