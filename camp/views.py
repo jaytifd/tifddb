@@ -889,7 +889,7 @@ def generate_cart_from_registration(registration_id, save=True):
                 registration_dict = {f"{desc} {membership_str} ": price}
 
                 membershipdict = {
-                    f"{CampPrices.get_description("dvd")} {membership_str}": CampPrices.get_price("membership")
+                    f"{CampPrices.get_description('dvd')} {membership_str}": CampPrices.get_price("membership")
                 }
                 cart[name].update(membershipdict)
                 membership_fee_gross += CampPrices.get_price("membership")
