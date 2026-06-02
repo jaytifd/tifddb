@@ -1388,10 +1388,9 @@ def create(request, registration_id=None):
 
     edit_view = False
 
-    if auth_check(request, 500) is False:
+    if auth_check(request, 500) is False: # allow registrar access to the closed form
         if (form_open > now.date()) or (form_close < now.date()):
-            # allow registrar access to the closed form
-            p("form closed", form_open, form_close, now.date())
+            p(f"form closed!  form_open:{form_open} form_close:{form_close} now:{now.date()}")
             return render(
                 request,
                 "camp/camp_closed.html",
