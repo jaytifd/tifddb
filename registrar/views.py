@@ -1085,7 +1085,7 @@ def report_by_slug(request, report_by_slug):
             {"registration__city": "city"},
             {"registration__year": "year"},
             {"registration__registration_source": "source"},
-            {"registration__registration_status": "status"},
+            {"registration__registration_status__status": "status"},
         ]
 
         if search == "":
