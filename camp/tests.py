@@ -783,3 +783,80 @@ class ImportSanityTests(TestCase):
     def test_get_discount_is_callable(self):
         from camp.views import get_discount
         self.assertTrue(callable(get_discount))
+
+
+def test_renew_tifd_membership_with_none_camper_returns_two_dates(self):
+    """
+    Regression: calling renew_tifd_membership(None, False) raised
+    UnboundLocalError: local variable 'valid_to' referenced before assignment.
+    This is called by membership/views.py create() to get display dates.
+    """
+    from registrar.views import renew_tifd_membership
+
+    # Should not raise — must return two datetime values
+    try:
+        result = renew_tifd_membership(None, False)
+    except UnboundLocalError as e:
+        self.fail(f"renew_tifd_membership(None, False) raised UnboundLocalError: {e}")
+
+    self.assertIsNotNone(result, "Should return a tuple, not None")
+    self.assertEqual(len(result), 2, "Should return (valid_from, valid_to)")
+    valid_from, valid_to = result
+    self.assertIsNotNone(valid_from)
+    self.assertIsNotNone(valid_to)
+    self.assertGreater(valid_to, valid_from)
+
+
+def test_membership_cart_description_uses_membership_not_dvd(self):
+    """
+    Regression: membership line in cart was showing CampPrices.get_description('dvd')
+    instead of CampPrices.get_description('membership').
+    """
+    mocks = _build_cart_mocks(join_tifd=1)
+    mock_reg, mock_camper, mock_late_date, mock_late_fee_price = mocks
+
+    price_by_slug = {
+        'dvd':        MagicMock(cart_description='Dance review video',       price=Decimal("21.00")),
+        'linen':      MagicMock(cart_description='Linens from GFC',          price=Decimal("15.00")),
+        'membership': MagicMock(cart_description='TIFD membership - 1 year', price=Decimal("15.00")),
+        'late_fee':   mock_late_fee_price,
+    }
+    mock_late_fee_price.cart_description = 'Late fee'
+    mock_late_fee_price.price = Decimal("25.00")
+
+    from camp.views import generate_cart_from_registration
+    with patch('camp.views.CampCamper.objects.filter') as mock_filter, \
+         patch('camp.views.CampRegistration.objects.get', return_value=mock_reg), \
+         patch('camp.views.CampRegistration.objects.filter') as mock_reg_filter, \
+         patch('camp.views.CampDates.objects.get', return_value=mock_late_date), \
+         patch('camp.views.CampPrices.objects.get',
+               side_effect=lambda **kw: price_by_slug[kw.get('slug')]), \
+         patch('camp.views.CampPrices.get_price',
+               side_effect=lambda slug: price_by_slug[slug].price), \
+         patch('camp.views.CampPrices.get_description',
+               side_effect=lambda slug: price_by_slug[slug].cart_description), \
+         patch('camp.views.get_discount', return_value=([], Decimal("0.00"))), \
+         patch('registrar.views.renew_tifd_membership',
+               return_value=(datetime.datetime.now(),
+                              datetime.datetime.now() + datetime.timedelta(days=366))):
+        mock_filter.return_value.order_by.return_value = [mock_camper]
+        mock_reg_filter.return_value.values.return_value = [{
+            'donation_tifd': Decimal("0.00"),
+            'donation_floor_fund': Decimal("0.00"),
+            'donation_bobbi_gillotti': Decimal("0.00"),
+            'donation_live_music': Decimal("0.00"),
+            'donation_chuck': Decimal("0.00"),
+        }]
+        cart, _ = generate_cart_from_registration(42, save=False)
+
+    camper_items = cart.get("Jane Doe", {})
+    cart_keys = list(camper_items.keys())
+
+    # The membership line must contain 'membership' somewhere in the description
+    membership_keys = [k for k in cart_keys if 'membership' in k.lower()]
+    dvd_in_membership = [k for k in cart_keys if 'dance review' in k.lower() and 'membership' not in k.lower()]
+
+    self.assertTrue(membership_keys,
+        "No membership line found in cart — description may be using wrong slug")
+    self.assertFalse(dvd_in_membership,
+        "DVD description appearing where membership description should be")
