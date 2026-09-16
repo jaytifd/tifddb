@@ -690,8 +690,8 @@ class MembershipPerson(models.Model):
     )  ### this is the legacy field
     email = models.CharField("email address", max_length=255, blank=True, null=True)
     email2 = models.CharField(max_length=255, blank=True, null=True)
-    # phone = models.CharField("Phone Number",validators=[MinLengthValidator(limit_value=10,message="Phone number should have at least 10 numbers.  Missing area code?")],max_length=30, blank=True, null=True)
-    phone = PhoneNumberField(blank=False, null=False)
+    phone = models.CharField("Phone Number",validators=[MinLengthValidator(limit_value=10,message="Phone number should have at least 10 numbers.  Missing area code?")],max_length=30, blank=True, null=True)
+    #phone = PhoneNumberField(blank=False, null=False)
     # these are legacy
     work_phone = models.CharField(max_length=255, blank=True, null=True)
     cell_phone = models.CharField(max_length=255, blank=True, null=True)
