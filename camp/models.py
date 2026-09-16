@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MinLengthValidator
 
 from localflavor.us.us_states import STATE_CHOICES
 from localflavor.ca.ca_provinces import PROVINCE_CHOICES
@@ -873,8 +873,8 @@ class Person(models.Model):
     last_name = models.CharField(max_length=255, blank=False, null=True)
     membership_valid_from = models.DateField(blank=True, null=True)
     membership_valid_to = models.DateField(blank=True, null=True)
-    # phone = models.CharField("Phone number",validators=[MinLengthValidator(limit_value=10,message="Phone number should have at least 10 numbers.  Missing area code?")],max_length=255, blank=False, null=False)
-    phone = PhoneNumberField(blank=False, null=False)
+    phone = models.CharField("Phone number",validators=[MinLengthValidator(limit_value=10,message="Phone number should have at least 10 numbers.  Missing area code?")],max_length=255, blank=False, null=False)
+    #phone = PhoneNumberField(blank=False, null=False)
     email = models.EmailField("Email address", max_length=255, blank=False, null=True)
     gender = models.CharField(max_length=255, blank=True, null=True)
     mobility = models.BooleanField(
